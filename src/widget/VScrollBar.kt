@@ -28,7 +28,7 @@ public class VScrollBar(widgetHandler: WidgetHandler, val value: IntValue, init:
 	}
 
 	override fun handleEvents() {
-		val w = widgetHandler.char_w()
+		val w = 10 // widgetHandler.char_w()
 		val was_hot = widgetHandler.hot_widget_id == value.hashCode()
 		val was_active = widgetHandler.active_widget_id == value.hashCode()
 		val active = was_active && widgetHandler.leftMouseButton.down

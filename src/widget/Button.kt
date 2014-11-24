@@ -20,8 +20,7 @@ class Button(widgetHandler: WidgetHandler, init: Button.() -> Unit) : Widget(wid
 	}
 
 	override fun calcOwnSize() {
-		height = widgetHandler.char_h()*2
-		width = if (width == 0) label.length * widgetHandler.char_w() + margin*2 else width
+		widgetHandler.skin.calcButtonSize(this)
 	}
 
 	override fun handleEvents() {

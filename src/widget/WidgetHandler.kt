@@ -37,13 +37,4 @@ class WidgetHandler(val skin: Skin) {
 			widgetHandler.keys.put(ch, InputButton())
 		}
 	}
-
-	fun char_w(): Int {
-		context.font = "${skin.charHeight}pt Courier New"
-		return (context.measureText("A")!!.width+0.5).toInt()
-	}
-
-	fun char_h(): Int {
-		return skin.charHeight
-	}
 }

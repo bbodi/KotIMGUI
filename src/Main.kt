@@ -12,8 +12,6 @@ import widget.Pos
 import widget.WidgetHandler
 import skin.DarkUi
 import widget.Button
-import skin.fill_rect
-import skin.text
 import widget.VScrollBar
 import widget.HScrollBar
 import skin.Variant
@@ -22,6 +20,7 @@ import widget.AbsolutePos
 import widget.RelativePos
 import widget.downFromLastWidget
 import widget.Textfield
+import skin.DiscoverUI
 
 fun getImage(path: String): HTMLImageElement {
 	val image = window.document.createElement("img") as HTMLImageElement
@@ -39,7 +38,7 @@ val context: CanvasContext
 		return canvas.getContext("2d")!!
 	}
 
-class TimeLineWindow {
+/*class TimeLineWindow {
 	var avg_data: MutableList<Float> = ArrayList<Float>()
 	var data: MutableList<Float> = init_data();
 	var smoothing_constant = 0.9f;
@@ -141,15 +140,7 @@ class TimeLineWindow {
 		fill_rect(x-15, trend_y-60, txt.length*30, 30, "red");
 		text(txt, x-15, trend_y-60, "white", Font())
 	}
-
-	fun clear() {
-		context.fillStyle = "#2E3138"
-		context.fillRect(0, 0, 800, 600)
-		context.strokeStyle = "#000000"
-		context.lineWidth = 4.0
-		context.strokeRect(0, 0, 800, 600)
-	}
-}
+}*/
 
 class EnumerateStream<T>(val iter: EnumerateIterator<T>) : Stream<IteratorPair<T>> {
 	override fun iterator(): Iterator<IteratorPair<T>> {
@@ -237,7 +228,7 @@ class InputButton {
 	}
 }
 
-val widgetHandler = WidgetHandler(DarkUi(15))
+val widgetHandler = WidgetHandler(DiscoverUI(1397, 796, 3))
 var pressedChar: Char? = null
 var keyCode: Int? = null
 fun setPressedKeysFromJavascript(pressedChar: Char?, keyCode: Int) {
@@ -266,15 +257,103 @@ fun handleKeys() {
 	widgetHandler.pressedChar = pressedChar
 }
 
+val value = IntValue(50)
+val zoom_value = IntValue(50)
+val strValue = StrValue("")
+var mouse_down = false;
+
+fun doFrame() {
+	widgetHandler.currentTick += 40
+	widgetHandler.leftMouseButton.update(mouse_down)
+	handleKeys()
+	pressedChar = null
+	keyCode = null
+	widgetHandler.skin.clear()
+	Panel(widgetHandler, {
+		pos = AbsolutePos(70, 100)
+		+Button(widgetHandler, {
+			width = 200
+			label = "Default Button"
+			variant = Variant.DEFAULT
+		})
+		+Button(widgetHandler, {
+			pos = downFromLastWidget(20)
+			width = 200
+			label = "Green Button"
+			variant = Variant.SUCCESS
+		})
+		+Button(widgetHandler, {
+			pos = downFromLastWidget(20)
+			width = 200
+			label = "Red Button"
+			variant = Variant.DANGER
+		})
+		+Button(widgetHandler, {
+			pos = downFromLastWidget(20)
+			width = 200
+			label = "Yellow Button"
+			variant = Variant.WARNING
+		})
+		+Button(widgetHandler, {
+			pos = downFromLastWidget(20)
+			width = 200
+			label = "Info Button"
+			variant = Variant.INFO
+		})
+		+Button(widgetHandler, {
+			pos = downFromLastWidget(20)
+			width = 200
+			label = "Inactive Button"
+			disabled = true
+		})
+	}).drawAndHandleEvents()
+
+	Panel(widgetHandler, {
+		pos = AbsolutePos(500, 50)
+		+Textfield(strValue, widgetHandler, {
+			width = 200
+			variant = Variant.DEFAULT
+		})
+		+Textfield(strValue, widgetHandler, {
+			width = 200
+			pos = downFromLastWidget(20)
+			variant = Variant.INFO
+		})
+		+Textfield(strValue, widgetHandler, {
+			width = 200
+			pos = downFromLastWidget(20)
+			variant = Variant.WARNING
+		})
+		+Textfield(strValue, widgetHandler, {
+			pos = downFromLastWidget(20)
+			width = 200
+			variant = Variant.DANGER
+		})
+		+Textfield(strValue, widgetHandler, {
+			pos = downFromLastWidget(20)
+			width = 200
+			variant = Variant.SUCCESS
+		})
+		+Textfield(strValue, widgetHandler, {
+			pos = downFromLastWidget(20)
+			width = 200
+			disabled = true
+		})
+	}).drawAndHandleEvents()
+
+
+	HScrollBar(widgetHandler, value, {
+		pos = AbsolutePos(470, 400)
+		postfix = "%"
+	}).drawAndHandleEvents()
+	VScrollBar(widgetHandler, zoom_value, {
+		pos = AbsolutePos(300, 500)
+		postfix = "%"
+	}).drawAndHandleEvents()
+}
+
 fun main(args: Array<String>) {
-	val value = IntValue(50)
-	val zoom_value = IntValue(50)
-	val strValue = StrValue("")
 	jq {
-		val timeLineWindow = TimeLineWindow()
-		timeLineWindow.calc_ema()
-		timeLineWindow.draw(widgetHandler.mouse_pos);
-		var mouse_down = false;
 		jq(canvas).mousedown {
 			widgetHandler.mouse_pos = mousePos(it)
 			mouse_down = true;
@@ -288,106 +367,7 @@ fun main(args: Array<String>) {
 		}
 
 		window.setInterval({
-			widgetHandler.currentTick += 40
-			widgetHandler.leftMouseButton.update(mouse_down)
-			handleKeys()
-			pressedChar = null
-			keyCode = null
-			if (widgetHandler.leftMouseButton.down) {
-				if (widgetHandler.mouse_pos.x < 400) {
-					timeLineWindow.pos -= 1
-				} else {
-					timeLineWindow.pos += 1
-				}
-			}
-			timeLineWindow.clear()
-			timeLineWindow.draw(widgetHandler.mouse_pos)
-			Panel(widgetHandler, {
-				pos = AbsolutePos(70, 100)
-				+Button(widgetHandler, {
-					width = 200
-					label = "BLUE BUTTON"
-					variant = Variant.DEFAULT
-				})
-				+Button(widgetHandler, {
-					pos = downFromLastWidget(20)
-					width = 200
-					label = "GREEN BUTTON"
-					variant = Variant.SUCCESS
-				})
-				+Button(widgetHandler, {
-					pos = downFromLastWidget(20)
-					width = 200
-					label = "RED BUTTON"
-					variant = Variant.DANGER
-				})
-				+Button(widgetHandler, {
-					pos = downFromLastWidget(20)
-					width = 200
-					label = "YELLOW BUTTON"
-					variant = Variant.WARNING
-				})
-				+Button(widgetHandler, {
-					pos = downFromLastWidget(20)
-					width = 200
-					label = "DARK BUTTON"
-					variant = Variant.DARK
-				})
-				+Button(widgetHandler, {
-					pos = downFromLastWidget(20)
-					width = 200
-					label = "INACTIVE BUTTON"
-					disabled = true
-				})
-			}).drawAndHandleEvents()
-
-			Panel(widgetHandler, {
-				pos = AbsolutePos(500, 50)
-				+Textfield(strValue, widgetHandler, {
-					width = 200
-					variant = Variant.DEFAULT
-				})
-				+Textfield(strValue, widgetHandler, {
-					width = 200
-					pos = downFromLastWidget(20)
-					variant = Variant.DEFAULT
-				})
-				+Textfield(strValue, widgetHandler, {
-					width = 200
-					pos = downFromLastWidget(20)
-					variant = Variant.WARNING
-				})
-				+Textfield(strValue, widgetHandler, {
-					pos = downFromLastWidget(20)
-					width = 200
-					variant = Variant.DANGER
-				})
-				+Textfield(strValue, widgetHandler, {
-					pos = downFromLastWidget(20)
-					width = 200
-					variant = Variant.SUCCESS
-				})
-				+Textfield(strValue, widgetHandler, {
-					pos = downFromLastWidget(20)
-					width = 200
-					variant = Variant.DARK
-				})
-				+Textfield(strValue, widgetHandler, {
-					pos = downFromLastWidget(20)
-					width = 200
-					disabled = true
-				})
-			}).drawAndHandleEvents()
-
-
-			HScrollBar(widgetHandler, value, {
-				pos = AbsolutePos(470, 400)
-				postfix = "%"
-			}).drawAndHandleEvents()
-			VScrollBar(widgetHandler, zoom_value, {
-				pos = AbsolutePos(300, 500)
-				postfix = "%"
-			}).drawAndHandleEvents()
+			doFrame()
 		}, 40);
 	}
 }
@@ -413,24 +393,4 @@ fun Int.at_least(min: Int): Int {
 
 fun Int.limit_into(min: Int, max: Int): Int {
 	return this.at_least(min).at_most(max)
-}
-
-data class Color(val r: Int, val g: Int, val b: Int) {
-	override fun toString(): String = "rgb($r, $g, $b)"
-}
-
-public enum class FontModifier {
-	NONE
-	BOLD
-	ITALIC
-}
-data class Font(val size: Int=15, val font: String="Courier New", val mod: FontModifier = FontModifier.NONE) {
-	override fun toString(): String {
-		val modStr = when (mod) {
-			FontModifier.BOLD -> "bold"
-			FontModifier.ITALIC -> "italic"
-			FontModifier.NONE -> ""
-		}
-		return "$modStr ${size}pt $font"
-	}
 }

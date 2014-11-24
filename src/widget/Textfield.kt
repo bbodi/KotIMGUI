@@ -36,7 +36,8 @@ class Textfield(val text: StrValue, widgetHandler: WidgetHandler, init: Textfiel
 	}
 
 	override fun calcOwnSize() {
-		height = widgetHandler.char_h() * 2
+		widgetHandler.skin.calcTextFieldSize(this)
+
 	}
 
 	override fun handleEvents() {

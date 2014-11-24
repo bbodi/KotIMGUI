@@ -24,7 +24,7 @@ public class HScrollBar(widgetHandler: WidgetHandler, val value: IntValue, init:
 	}
 
 	override fun handleEvents() {
-		val h = widgetHandler.char_h()
+		val h = 10
 		val was_hot = widgetHandler.hot_widget_id == value.hashCode()
 		val was_active = widgetHandler.active_widget_id == value.hashCode()
 		val active = was_active && widgetHandler.leftMouseButton.down
