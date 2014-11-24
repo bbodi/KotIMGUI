@@ -7,6 +7,10 @@ import widget.HScrollBar
 import widget.VScrollBar
 import widget.Panel
 import widget.Textfield
+import timeline.setCursor
+import timeline.CursorStyle
+import widget.ActionItem
+import widget.ActionMenu
 
 public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: Int) : Skin {
 
@@ -54,6 +58,13 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		val textX = x + margin + widget.width / 2 - label_w/2
 		val textY = y + margin
 		text(widget.label, textX, textY, "white", font)
+		if (widget.hover) {
+			if (widget.disabled) {
+				setCursor(CursorStyle.NotAllowed);
+			} else {
+				setCursor(CursorStyle.Pointer);
+			}
+		}
 	}
 
 	override fun calcTextFieldSize(textfield: Textfield) {
@@ -82,6 +93,27 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		if (widget.isCursorShown && isActive) {
 			text("_", textX + charWidth*widget.cursorPos, textY, "white", font)
 		}
+	}
+
+	override fun calcActionItemSize(actionItem: ActionItem) {
+		actionItem.height = rowHeight
+		actionItem.width = actionItem.label.length * charWidth
+	}
+
+	override fun drawActionItem(actionItem: ActionItem) {
+		val x = actionItem.pos.x
+		val y = actionItem.pos.y
+		val textX = x + margin
+		val textY = y + margin
+		text(actionItem.label, textX, textY, "white", font)
+	}
+
+	override fun calcActionMenuSize(actionMenu: ActionMenu) {
+
+	}
+
+	override fun drawActionMenu(actionMenu: ActionMenu) {
+		//drawPanel()
 	}
 
 	override fun drawHorizontalScrollbar(widgetHandler: WidgetHandler, widget: HScrollBar) {

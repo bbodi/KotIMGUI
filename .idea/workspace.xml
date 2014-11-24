@@ -2,16 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a5112887-2f19-41a4-aa4c-19b5c1428c4b" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/skin/DiscoverUI.kt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/widget/ActionMenu.kt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/HtmlUtil.kt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/widget/Button.kt" afterPath="$PROJECT_DIR$/src/widget/Button.kt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/skin/DarkUi.kt" afterPath="$PROJECT_DIR$/src/skin/DarkUi.kt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/widget/HScrollBar.kt" afterPath="$PROJECT_DIR$/src/widget/HScrollBar.kt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/skin/DiscoverUI.kt" afterPath="$PROJECT_DIR$/src/skin/DiscoverUI.kt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Main.kt" afterPath="$PROJECT_DIR$/src/Main.kt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/widget/Panel.kt" afterPath="$PROJECT_DIR$/src/widget/Panel.kt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/skin/Skin.kt" afterPath="$PROJECT_DIR$/src/skin/Skin.kt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/widget/Textfield.kt" afterPath="$PROJECT_DIR$/src/widget/Textfield.kt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/widget/VScrollBar.kt" afterPath="$PROJECT_DIR$/src/widget/VScrollBar.kt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/widget/WidgetHandler.kt" afterPath="$PROJECT_DIR$/src/widget/WidgetHandler.kt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/index.html" afterPath="$PROJECT_DIR$/web/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/script/keyboard.js" afterPath="$PROJECT_DIR$/script/keyboard.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -38,14 +37,14 @@
     <favorites_list name="timeline" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="vertical" split-proportion="0.49624866">
+    <splitter split-orientation="vertical" split-proportion="0.5295983">
       <split-first>
         <leaf>
-          <file leaf-file-name="Main.kt" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/src/Main.kt">
+          <file leaf-file-name="ActionMenu.kt" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/src/widget/ActionMenu.kt">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.6005089" vertical-offset="8701" max-vertical-offset="10827">
-                  <caret line="331" column="34" selection-start-line="331" selection-start-column="34" selection-end-line="331" selection-end-column="34" />
+                <state vertical-scroll-proportion="0.7276995" vertical-offset="90" max-vertical-offset="1375">
+                  <caret line="16" column="21" selection-start-line="16" selection-start-column="21" selection-end-line="16" selection-end-column="21" />
                   <folding />
                 </state>
               </provider>
@@ -55,11 +54,11 @@
       </split-first>
       <split-second>
         <leaf>
-          <file leaf-file-name="DiscoverUI.kt" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/src/skin/DiscoverUI.kt">
+          <file leaf-file-name="Main.kt" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/src/Main.kt">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.23421052" vertical-offset="1828" max-vertical-offset="6723">
-                  <caret line="71" column="96" selection-start-line="71" selection-start-column="96" selection-end-line="71" selection-end-column="96" />
+                <state vertical-scroll-proportion="0.6648794" vertical-offset="9302" max-vertical-offset="10975">
+                  <caret line="382" column="38" selection-start-line="382" selection-start-column="38" selection-end-line="382" selection-end-column="38" />
                   <folding />
                 </state>
               </provider>
@@ -89,19 +88,21 @@
         <option value="$PROJECT_DIR$/src/widget/Pos.kt" />
         <option value="$PROJECT_DIR$/src/widget/WidgetContainer.kt" />
         <option value="$PROJECT_DIR$/src/widget/Widget.kt" />
-        <option value="$PROJECT_DIR$/script/keyboard.js" />
-        <option value="$PROJECT_DIR$/src/widget/Panel.kt" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/web/index.html" />
-        <option value="$PROJECT_DIR$/src/widget/Button.kt" />
-        <option value="$PROJECT_DIR$/src/widget/WidgetHandler.kt" />
         <option value="$PROJECT_DIR$/src/widget/Textfield.kt" />
         <option value="$PROJECT_DIR$/src/widget/HScrollBar.kt" />
         <option value="$PROJECT_DIR$/src/widget/VScrollBar.kt" />
-        <option value="$PROJECT_DIR$/src/skin/Skin.kt" />
-        <option value="$PROJECT_DIR$/src/Main.kt" />
+        <option value="$PROJECT_DIR$/script/keyboard.js" />
+        <option value="$PROJECT_DIR$/src/HtmlUtil.kt" />
+        <option value="$PROJECT_DIR$/src/widget/WidgetHandler.kt" />
+        <option value="$PROJECT_DIR$/src/widget/Panel.kt" />
+        <option value="$PROJECT_DIR$/src/widget/Button.kt" />
         <option value="$PROJECT_DIR$/src/skin/DarkUi.kt" />
+        <option value="$PROJECT_DIR$/src/skin/Skin.kt" />
         <option value="$PROJECT_DIR$/src/skin/DiscoverUI.kt" />
+        <option value="$PROJECT_DIR$/src/widget/ActionMenu.kt" />
+        <option value="$PROJECT_DIR$/src/Main.kt" />
       </list>
     </option>
   </component>
@@ -112,10 +113,10 @@
     <option name="incrementalCompilationEnabled" value="true" />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1696" />
-    <option name="height" value="1036" />
+    <option name="x" value="-9" />
+    <option name="y" value="-9" />
+    <option name="width" value="1938" />
+    <option name="height" value="1064" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -174,7 +175,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -189,7 +189,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="KotIMGUI" />
+              <option name="myItemId" value="timeline" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -199,67 +199,18 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="KotIMGUI" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="web" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
               <option name="myItemId" value="timeline" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="KotIMGUI" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="timeline" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="KotIMGUI" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="widget" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="timeline" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="KotIMGUI" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="skin" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
       <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -450,19 +401,20 @@
       <workItem from="1416602647624" duration="5161000" />
       <workItem from="1416639702347" duration="931000" />
       <workItem from="1416656895229" duration="38528000" />
+      <workItem from="1416857131811" duration="4338000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="44620000" />
+    <option name="totallyTimeSpent" value="48958000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1696" height="1036" extended-state="6" />
+    <frame x="-9" y="-9" width="1938" height="1064" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.14576635" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1448203" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.14576635" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -473,20 +425,20 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.15201466" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Metrics" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1517572" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3290461" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1982851" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.19767442" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24973376" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Metrics" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3290461" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -517,43 +469,51 @@
     <option name="showOnlyWarnings" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/.gitignore">
+    <entry file="file://$PROJECT_DIR$/src/Main.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="102">
-          <caret line="0" column="3" selection-start-line="0" selection-start-column="3" selection-end-line="0" selection-end-column="3" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="5627" max-vertical-offset="6817">
+          <caret line="331" column="34" selection-start-line="331" selection-start-column="34" selection-end-line="331" selection-end-column="34" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/skin/DarkUi.kt">
+    <entry file="file://$PROJECT_DIR$/src/skin/DiscoverUI.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="918" max-vertical-offset="3230">
-          <caret line="54" column="44" selection-start-line="54" selection-start-column="42" selection-end-line="54" selection-end-column="44" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="1207" max-vertical-offset="4233">
+          <caret line="71" column="96" selection-start-line="71" selection-start-column="96" selection-end-line="71" selection-end-column="96" />
           <folding>
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="/.../" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
           </folding>
         </state>
       </provider>
@@ -589,252 +549,200 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://$APPLICATION_PLUGINS_DIR$/Kotlin/lib/kotlin-plugin.jar!/kotlin/String.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3760218" vertical-offset="312" max-vertical-offset="775">
-          <caret line="18" column="54" selection-start-line="18" selection-start-column="22" selection-end-line="18" selection-end-column="54" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$APPLICATION_PLUGINS_DIR$/Kotlin/lib/kotlin-plugin.jar!/kotlin/Numbers.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.9935346" vertical-offset="8549" max-vertical-offset="12798">
-          <caret line="248" column="13" selection-start-line="248" selection-start-column="13" selection-end-line="248" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/widget/Pos.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.15196079" vertical-offset="868" max-vertical-offset="1590">
-          <caret line="31" column="22" selection-start-line="31" selection-start-column="22" selection-end-line="31" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/script/keyboard.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7379913" vertical-offset="78" max-vertical-offset="754">
-          <caret line="16" column="52" selection-start-line="16" selection-start-column="52" selection-end-line="16" selection-end-column="52" />
-          <folding />
+        <state vertical-scroll-proportion="0.7064439" vertical-offset="208" max-vertical-offset="744">
+          <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+          <folding>
+            <marker date="1416858044240" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416858044240" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416858044240" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416858044240" expanded="true" signature="-1:-1" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/widget/WidgetContainer.kt">
+    <entry file="file://$PROJECT_DIR$/src/HtmlUtil.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.09497207" vertical-offset="0" max-vertical-offset="358">
-          <caret line="2" column="100" selection-start-line="2" selection-start-column="100" selection-end-line="2" selection-end-column="100" />
+        <state vertical-scroll-proportion="0.21524663" vertical-offset="0" max-vertical-offset="960">
+          <caret line="4" column="29" selection-start-line="4" selection-start-column="29" selection-end-line="4" selection-end-column="29" />
+          <folding>
+            <marker date="1416858687801" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416858687801" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416858687801" expanded="true" signature="-1:-1" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/widget/Widget.kt">
+    <entry file="jar://$APPLICATION_PLUGINS_DIR$/Kotlin/lib/kotlin-plugin.jar!/kotlin/Boolean.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.64285713" vertical-offset="330" max-vertical-offset="750">
-          <caret line="24" column="1" selection-start-line="24" selection-start-column="1" selection-end-line="24" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/script/kotlin.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334" vertical-offset="6452" max-vertical-offset="186728">
-          <caret line="385" column="11" selection-start-line="385" selection-start-column="11" selection-end-line="385" selection-end-column="11" />
-          <folding />
+        <state vertical-scroll-proportion="0.28862974" vertical-offset="297" max-vertical-offset="770">
+          <caret line="18" column="13" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
+          <folding>
+            <marker date="1413984466000" expanded="true" signature="-1:-1" placeholder="/.../" />
+            <marker date="1413984466000" expanded="true" signature="-1:-1" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/widget/Panel.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.02131783" vertical-offset="445" max-vertical-offset="1536">
-          <caret line="19" column="28" selection-start-line="19" selection-start-column="28" selection-end-line="19" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.27058825" vertical-offset="40" max-vertical-offset="396">
-          <caret line="6" column="29" selection-start-line="6" selection-start-column="29" selection-end-line="6" selection-end-column="29" />
+        <state vertical-scroll-proportion="0.083333336" vertical-offset="0" max-vertical-offset="1088">
+          <caret line="2" column="5" selection-start-line="2" selection-start-column="5" selection-end-line="2" selection-end-column="5" />
           <folding>
-            <marker date="1416832318771" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1416832318771" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1416832318771" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1416859909081" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416859909081" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416859909081" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416859909081" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416859909081" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416859909081" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416859909081" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416859909081" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416859909081" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416859909081" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416859909081" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416859909081" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416859909081" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416859909081" expanded="true" signature="-1:-1" placeholder="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/widget/Button.kt">
+    <entry file="file://$PROJECT_DIR$/src/widget/WidgetContainer.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.76167077" vertical-offset="86" max-vertical-offset="1166">
-          <caret line="18" column="33" selection-start-line="18" selection-start-column="33" selection-end-line="18" selection-end-column="33" />
+        <state vertical-scroll-proportion="0.083333336" vertical-offset="0" max-vertical-offset="408">
+          <caret line="2" column="15" selection-start-line="2" selection-start-column="15" selection-end-line="2" selection-end-column="15" />
           <folding>
-            <marker date="1416832977205" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416832977205" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416832977205" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416832977205" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416832977205" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416832977205" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416832977205" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416832977205" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416832977205" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416832977205" expanded="true" signature="-1:-1" placeholder="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/widget/Textfield.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.60504204" vertical-offset="620" max-vertical-offset="2244">
-          <caret line="38" column="24" selection-start-line="38" selection-start-column="24" selection-end-line="38" selection-end-column="24" />
-          <folding>
-            <marker date="1416839389857" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1416839389857" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839389857" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839389857" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839389857" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839389857" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839389857" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839389857" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839389857" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839389857" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839389857" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839389857" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839389857" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839389857" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839389857" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839389857" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839389857" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839389857" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839389857" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839389857" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416748312409" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416748312409" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416748312409" expanded="true" signature="-1:-1" placeholder="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/widget/WidgetHandler.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334" vertical-offset="0" max-vertical-offset="765">
-          <caret line="7" column="32" selection-start-line="7" selection-start-column="32" selection-end-line="7" selection-end-column="32" />
+        <state vertical-scroll-proportion="0.758547" vertical-offset="570" max-vertical-offset="1125">
+          <caret line="37" column="9" selection-start-line="37" selection-start-column="9" selection-end-line="37" selection-end-column="9" />
           <folding>
-            <marker date="1416839000835" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1416839000835" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839000835" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839000835" expanded="true" signature="-1:-1" placeholder="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/widget/HScrollBar.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.46680498" vertical-offset="347" max-vertical-offset="1694">
-          <caret line="26" column="18" selection-start-line="26" selection-start-column="18" selection-end-line="26" selection-end-column="18" />
-          <folding>
-            <marker date="1416839564013" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1416839564013" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839564013" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839564013" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839564013" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839564013" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839564013" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839564013" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839564013" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839564013" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839564013" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839564013" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839564013" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839564013" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839564013" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839564013" expanded="true" signature="-1:-1" placeholder="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/widget/VScrollBar.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.19709544" vertical-offset="180" max-vertical-offset="1925">
-          <caret line="11" column="21" selection-start-line="11" selection-start-column="21" selection-end-line="11" selection-end-column="21" />
-          <folding>
-            <marker date="1416839572923" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1416839572923" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839572923" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839572923" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839572923" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839572923" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839572923" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839572923" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839572923" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839572923" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839572923" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839572923" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839572923" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839572923" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839572923" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416839572923" expanded="true" signature="-1:-1" placeholder="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/skin/Skin.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.24896266" vertical-offset="717" max-vertical-offset="1701">
-          <caret line="31" column="4" selection-start-line="31" selection-start-column="4" selection-end-line="31" selection-end-column="4" />
-          <folding>
-            <marker date="1416840693262" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1416840693262" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840693262" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840693262" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840693262" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840693262" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840693262" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416850388972" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1416850388972" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416850388972" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416850388972" expanded="true" signature="-1:-1" placeholder="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/skin/DarkUi.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33157894" vertical-offset="744" max-vertical-offset="6032">
-          <caret line="30" column="12" selection-start-line="30" selection-start-column="12" selection-end-line="30" selection-end-column="12" />
+        <state vertical-scroll-proportion="0.41880342" vertical-offset="2762" max-vertical-offset="3230">
+          <caret line="174" column="0" selection-start-line="174" selection-start-column="0" selection-end-line="174" selection-end-column="0" />
           <folding>
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1416840779348" expanded="true" signature="-1:-1" placeholder="/.../" />
+            <marker date="1416860536435" expanded="true" signature="-1:-1" placeholder="/.../" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/widget/Button.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.2264529" vertical-offset="37" max-vertical-offset="1375">
+          <caret line="6" column="8" selection-start-line="6" selection-start-column="8" selection-end-line="6" selection-end-column="8" />
+          <folding>
+            <marker date="1416860407964" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860407964" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860407964" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860407964" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860407964" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860407964" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860407964" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860407964" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860407964" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860407964" expanded="true" signature="-1:-1" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/skin/Skin.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3324397" vertical-offset="386" max-vertical-offset="1207">
+          <caret line="30" column="8" selection-start-line="30" selection-start-column="8" selection-end-line="30" selection-end-column="8" />
+          <folding>
+            <marker date="1416860583190" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1416860583190" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860583190" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860583190" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860583190" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860583190" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860583190" expanded="true" signature="-1:-1" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/widget/Widget.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.57511735" vertical-offset="275" max-vertical-offset="780">
+          <caret line="20" column="8" selection-start-line="20" selection-start-column="8" selection-end-line="20" selection-end-column="8" />
+          <folding>
+            <marker date="1416748445438" expanded="true" signature="-1:-1" placeholder="/.../" />
+            <marker date="1416748445438" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416748445438" expanded="true" signature="-1:-1" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/widget/ActionMenu.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7276995" vertical-offset="90" max-vertical-offset="1375">
+          <caret line="16" column="21" selection-start-line="16" selection-start-column="21" selection-end-line="16" selection-end-column="21" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/skin/DiscoverUI.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.23421052" vertical-offset="1828" max-vertical-offset="6723">
-          <caret line="71" column="96" selection-start-line="71" selection-start-column="96" selection-end-line="71" selection-end-column="96" />
-          <folding />
+        <state vertical-scroll-proportion="-0.30026808" vertical-offset="3082" max-vertical-offset="7587">
+          <caret line="110" column="38" selection-start-line="110" selection-start-column="38" selection-end-line="110" selection-end-column="38" />
+          <folding>
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1416860823665" expanded="true" signature="-1:-1" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Main.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6005089" vertical-offset="8701" max-vertical-offset="10827">
-          <caret line="331" column="34" selection-start-line="331" selection-start-column="34" selection-end-line="331" selection-end-column="34" />
+        <state vertical-scroll-proportion="0.6648794" vertical-offset="9302" max-vertical-offset="10975">
+          <caret line="382" column="38" selection-start-line="382" selection-start-column="38" selection-end-line="382" selection-end-column="38" />
           <folding />
         </state>
       </provider>

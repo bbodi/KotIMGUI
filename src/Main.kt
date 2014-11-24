@@ -10,7 +10,6 @@ import kotlin.js.dom.html5.CanvasGradient
 import kotlin.js.dom.html5.HTMLCanvasElement
 import widget.Pos
 import widget.WidgetHandler
-import skin.DarkUi
 import widget.Button
 import widget.VScrollBar
 import widget.HScrollBar
@@ -21,6 +20,8 @@ import widget.RelativePos
 import widget.downFromLastWidget
 import widget.Textfield
 import skin.DiscoverUI
+import widget.ActionMenu
+import widget.ActionItem
 
 fun getImage(path: String): HTMLImageElement {
 	val image = window.document.createElement("img") as HTMLImageElement
@@ -260,6 +261,7 @@ fun handleKeys() {
 val value = IntValue(50)
 val zoom_value = IntValue(50)
 val strValue = StrValue("")
+val booleanValue = BooleanValue(true)
 var mouse_down = false;
 
 fun doFrame() {
@@ -269,18 +271,25 @@ fun doFrame() {
 	pressedChar = null
 	keyCode = null
 	widgetHandler.skin.clear()
+	setCursor(CursorStyle.Default);
 	Panel(widgetHandler, {
 		pos = AbsolutePos(70, 100)
 		+Button(widgetHandler, {
 			width = 200
 			label = "Default Button"
 			variant = Variant.DEFAULT
+			onClick = {
+				strValue.data = strValue.data + "Default"
+			}
 		})
 		+Button(widgetHandler, {
 			pos = downFromLastWidget(20)
 			width = 200
 			label = "Green Button"
 			variant = Variant.SUCCESS
+			onClick = {
+				strValue.data = strValue.data + "Green"
+			}
 		})
 		+Button(widgetHandler, {
 			pos = downFromLastWidget(20)
@@ -350,6 +359,32 @@ fun doFrame() {
 		pos = AbsolutePos(300, 500)
 		postfix = "%"
 	}).drawAndHandleEvents()
+
+	ActionMenu(widgetHandler, {
+		pos = AbsolutePos(800, 200)
+		+ActionItem(widgetHandler, {
+			label = "Normal"
+		})
+		+ActionItem(widgetHandler, {
+			pos = downFromLastWidget(0)
+			label = "Disabled"
+			disabled = true
+		})
+		+ActionItem(widgetHandler, {
+			pos = downFromLastWidget(0)
+			label = "Checkbox value"
+			checkBoxValue = booleanValue
+		})
+		+Textfield(strValue, widgetHandler, {
+			pos = downFromLastWidget(0)
+			width = 200
+		})
+		+Button(widgetHandler, {
+			pos = downFromLastWidget(0)
+			width = 200
+			label = "Start"
+		})
+	}).drawAndHandleEvents()
 }
 
 fun main(args: Array<String>) {
@@ -376,6 +411,9 @@ class IntValue(var data: Int) : Comparable<Int> by data {}
 // Ez egyelőre nem működik, JS hiba keletkezik a CharSequence miatt
 //class StrValue(var data: String) : Comparable<String> by data, CharSequence by data {}
 class StrValue(var data: String) : Comparable<String> by data {}
+
+class BooleanValue(var data: Boolean) {}
+
 
 /* Javascript hívási példa!!
 JS-be elég egy key nevű metódus

@@ -7,6 +7,8 @@ import widget.VScrollBar
 import widget.Panel
 import widget.Textfield
 import timeline.context
+import widget.ActionItem
+import widget.ActionMenu
 
 
 trait Skin {
@@ -25,6 +27,12 @@ trait Skin {
 
 	fun drawTextfield(widgetHandler: WidgetHandler, widget: Textfield)
 	fun calcTextFieldSize(textfield: Textfield)
+
+	fun calcActionItemSize(actionItem: ActionItem)
+	fun drawActionItem(actionItem: ActionItem)
+
+	fun calcActionMenuSize(actionMenu: ActionMenu)
+	fun drawActionMenu(actionMenu: ActionMenu)
 }
 
 public enum class Variant {

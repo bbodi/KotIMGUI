@@ -1,6 +1,6 @@
 package widget
 
-class Panel(val widget_handler: WidgetHandler, init: WidgetContainer.() -> Unit) : WidgetContainer(widget_handler, init) {
+open class Panel(val widget_handler: WidgetHandler, init: WidgetContainer.() -> Unit) : WidgetContainer(widget_handler, init) {
 
 	var margin: Int = 10
 

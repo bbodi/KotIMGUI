@@ -3,9 +3,9 @@
   <component name="EclipseCodeFormatter">
     <option name="defaultSettings" value="true" />
     <option name="formatter" value="ECLIPSE" />
-    <option name="id" value="1386237926891" />
+    <option name="id" value="1411719360239" />
     <option name="name" value="default" />
-    <option name="pathToConfigFileJava" value="C:/projects/cmx/CmxEngine/eclipse/cmx_formatter.xml" />
+    <option name="pathToConfigFileJava" value="$PROJECT_DIR$/../cmx_formatter.xml" />
     <option name="selectedJavaProfile" value="cmx formatter" />
   </component>
   <component name="EntryPointsManager">

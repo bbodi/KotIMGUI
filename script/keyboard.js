@@ -18,6 +18,8 @@ $(document).ready(function() {
         Kotlin.modules.timeline.timeline.setPressedKeysFromJavascript(ch, event.keyCode);
         return false
     });
-
-
 });
+
+function jsSetCursor(cursorStyle) {
+    $("canvas").css('cursor', cursorStyle)
+}

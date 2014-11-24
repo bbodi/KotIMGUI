@@ -7,8 +7,10 @@ class Button(widgetHandler: WidgetHandler, init: Button.() -> Unit) : Widget(wid
 	var label: String = ""
 	var allow_multi_click = false
 	var hover = false
+		private set
 	var down = false
 	var variant = Variant.DEFAULT
+	var onClick: (() -> Unit)? = null
 	var margin = 5
 	{
 		init()
@@ -40,9 +42,9 @@ class Button(widgetHandler: WidgetHandler, init: Button.() -> Unit) : Widget(wid
 		} else if (was_hot && !hover) {
 			widgetHandler.hot_widget_id = null
 		}
-	}
-
-	fun clicked(): Boolean {
-		return (widgetHandler.leftMouseButton.just_released && hover)
+		val clicked = widgetHandler.leftMouseButton.just_released && hover
+		if (clicked && onClick != null) {
+			onClick!!()
+		}
 	}
 }
