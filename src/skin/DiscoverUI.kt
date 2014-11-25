@@ -26,7 +26,7 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 	}
 
 	override fun clear() {
-		context.fillStyle = "#2E3138"
+		context.fillStyle = "#2C2C2C"
 		context.fillRect(0, 0, width, height)
 		context.strokeStyle = "#000000"
 		context.lineWidth = 4.0
@@ -48,12 +48,12 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		button.width = if (button.width == 0) button.label.length * charWidth + margin*2 else button.width
 	}
 
-	override fun drawButton(widgetHandler: WidgetHandler, widget: Button) {
+	override fun drawButton(widget: Button) {
 		val w = widget.width
 		val h = widget.height
 		val x = widget.pos.x
 		val y = widget.pos.y
-		fillStrokeRoundedRect(x, y, w, h, widget.variant, widget.disabled, widget.hover, widget.down)
+		drawButtonRect(x, y, w, h, widget.variant, widget.disabled, widget.hover, widget.down)
 		val label_w = widget.label.length * charWidth
 		val textX = x + margin + widget.width / 2 - label_w/2
 		val textY = y + margin
@@ -71,13 +71,13 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		textfield.height = rowHeight
 	}
 
-	override fun drawTextfield(widgetHandler: WidgetHandler, widget: Textfield) {
+	override fun drawTextfield(widget: Textfield) {
 		val x = widget.pos.x
 		val y = widget.pos.y
 		val w = widget.width
 		val h = widget.height
 
-		val isActive = widget.id == widgetHandler.active_widget_id
+		val isActive = widget.isActive
 		fill_rounded_rect(x, y, w, h, 5, "#24252A")
 		if (widget.variant != Variant.DEFAULT) {
 			val (normalColor, hoverColor, activeColor) = getTextfieldStrokeColor(widget.variant)
@@ -96,8 +96,7 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 	}
 
 	override fun calcActionItemSize(actionItem: ActionItem) {
-		actionItem.height = rowHeight
-		actionItem.width = actionItem.label.length * charWidth
+
 	}
 
 	override fun drawActionItem(actionItem: ActionItem) {
@@ -105,15 +104,14 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		val y = actionItem.pos.y
 		val textX = x + margin
 		val textY = y + margin
-		text(actionItem.label, textX, textY, "white", font)
-	}
-
-	override fun calcActionMenuSize(actionMenu: ActionMenu) {
-
-	}
-
-	override fun drawActionMenu(actionMenu: ActionMenu) {
-		//drawPanel()
+		if (actionItem.disabled) {
+			text(actionItem.label, textX, textY, "#626262", font)
+		} else {
+			if (actionItem.hover) {
+				fillRect(textX, textY, actionItem.width, actionItem.height, "red")
+			}
+			text(actionItem.label, textX, textY, "white", font)
+		}
 	}
 
 	override fun drawHorizontalScrollbar(widgetHandler: WidgetHandler, widget: HScrollBar) {
@@ -154,27 +152,47 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		context.restore()
 	}
 
-	override fun drawPanel(widgetHandler: WidgetHandler, widget: Panel) {
+	override fun drawPanel(widget: Panel) {
 		val x = widget.pos.x
 		val y = widget.pos.y
-		fill_rounded_rect(x, y, widget.width, widget.height, 5, "#454954")
+		val w = widget.width
+		val h = widget.height
+		fillRect(x, y, w, h, "#434343") // outer bg
+		strokeRect(x, y, w, h, "black") // outer line
+		fillRect(x+margin, y + margin, w - margin*2, h - margin*2, "#323232") // inner bg
+		strokeRect(x+margin, y + margin, w - margin*2, h - margin*2, "black") // outer line
 	}
 
+	override fun drawActionMenu(actionMenu: ActionMenu) {
+		val x = actionMenu.pos.x
+		val y = actionMenu.pos.y
+		fillStrokeRoundedRect(x, y, actionMenu.width, actionMenu.height, "#4A4A4A", "black")
+	}
 
-	private fun fill_rect(x: Number, y: Number, w: Number, h: Number, color: String) {
-		//context.rect(x, y, w, h)
+	private fun fillRect(x: Number, y: Number, w: Number, h: Number, color: String) {
+		context.save()
 		context.fillStyle = color
-		//context.fill()
 		context.fillRect(x, y, w, h);
+		context.restore()
+	}
+
+	private fun strokeRect(x: Number, y: Number, w: Number, h: Number, color: String) {
+		context.save()
+		context.lineWidth = 1.0
+		context.strokeStyle = color
+		context.strokeRect(x, y, w, h);
+		context.restore()
 	}
 
 	private fun gradient(x: Number, y: Number, w: Number, h: Number, c1: String, c2: String) {
+		context.save()
 		var grd = context.createLinearGradient(x, y, w, h)!!
 		grd.addColorStop(0, c1)
 		grd.addColorStop(1, c2)
 		context.fillStyle = grd
 		//context.fill()
 		context.fillRect(x, y, w, h);
+		context.restore()
 	}
 
 	private fun stroke_rounded_rect(x: Int, y: Int, w: Int, h: Int, radius: Int, color: String) {
@@ -199,7 +217,7 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		context.restore()
 	}
 
-	private fun fillStrokeRoundedRect(x: Int, y: Int, w: Int, h: Int, variant: Variant, disabled: Boolean, hover: Boolean, down: Boolean) {
+	private fun drawButtonRect(x: Int, y: Int, w: Int, h: Int, variant: Variant, disabled: Boolean, hover: Boolean, down: Boolean) {
 		val radius = 2
 
 		context.save()
@@ -239,6 +257,36 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 			grd.addColorStop(1, topColor)
 			grd
 		}
+		context.fill()
+		context.stroke()
+		context.closePath();
+
+		context.restore()
+	}
+
+	private fun fillStrokeRoundedRect(x: Int, y: Int, w: Int, h: Int, fillColor: String, strokeColor: String) {
+		val radius = 2
+
+		context.save()
+		context.beginPath();
+		context.lineWidth = 1.0
+
+		// draw top and top right corner
+		context.moveTo(x+radius,y);
+		context.arcTo(x+w,y,x+w,y+radius,radius);
+
+		// draw right side and bottom right corner
+		context.arcTo(x+w,y+h,x+w-radius,y+h,radius);
+
+		// draw bottom and bottom left corner
+		context.arcTo(x,y+h,x,y+h-radius,radius);
+
+		// draw left and top left corner
+		context.arcTo(x,y,x+radius,y,radius);
+
+		context.fillStyle = fillColor
+		context.strokeStyle = strokeColor
+
 		context.fill()
 		context.stroke()
 		context.closePath();

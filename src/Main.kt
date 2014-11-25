@@ -20,8 +20,8 @@ import widget.RelativePos
 import widget.downFromLastWidget
 import widget.Textfield
 import skin.DiscoverUI
-import widget.ActionMenu
 import widget.ActionItem
+import widget.ActionMenu
 
 fun getImage(path: String): HTMLImageElement {
 	val image = window.document.createElement("img") as HTMLImageElement
@@ -252,7 +252,7 @@ fun handleKeys() {
 	widgetHandler.end.update(keyCode == 35)
 	widgetHandler.backspace.update(keyCode == 8)
 	widgetHandler.shift.update(keyCode == 16)
-	for (ch in 'a'..'Z') {
+	for (ch in 'a'..'z') {
 		widgetHandler.keys[ch]!!.update(ch == pressedChar)
 	}
 	widgetHandler.pressedChar = pressedChar
@@ -263,6 +263,7 @@ val zoom_value = IntValue(50)
 val strValue = StrValue("")
 val booleanValue = BooleanValue(true)
 var mouse_down = false;
+var showActionMenu = false
 
 fun doFrame() {
 	widgetHandler.currentTick += 40
@@ -325,12 +326,12 @@ fun doFrame() {
 		})
 		+Textfield(strValue, widgetHandler, {
 			width = 200
-			pos = downFromLastWidget(20)
+			pos = downFromLastWidget()
 			variant = Variant.INFO
 		})
 		+Textfield(strValue, widgetHandler, {
 			width = 200
-			pos = downFromLastWidget(20)
+			pos = downFromLastWidget()
 			variant = Variant.WARNING
 		})
 		+Textfield(strValue, widgetHandler, {
@@ -360,31 +361,37 @@ fun doFrame() {
 		postfix = "%"
 	}).drawAndHandleEvents()
 
-	ActionMenu(widgetHandler, {
-		pos = AbsolutePos(800, 200)
-		+ActionItem(widgetHandler, {
-			label = "Normal"
-		})
-		+ActionItem(widgetHandler, {
-			pos = downFromLastWidget(0)
-			label = "Disabled"
-			disabled = true
-		})
-		+ActionItem(widgetHandler, {
-			pos = downFromLastWidget(0)
-			label = "Checkbox value"
-			checkBoxValue = booleanValue
-		})
-		+Textfield(strValue, widgetHandler, {
-			pos = downFromLastWidget(0)
-			width = 200
-		})
-		+Button(widgetHandler, {
-			pos = downFromLastWidget(0)
-			width = 200
-			label = "Start"
-		})
-	}).drawAndHandleEvents()
+	if (!showActionMenu && widgetHandler.keys['k']!!.just_pressed) {
+		showActionMenu = true
+	}
+
+	if (showActionMenu) {
+		ActionMenu(widgetHandler, {
+			pos = AbsolutePos(800, 200)
+			+ActionItem(widgetHandler, {
+				label = "Normal"
+			})
+			+ActionItem(widgetHandler, {
+				pos = downFromLastWidget()
+				label = "Disabled"
+				disabled = true
+			})
+			+ActionItem(widgetHandler, {
+				pos = downFromLastWidget()
+				label = "Checkbox value"
+				checkBoxValue = booleanValue
+			})
+			+Textfield(strValue, widgetHandler, {
+				pos = downFromLastWidget()
+				width = 200
+			})
+			+Button(widgetHandler, {
+				pos = downFromLastWidget()
+				width = 200
+				label = "Start"
+			})
+		}).drawAndHandleEvents()
+	}
 }
 
 fun main(args: Array<String>) {

@@ -18,21 +18,20 @@ trait Skin {
 
 	fun clear()
 
-	fun drawButton(widgetHandler: WidgetHandler, widget: Button)
+	fun drawButton(widget: Button)
 	fun calcButtonSize(button: Button)
 
 	fun drawHorizontalScrollbar(widgetHandler: WidgetHandler, widget: HScrollBar)
 	fun drawVerticalScrollbar(widgetHandler: WidgetHandler, widget: VScrollBar)
-	fun drawPanel(widgetHandler: WidgetHandler, widget: Panel)
+	fun drawPanel(widget: Panel)
 
-	fun drawTextfield(widgetHandler: WidgetHandler, widget: Textfield)
+	fun drawTextfield(widget: Textfield)
 	fun calcTextFieldSize(textfield: Textfield)
 
 	fun calcActionItemSize(actionItem: ActionItem)
 	fun drawActionItem(actionItem: ActionItem)
-
-	fun calcActionMenuSize(actionMenu: ActionMenu)
 	fun drawActionMenu(actionMenu: ActionMenu)
+
 }
 
 public enum class Variant {

@@ -45,4 +45,4 @@ class RelativePos(x: Int = 0, y: Int = 0, val dirs: Array<Direction>) : Pos(x, y
 	}
 }
 
-public fun downFromLastWidget(y: Int): RelativePos = RelativePos(0, y, array(Direction.DOWN))
+public fun downFromLastWidget(y: Int = 1): RelativePos = RelativePos(0, y, array(Direction.DOWN))

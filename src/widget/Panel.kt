@@ -10,7 +10,7 @@ open class Panel(val widget_handler: WidgetHandler, init: WidgetContainer.() -> 
 	}
 
 	override fun draw() {
-		widget_handler.skin.drawPanel(widget_handler, this)
+		widget_handler.skin.drawPanel(this)
 		widgets.forEach { it.draw() }
 	}
 

@@ -12,8 +12,8 @@ package widget
 
 abstract class Widget(val widgetHandler: WidgetHandler) {
 	var pos: Pos = AbsolutePos(0, 0)
-	var width: Int = 0
-	var height: Int = 0
+	open var width: Int = 0
+	open var height: Int = 0
 
 	abstract fun draw()
 	abstract fun calcOwnSize()

@@ -13,6 +13,9 @@ private data class Id(val x: Int, val y: Int, val text: StrValue)
 
 class Textfield(val text: StrValue, widgetHandler: WidgetHandler, init: Textfield.() -> Unit) : Widget(widgetHandler) {
 
+	val isActive: Boolean
+		get() = this.id == widgetHandler.active_widget_id
+
 	var id: Int  = 0
 		private set
 	var disabled: Boolean = false
@@ -32,7 +35,7 @@ class Textfield(val text: StrValue, widgetHandler: WidgetHandler, init: Textfiel
 	}
 
 	override fun draw() {
-		widgetHandler.skin.drawTextfield(widgetHandler, this)
+		widgetHandler.skin.drawTextfield(this)
 	}
 
 	override fun calcOwnSize() {

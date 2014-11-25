@@ -18,7 +18,7 @@ class Button(widgetHandler: WidgetHandler, init: Button.() -> Unit) : Widget(wid
 	}
 
 	override fun draw() {
-		widgetHandler.skin.drawButton(widgetHandler, this)
+		widgetHandler.skin.drawButton(this)
 	}
 
 	override fun calcOwnSize() {

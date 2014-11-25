@@ -9,4 +9,8 @@ abstract class WidgetContainer(widgetHandler: WidgetHandler, init: WidgetContain
 	fun Widget.plus() {
 		widgets.add(this)
 	}
+
+	open fun addWidget(widget: Widget) {
+		widgets.add(widget)
+	}
 }

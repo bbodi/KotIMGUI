@@ -33,8 +33,8 @@ class WidgetHandler(val skin: Skin) {
 	var currentTick = 0
 
 	{
-		for (ch in 'a'..'Z') {
-			widgetHandler.keys.put(ch, InputButton())
+		for (ch in 'a'..'z') {
+			keys.put(ch, InputButton())
 		}
 	}
 }
