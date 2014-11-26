@@ -7,6 +7,7 @@ import timeline.limit_into
 
 
 public class VScrollBar(widgetHandler: WidgetHandler, val value: IntValue, init: VScrollBar.() -> Unit = {}) : Widget(widgetHandler) {
+	override val id: Int = value.hashCode()
 	var disabled: Boolean = false
 	var postfix: String = ""
 	var hover = false
@@ -16,19 +17,15 @@ public class VScrollBar(widgetHandler: WidgetHandler, val value: IntValue, init:
 	{
 		height = 100
 		this.init()
-		calcOwnSize()
 	}
 
 	override fun draw() {
 		widgetHandler.skin.drawVerticalScrollbar(widgetHandler, this)
 	}
 
-	override fun calcOwnSize() {
-
-	}
 
 	override fun handleEvents() {
-		val w = 10 // widgetHandler.char_w()
+		val w = widgetHandler.skin.charWidth
 		val was_hot = widgetHandler.hot_widget_id == value.hashCode()
 		val was_active = widgetHandler.active_widget_id == value.hashCode()
 		val active = was_active && widgetHandler.leftMouseButton.down

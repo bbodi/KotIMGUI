@@ -11,6 +11,8 @@ class WidgetHandler(val skin: Skin) {
 	var mouse_pos = AbsolutePos(0, 0)
 	val widgetDatas = hashMapOf<Any, Any>()
 	val leftMouseButton = InputButton()
+	val rightMouseButton = InputButton()
+	val middleMouseButton = InputButton()
 	val leftArrow = InputButton()
 	val rightArrow = InputButton()
 	val upArrow = InputButton()

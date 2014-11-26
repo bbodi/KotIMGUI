@@ -1,7 +1,5 @@
 package widget
 
-// TODO, egyelőre így marad, de ha később sem lesz szükség erre a megkülönböztetésre, akkor legyen csak simán Pos.
-// A panelban minden posiziót relatívnak veszek
 abstract data class Pos(val x: Int = 0, val y: Int = 0) {
 	fun is_in_rect(topLeft: Pos, size: Pos) = (x >= topLeft.x) && (x <= topLeft.x + size.x) &&
 			(y >= topLeft.y) && (y <= topLeft.y + size.y)
@@ -12,8 +10,6 @@ data class AbsolutePos(x: Int = 0, y: Int = 0) : Pos(x, y) {
 	fun minus() = AbsolutePos(-x, -y)
 	fun minus(v: AbsolutePos) = AbsolutePos(x - v.x, y - v.y)
 	fun times(koef: Int) = AbsolutePos(x * koef, y * koef)
-
-
 }
 
 enum class Direction {

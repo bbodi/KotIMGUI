@@ -10,17 +10,6 @@ class ActionItem(widgetHandler: WidgetHandler, init: ActionItem.() -> Unit) : Wi
 	var onClick: (() -> Unit)? = null
 	var variant = Variant.DEFAULT
 	var parent: ActionMenu? = null
-	var hover = false
-		private set
-
-	{
-		this.init()
-	}
-
-	override fun draw() {
-		widgetHandler.skin.drawActionItem(this)
-	}
-
 	override var width: Int = 0
 		get() = if (parent == null) label.length() * widgetHandler.skin.charWidth else parent!!.width
 		private set
@@ -28,49 +17,48 @@ class ActionItem(widgetHandler: WidgetHandler, init: ActionItem.() -> Unit) : Wi
 	override var height: Int = widgetHandler.skin.charHeight
 		private set
 
-	override fun calcOwnSize() {
-		widgetHandler.skin.calcActionItemSize(this)
+	{
+		this.init()
+	}
+
+	val hover = widgetHandler.mouse_pos.is_in_rect(pos, AbsolutePos(width, height));
+
+	override var id = PositionBasedId(pos.x, pos.y, label.hashCode()).hashCode();
+
+	override fun draw() {
+		widgetHandler.skin.drawActionItem(this)
 	}
 
 	override fun handleEvents() {
-		hover = widgetHandler.mouse_pos.is_in_rect(pos, AbsolutePos(width, height))
+
 	}
 }
 
-class CheckboxItem(widgetHandler: WidgetHandler, init: CheckboxItem.() -> Unit) : Widget(widgetHandler) {
+class CheckboxItem(widgetHandler: WidgetHandler, val checkBoxValue: BooleanValue, init: CheckboxItem.() -> Unit) : Widget(widgetHandler) {
 	var label = ""
 	var disabled = false
-	var checkBoxValue: BooleanValue? = null
 	var onClick: (() -> Unit)? = null
 	var variant = Variant.DEFAULT
-	var hover = false
-		private set
+	val hover = widgetHandler.mouse_pos.is_in_rect(pos, AbsolutePos(width, height))
+	override var id = checkBoxValue.hashCode();
 
 	{
 		this.init()
-		calcOwnSize()
 	}
 
 	override fun draw() {
-		//widgetHandler.skin.drawActionItem(this)
-	}
 
-	override fun calcOwnSize() {
-		//widgetHandler.skin.calcActionItemSize(this)
 	}
 
 	override fun handleEvents() {
-		hover = widgetHandler.mouse_pos.is_in_rect(pos, AbsolutePos(width, height))
 	}
+
 }
 
 class Separator(widgetHandler: WidgetHandler) : Widget(widgetHandler) {
+	override val id: Int = 0
 
 	override fun draw() {
-
-	}
-
-	override fun calcOwnSize() {
 
 	}
 
@@ -79,7 +67,8 @@ class Separator(widgetHandler: WidgetHandler) : Widget(widgetHandler) {
 	}
 }
 
-open class ActionMenu(widget_handler: WidgetHandler, init: WidgetContainer.() -> Unit) : Panel(widget_handler, init) {
+open class ActionMenu(widget_handler: WidgetHandler, init: Panel.() -> Unit) : Panel(widget_handler, init) {
+	override val id: Int = 0
 
 	override fun draw() {
 		widget_handler.skin.drawActionMenu(this)

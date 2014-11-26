@@ -9,20 +9,22 @@ public class TextfieldData {
 	var nextCursorToggleTick = 0
 }
 
-private data class Id(val x: Int, val y: Int, val text: StrValue)
-
 class Textfield(val text: StrValue, widgetHandler: WidgetHandler, init: Textfield.() -> Unit) : Widget(widgetHandler) {
 
 	val isActive: Boolean
 		get() = this.id == widgetHandler.active_widget_id
 
-	var id: Int  = 0
-		private set
 	var disabled: Boolean = false
-	var hover = false
 	var variant = Variant.DEFAULT
 	var margin = 5
 	var defaultText = ""
+	var hover = false
+		private set
+		get() {
+			return widgetHandler.mouse_pos.is_in_rect(pos, AbsolutePos(width, height))
+		}
+	override var height = widgetHandler.skin.rowHeight
+		private set
 
 	val isCursorShown: Boolean
 		get() = (widgetHandler.widgetDatas[id] as TextfieldData).isCursorShown
@@ -31,23 +33,16 @@ class Textfield(val text: StrValue, widgetHandler: WidgetHandler, init: Textfiel
 
 	{
 		init()
-		calcOwnSize()
 	}
+	override val id: Int = PositionBasedId(pos.x, pos.y, text.hashCode()).hashCode()
 
 	override fun draw() {
 		widgetHandler.skin.drawTextfield(this)
 	}
 
-	override fun calcOwnSize() {
-		widgetHandler.skin.calcTextFieldSize(this)
-
-	}
-
 	override fun handleEvents() {
-		id = Id(pos.x, pos.y, text).hashCode()
 		val was_hot = widgetHandler.hot_widget_id == id
 		val was_active = widgetHandler.active_widget_id == id
-		hover = widgetHandler.mouse_pos.is_in_rect(pos, AbsolutePos(width, height))
 		if (widgetHandler.leftMouseButton.down && hover && !was_active) {
 			widgetHandler.active_widget_id = id
 		}

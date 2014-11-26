@@ -19,16 +19,13 @@ trait Skin {
 	fun clear()
 
 	fun drawButton(widget: Button)
-	fun calcButtonSize(button: Button)
 
 	fun drawHorizontalScrollbar(widgetHandler: WidgetHandler, widget: HScrollBar)
 	fun drawVerticalScrollbar(widgetHandler: WidgetHandler, widget: VScrollBar)
 	fun drawPanel(widget: Panel)
 
 	fun drawTextfield(widget: Textfield)
-	fun calcTextFieldSize(textfield: Textfield)
 
-	fun calcActionItemSize(actionItem: ActionItem)
 	fun drawActionItem(actionItem: ActionItem)
 	fun drawActionMenu(actionMenu: ActionMenu)
 

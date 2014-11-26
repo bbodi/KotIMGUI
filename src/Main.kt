@@ -261,13 +261,22 @@ fun handleKeys() {
 val value = IntValue(50)
 val zoom_value = IntValue(50)
 val strValue = StrValue("")
+val strValue1 = StrValue("")
+val strValue2 = StrValue("")
+val strValue3 = StrValue("")
+val strValue4 = StrValue("")
+val strValue5 = StrValue("")
 val booleanValue = BooleanValue(true)
-var mouse_down = false;
-var showActionMenu = false
+var leftMouseDown = false;
+var middleMouseDown = false;
+var rightMouseDown = false;
+var showActionMenu = BooleanValue(false)
 
 fun doFrame() {
 	widgetHandler.currentTick += 40
-	widgetHandler.leftMouseButton.update(mouse_down)
+	widgetHandler.leftMouseButton.update(leftMouseDown)
+	widgetHandler.rightMouseButton.update(rightMouseDown)
+	widgetHandler.middleMouseButton.update(middleMouseDown)
 	handleKeys()
 	pressedChar = null
 	keyCode = null
@@ -275,45 +284,49 @@ fun doFrame() {
 	setCursor(CursorStyle.Default);
 	Panel(widgetHandler, {
 		pos = AbsolutePos(70, 100)
-		+Button(widgetHandler, {
+		+Button(widgetHandler, "Default Button", {
 			width = 200
-			label = "Default Button"
 			variant = Variant.DEFAULT
 			onClick = {
 				strValue.data = strValue.data + "Default"
 			}
 		})
-		+Button(widgetHandler, {
+		+Button(widgetHandler, "Green Button", {
 			pos = downFromLastWidget(20)
 			width = 200
-			label = "Green Button"
 			variant = Variant.SUCCESS
 			onClick = {
 				strValue.data = strValue.data + "Green"
 			}
 		})
-		+Button(widgetHandler, {
+		+Button(widgetHandler, "Red Button", {
 			pos = downFromLastWidget(20)
 			width = 200
-			label = "Red Button"
 			variant = Variant.DANGER
 		})
-		+Button(widgetHandler, {
+		+Button(widgetHandler, "Yellow Button", {
 			pos = downFromLastWidget(20)
 			width = 200
-			label = "Yellow Button"
 			variant = Variant.WARNING
 		})
-		+Button(widgetHandler, {
+		+Button(widgetHandler, "Info Button", {
 			pos = downFromLastWidget(20)
 			width = 200
-			label = "Info Button"
 			variant = Variant.INFO
 		})
-		+Button(widgetHandler, {
+		+Button(widgetHandler, StringBuilder().append("Button").toString(), {
 			pos = downFromLastWidget(20)
 			width = 200
-			label = "Inactive Button"
+			variant = Variant.WARNING
+		})
+		+Button(widgetHandler, StringBuilder().append("Button").toString() , {
+			pos = downFromLastWidget(20)
+			width = 200
+			variant = Variant.INFO
+		})
+		+Button(widgetHandler, "Inactive Button", {
+			pos = downFromLastWidget(20)
+			width = 200
 			disabled = true
 		})
 	}).drawAndHandleEvents()
@@ -324,27 +337,27 @@ fun doFrame() {
 			width = 200
 			variant = Variant.DEFAULT
 		})
-		+Textfield(strValue, widgetHandler, {
+		+Textfield(strValue1, widgetHandler, {
 			width = 200
 			pos = downFromLastWidget()
 			variant = Variant.INFO
 		})
-		+Textfield(strValue, widgetHandler, {
+		+Textfield(strValue2, widgetHandler, {
 			width = 200
 			pos = downFromLastWidget()
 			variant = Variant.WARNING
 		})
-		+Textfield(strValue, widgetHandler, {
+		+Textfield(strValue3, widgetHandler, {
 			pos = downFromLastWidget(20)
 			width = 200
 			variant = Variant.DANGER
 		})
-		+Textfield(strValue, widgetHandler, {
+		+Textfield(strValue4, widgetHandler, {
 			pos = downFromLastWidget(20)
 			width = 200
 			variant = Variant.SUCCESS
 		})
-		+Textfield(strValue, widgetHandler, {
+		+Textfield(strValue5, widgetHandler, {
 			pos = downFromLastWidget(20)
 			width = 200
 			disabled = true
@@ -361,13 +374,14 @@ fun doFrame() {
 		postfix = "%"
 	}).drawAndHandleEvents()
 
-	if (!showActionMenu && widgetHandler.keys['k']!!.just_pressed) {
-		showActionMenu = true
+	if (!showActionMenu.data && widgetHandler.rightMouseButton.just_pressed) {
+		showActionMenu.data = true
 	}
 
-	if (showActionMenu) {
+	if (showActionMenu.data) {
 		ActionMenu(widgetHandler, {
 			pos = AbsolutePos(800, 200)
+			visible = showActionMenu
 			+ActionItem(widgetHandler, {
 				label = "Normal"
 			})
@@ -385,10 +399,9 @@ fun doFrame() {
 				pos = downFromLastWidget()
 				width = 200
 			})
-			+Button(widgetHandler, {
+			+Button(widgetHandler, "Start", {
 				pos = downFromLastWidget()
 				width = 200
-				label = "Start"
 			})
 		}).drawAndHandleEvents()
 	}
@@ -396,13 +409,28 @@ fun doFrame() {
 
 fun main(args: Array<String>) {
 	jq {
-		jq(canvas).mousedown {
+		jq(canvas).click() {
 			widgetHandler.mouse_pos = mousePos(it)
-			mouse_down = true;
+			println("click bef: $leftMouseDown, $middleMouseDown, $rightMouseDown")
+			when(it.which ) {
+				// TODO: áthelyezni JS oldalra és ott figyelni a whichet!
+				1 -> leftMouseDown = true
+				2 -> middleMouseDown = true
+				3 -> rightMouseDown = true
+			}
+			println("click af: $leftMouseDown, $middleMouseDown, $rightMouseDown")
 		}
 		jq(canvas).mouseup {
+			println("mouseup bef: $leftMouseDown, $middleMouseDown, $rightMouseDown")
 			widgetHandler.mouse_pos = mousePos(it)
-			mouse_down = false;
+			if (leftMouseDown) {
+				leftMouseDown = false
+			} else if (middleMouseDown) {
+				middleMouseDown = false
+			} else if (rightMouseDown) {
+				rightMouseDown = false
+			}
+			println("mouseup after: $leftMouseDown, $middleMouseDown, $rightMouseDown")
 		}
 		jq(canvas).mousemove {
 			widgetHandler.mouse_pos = mousePos(it)

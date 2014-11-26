@@ -2,11 +2,19 @@ package widget
 
 import skin.Variant
 
-class Button(widgetHandler: WidgetHandler, init: Button.() -> Unit) : Widget(widgetHandler) {
+class Button(widgetHandler: WidgetHandler, val label: String, init: Button.() -> Unit) : Widget(widgetHandler) {
 	var disabled: Boolean = false
-	var label: String = ""
 	var allow_multi_click = false
 	var hover = false
+		private set
+		get() {
+			return widgetHandler.mouse_pos.is_in_rect(pos, AbsolutePos(width, height))
+		}
+	override var width = 0
+		get() {
+			return if ($width == 0) label.length * widgetHandler.skin.charWidth + margin * 2 else $width
+		}
+	override var height = widgetHandler.skin.rowHeight
 		private set
 	var down = false
 	var variant = Variant.DEFAULT
@@ -14,31 +22,27 @@ class Button(widgetHandler: WidgetHandler, init: Button.() -> Unit) : Widget(wid
 	var margin = 5
 	{
 		init()
-		calcOwnSize()
 	}
+	override val id: Int = PositionBasedId(pos.x, pos.y, label.hashCode()).hashCode()
 
 	override fun draw() {
 		widgetHandler.skin.drawButton(this)
 	}
 
-	override fun calcOwnSize() {
-		widgetHandler.skin.calcButtonSize(this)
-	}
 
 	override fun handleEvents() {
-		val was_hot = widgetHandler.hot_widget_id == label
-		val was_active = widgetHandler.active_widget_id == label
-		hover = widgetHandler.mouse_pos.is_in_rect(pos, AbsolutePos(width, height))
+		val was_hot = widgetHandler.hot_widget_id == id
+		val was_active = widgetHandler.active_widget_id == id
 		down = was_active && !widgetHandler.leftMouseButton.just_released;
 
 		if (widgetHandler.leftMouseButton.down && hover && !was_active) {
-			widgetHandler.active_widget_id = label
+			widgetHandler.active_widget_id = id
 		} else if (was_active && widgetHandler.leftMouseButton.just_released) {
 			widgetHandler.active_widget_id = null
 		}
 
 		if (hover && !was_hot) {
-			widgetHandler.hot_widget_id = label
+			widgetHandler.hot_widget_id = id
 		} else if (was_hot && !hover) {
 			widgetHandler.hot_widget_id = null
 		}

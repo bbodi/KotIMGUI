@@ -1,15 +1,27 @@
 package widget
 
-open class Panel(val widget_handler: WidgetHandler, init: WidgetContainer.() -> Unit) : WidgetContainer(widget_handler, init) {
+import timeline.BooleanValue
 
+open class Panel(val widget_handler: WidgetHandler, init: Panel.() -> Unit) : WidgetContainer(widget_handler) {
+	override val id: Int = 0
+	var visible: BooleanValue = BooleanValue(true)
 	var margin: Int = 10
 
 	{
+		init()
 		calcChildrenPos()
 		calcOwnSize()
 	}
+	var hover = false
+		private set
+		get() {
+			return widgetHandler.mouse_pos.is_in_rect(pos, AbsolutePos(width, height))
+		}
 
 	override fun draw() {
+		if (!visible.data) {
+			return
+		}
 		widget_handler.skin.drawPanel(this)
 		widgets.forEach { it.draw() }
 	}
@@ -35,7 +47,7 @@ open class Panel(val widget_handler: WidgetHandler, init: WidgetContainer.() -> 
 		}
 	}
 
-	override fun calcOwnSize() {
+	fun calcOwnSize() {
 		if (width != 0 || height != 0) {
 			return
 		}
@@ -54,6 +66,13 @@ open class Panel(val widget_handler: WidgetHandler, init: WidgetContainer.() -> 
 	}
 
 	override fun handleEvents() {
+		if (!visible.data) {
+			return
+		}
 		widgets.forEach { it.handleEvents() }
+		val clickedOut = !hover && widgetHandler.leftMouseButton.just_released
+		if (clickedOut) {
+			visible.data = false
+		}
 	}
 }

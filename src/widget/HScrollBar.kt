@@ -7,6 +7,7 @@ import timeline.limit_into
 
 
 public class HScrollBar(widgetHandler: WidgetHandler, val value: IntValue, init: HScrollBar.() -> Unit = {}) : Widget(widgetHandler) {
+	override val id: Int = value.hashCode()
 	var disabled: Boolean = false
 	var postfix: String = ""
 	var hover = false
@@ -16,7 +17,6 @@ public class HScrollBar(widgetHandler: WidgetHandler, val value: IntValue, init:
 	{
 		width = 100
 		this.init()
-		this.calcOwnSize()
 	}
 
 	override fun draw() {
@@ -60,11 +60,6 @@ public class HScrollBar(widgetHandler: WidgetHandler, val value: IntValue, init:
 			}
 		}
 	}
-
-	override fun calcOwnSize() {
-
-	}
-
 
 	fun clicked(): Boolean {
 		return (widgetHandler.leftMouseButton.just_released && hover)

@@ -43,11 +43,6 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		}
 	}
 
-	override fun calcButtonSize(button: Button) {
-		button.height = rowHeight
-		button.width = if (button.width == 0) button.label.length * charWidth + margin*2 else button.width
-	}
-
 	override fun drawButton(widget: Button) {
 		val w = widget.width
 		val h = widget.height
@@ -65,10 +60,6 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 				setCursor(CursorStyle.Pointer);
 			}
 		}
-	}
-
-	override fun calcTextFieldSize(textfield: Textfield) {
-		textfield.height = rowHeight
 	}
 
 	override fun drawTextfield(widget: Textfield) {
@@ -93,10 +84,6 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		if (widget.isCursorShown && isActive) {
 			text("_", textX + charWidth*widget.cursorPos, textY, "white", font)
 		}
-	}
-
-	override fun calcActionItemSize(actionItem: ActionItem) {
-
 	}
 
 	override fun drawActionItem(actionItem: ActionItem) {
