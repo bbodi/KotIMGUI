@@ -1,14 +1,15 @@
 package widget
 
 import skin.Variant
+import timeline.widgetHandler
 
-class Button(widgetHandler: WidgetHandler, val label: String, init: Button.() -> Unit) : Widget(widgetHandler) {
+class Button(val label: String, pos: Pos, init: Button.() -> Unit) : Widget(pos) {
 	var disabled: Boolean = false
 	var allow_multi_click = false
 	var hover = false
 		private set
 		get() {
-			return widgetHandler.mouse_pos.is_in_rect(pos, AbsolutePos(width, height))
+			return widgetHandler.mousePos.is_in_rect(pos, AbsolutePos(width, height))
 		}
 	override var width = 0
 		get() {

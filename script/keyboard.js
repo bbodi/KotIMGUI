@@ -18,6 +18,20 @@ $(document).ready(function() {
         Kotlin.modules.timeline.timeline.setPressedKeysFromJavascript(ch, event.keyCode);
         return false
     });
+    $('canvas').mouseup(function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        Kotlin.modules.timeline.timeline.onMouseUp(event.which);
+    });
+    $('canvas').mousedown(function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        Kotlin.modules.timeline.timeline.onMouseDown(event.which);
+    });
+    $('canvas').on("contextmenu",function(e){
+        e.stopPropagation();
+        e.preventDefault();
+    });
 });
 
 function jsSetCursor(cursorStyle) {

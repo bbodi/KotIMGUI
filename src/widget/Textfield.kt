@@ -2,6 +2,7 @@ package widget
 
 import skin.Variant
 import timeline.StrValue
+import timeline.widgetHandler
 
 public class TextfieldData {
 	var isCursorShown = false
@@ -9,7 +10,7 @@ public class TextfieldData {
 	var nextCursorToggleTick = 0
 }
 
-class Textfield(val text: StrValue, widgetHandler: WidgetHandler, init: Textfield.() -> Unit) : Widget(widgetHandler) {
+class Textfield(val text: StrValue, pos: Pos, init: Textfield.() -> Unit) : Widget(pos) {
 
 	val isActive: Boolean
 		get() = this.id == widgetHandler.active_widget_id
@@ -21,7 +22,7 @@ class Textfield(val text: StrValue, widgetHandler: WidgetHandler, init: Textfiel
 	var hover = false
 		private set
 		get() {
-			return widgetHandler.mouse_pos.is_in_rect(pos, AbsolutePos(width, height))
+			return widgetHandler.mousePos.is_in_rect(pos, AbsolutePos(width, height))
 		}
 	override var height = widgetHandler.skin.rowHeight
 		private set
@@ -54,7 +55,7 @@ class Textfield(val text: StrValue, widgetHandler: WidgetHandler, init: Textfiel
 		}
 
 		val active = widgetHandler.active_widget_id == id
-		val data = getOrCreateMyData(id)
+		val data = getOrCreateMyData()
 		if (!active) {
 			return
 		}
@@ -78,7 +79,7 @@ class Textfield(val text: StrValue, widgetHandler: WidgetHandler, init: Textfiel
 		}
 	}
 
-	private fun getOrCreateMyData(id: Int): TextfieldData {
+	private fun getOrCreateMyData(): TextfieldData {
 		val dataPtr = widgetHandler.widgetDatas[id]
 		return if (dataPtr == null) {
 			val data = TextfieldData()

@@ -11,12 +11,14 @@ import timeline.setCursor
 import timeline.CursorStyle
 import widget.ActionItem
 import widget.ActionMenu
+import widget.AbsolutePos
 
 public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: Int) : Skin {
 
 	override val rowHeight = (height * (rowHeightPercent / 100.0)+0.5).toInt()
 	val margin = 5
-	override val charHeight = rowHeight - margin*3
+	val textMarginY = rowHeight/4
+	override val charHeight = rowHeight - textMarginY*2
 	val font = Font(charHeight, "Courier New");
 	override val charWidth: Int
 
@@ -51,7 +53,7 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		drawButtonRect(x, y, w, h, widget.variant, widget.disabled, widget.hover, widget.down)
 		val label_w = widget.label.length * charWidth
 		val textX = x + margin + widget.width / 2 - label_w/2
-		val textY = y + margin
+		val textY = y + textMarginY
 		text(widget.label, textX, textY, "white", font)
 		if (widget.hover) {
 			if (widget.disabled) {
@@ -79,7 +81,7 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		}
 
 		val textX = x + margin
-		val textY = y + margin
+		val textY = y + textMarginY
 		text(widget.text.data, textX, textY, "white", font)
 		if (widget.isCursorShown && isActive) {
 			text("_", textX + charWidth*widget.cursorPos, textY, "white", font)
@@ -89,15 +91,16 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 	override fun drawActionItem(actionItem: ActionItem) {
 		val x = actionItem.pos.x
 		val y = actionItem.pos.y
+		val w = actionItem.parent!!.width - 2*actionItem.parent!!.margin
 		val textX = x + margin
-		val textY = y + margin
-		if (actionItem.disabled) {
-			text(actionItem.label, textX, textY, "#626262", font)
-		} else {
-			if (actionItem.hover) {
-				fillRect(textX, textY, actionItem.width, actionItem.height, "red")
-			}
-			text(actionItem.label, textX, textY, "white", font)
+		val textY = y + textMarginY
+		val textColor = if (actionItem.disabled) {"#8C8C8C"} else {"white"}
+		if (!actionItem.disabled && actionItem.hover) {
+			fillRect(x, y, w, actionItem.height, "#2C2C2C")
+		}
+		text(actionItem.label, textX, textY, textColor, font)
+		if (actionItem.hasSubMenu) {
+			text("▸", x + w - charWidth, textY, textColor, font)
 		}
 	}
 

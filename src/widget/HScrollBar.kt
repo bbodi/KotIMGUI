@@ -4,9 +4,10 @@ import timeline.IntValue
 import timeline.at_least
 import timeline.at_most
 import timeline.limit_into
+import timeline.widgetHandler
 
 
-public class HScrollBar(widgetHandler: WidgetHandler, val value: IntValue, init: HScrollBar.() -> Unit = {}) : Widget(widgetHandler) {
+public class HScrollBar(val value: IntValue, pos: Pos, init: HScrollBar.() -> Unit = {}) : Widget(pos) {
 	override val id: Int = value.hashCode()
 	var disabled: Boolean = false
 	var postfix: String = ""
@@ -28,7 +29,7 @@ public class HScrollBar(widgetHandler: WidgetHandler, val value: IntValue, init:
 		val was_hot = widgetHandler.hot_widget_id == value.hashCode()
 		val was_active = widgetHandler.active_widget_id == value.hashCode()
 		val active = was_active && widgetHandler.leftMouseButton.down
-		hover = widgetHandler.mouse_pos.is_in_rect(pos, AbsolutePos(width, h*2))
+		hover = widgetHandler.mousePos.is_in_rect(pos, AbsolutePos(width, h*2))
 
 		if (widgetHandler.leftMouseButton.down && hover && !was_active) {
 			widgetHandler.active_widget_id = value.hashCode()
@@ -44,7 +45,7 @@ public class HScrollBar(widgetHandler: WidgetHandler, val value: IntValue, init:
 
 		val clicked = hover && widgetHandler.leftMouseButton.just_released
 		if (clicked || active) {
-			val click_x = widgetHandler.mouse_pos.x - this.pos.x
+			val click_x = widgetHandler.mousePos.x - this.pos.x
 			val value_range = max_value - min_value
 			val value_percent = (value.data - min_value) / value_range.toDouble()
 			val orange_bar_w = width * value_percent

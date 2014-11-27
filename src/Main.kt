@@ -17,11 +17,13 @@ import skin.Variant
 import widget.Panel
 import widget.AbsolutePos
 import widget.RelativePos
-import widget.downFromLastWidget
+import widget.fromLastWidgetBottom
 import widget.Textfield
 import skin.DiscoverUI
 import widget.ActionItem
 import widget.ActionMenu
+import widget.fromLastWidgetBottomLeft
+import widget.Widget
 
 fun getImage(path: String): HTMLImageElement {
 	val image = window.document.createElement("img") as HTMLImageElement
@@ -233,7 +235,6 @@ val widgetHandler = WidgetHandler(DiscoverUI(1397, 796, 3))
 var pressedChar: Char? = null
 var keyCode: Int? = null
 fun setPressedKeysFromJavascript(pressedChar: Char?, keyCode: Int) {
-	println("$pressedChar, $keyCode")
 	timeline.pressedChar = pressedChar
 	timeline.keyCode = keyCode
 }
@@ -270,7 +271,13 @@ val booleanValue = BooleanValue(true)
 var leftMouseDown = false;
 var middleMouseDown = false;
 var rightMouseDown = false;
-var showActionMenu = BooleanValue(false)
+var showActionMenu = false
+var showSubActionMenu = false
+var actionMenuPos = AbsolutePos(0, 0)
+
+fun String.allocNew(): String {
+	return StringBuilder().append(this).toString()
+}
 
 fun doFrame() {
 	widgetHandler.currentTick += 40
@@ -280,162 +287,175 @@ fun doFrame() {
 	handleKeys()
 	pressedChar = null
 	keyCode = null
-	widgetHandler.skin.clear()
+	widgetHandler.clear()
 	setCursor(CursorStyle.Default);
-	Panel(widgetHandler, {
-		pos = AbsolutePos(70, 100)
-		+Button(widgetHandler, "Default Button", {
+	Panel(AbsolutePos(70, 100), {
+		+Button("Default Button", downAlongLeftMargin(10), {
 			width = 200
 			variant = Variant.DEFAULT
 			onClick = {
 				strValue.data = strValue.data + "Default"
 			}
 		})
-		+Button(widgetHandler, "Green Button", {
-			pos = downFromLastWidget(20)
+		+Button("Green Button", downAlongLeftMargin(20), {
 			width = 200
 			variant = Variant.SUCCESS
 			onClick = {
 				strValue.data = strValue.data + "Green"
 			}
 		})
-		+Button(widgetHandler, "Red Button", {
-			pos = downFromLastWidget(20)
+		+Button("Red Button", downAlongLeftMargin(20), {
 			width = 200
 			variant = Variant.DANGER
 		})
-		+Button(widgetHandler, "Yellow Button", {
-			pos = downFromLastWidget(20)
+		+Button("Yellow Button", downAlongLeftMargin(20), {
 			width = 200
 			variant = Variant.WARNING
 		})
-		+Button(widgetHandler, "Info Button", {
-			pos = downFromLastWidget(20)
+		+Button("Info Button", downAlongLeftMargin(20), {
 			width = 200
 			variant = Variant.INFO
 		})
-		+Button(widgetHandler, StringBuilder().append("Button").toString(), {
-			pos = downFromLastWidget(20)
+		+Button("Button".allocNew(), downAlongLeftMargin(20), {
 			width = 200
 			variant = Variant.WARNING
 		})
-		+Button(widgetHandler, StringBuilder().append("Button").toString() , {
-			pos = downFromLastWidget(20)
+		+Button("Button".allocNew(), downAlongLeftMargin(20), {
 			width = 200
 			variant = Variant.INFO
 		})
-		+Button(widgetHandler, "Inactive Button", {
-			pos = downFromLastWidget(20)
+		+Button("Inactive Button", downAlongLeftMargin(20), {
 			width = 200
 			disabled = true
 		})
 	}).drawAndHandleEvents()
 
-	Panel(widgetHandler, {
-		pos = AbsolutePos(500, 50)
-		+Textfield(strValue, widgetHandler, {
+	Panel(AbsolutePos(500, 50), {
+		+Textfield(strValue, downAlongLeftMargin(10), {
 			width = 200
 			variant = Variant.DEFAULT
 		})
-		+Textfield(strValue1, widgetHandler, {
+		+Textfield(strValue1, downAlongLeftMargin(10), {
 			width = 200
-			pos = downFromLastWidget()
 			variant = Variant.INFO
 		})
-		+Textfield(strValue2, widgetHandler, {
+		+Textfield(strValue2, downAlongLeftMargin(), {
 			width = 200
-			pos = downFromLastWidget()
 			variant = Variant.WARNING
 		})
-		+Textfield(strValue3, widgetHandler, {
-			pos = downFromLastWidget(20)
+		+Textfield(strValue3, downAlongLeftMargin(20), {
 			width = 200
 			variant = Variant.DANGER
 		})
-		+Textfield(strValue4, widgetHandler, {
-			pos = downFromLastWidget(20)
+		+Textfield(strValue4, downAlongLeftMargin(20), {
 			width = 200
 			variant = Variant.SUCCESS
 		})
-		+Textfield(strValue5, widgetHandler, {
-			pos = downFromLastWidget(20)
+		+Textfield(strValue5, downAlongLeftMargin(20), {
 			width = 200
 			disabled = true
 		})
 	}).drawAndHandleEvents()
 
 
-	HScrollBar(widgetHandler, value, {
-		pos = AbsolutePos(470, 400)
+	HScrollBar(value, AbsolutePos(470, 400), {
 		postfix = "%"
 	}).drawAndHandleEvents()
-	VScrollBar(widgetHandler, zoom_value, {
-		pos = AbsolutePos(300, 500)
+	VScrollBar(zoom_value, AbsolutePos(300, 500), {
 		postfix = "%"
 	}).drawAndHandleEvents()
 
-	if (!showActionMenu.data && widgetHandler.rightMouseButton.just_pressed) {
-		showActionMenu.data = true
+	if (!showActionMenu && widgetHandler.rightMouseButton.just_pressed) {
+		showActionMenu = true
+		actionMenuPos = widgetHandler.mousePos
 	}
 
-	if (showActionMenu.data) {
-		ActionMenu(widgetHandler, {
-			pos = AbsolutePos(800, 200)
-			visible = showActionMenu
-			+ActionItem(widgetHandler, {
+	if (showActionMenu) {
+		var parentActionItem: Widget? = null
+		ActionMenu(actionMenuPos, {
+			onClickOut = {
+				showActionMenu = false
+			}
+			+ActionItem(downAlongLeftMargin(margin), {
 				label = "Normal"
 			})
-			+ActionItem(widgetHandler, {
-				pos = downFromLastWidget()
+			+ActionItem(downAlongLeftMargin(1), {
 				label = "Disabled"
 				disabled = true
 			})
-			+ActionItem(widgetHandler, {
-				pos = downFromLastWidget()
+			+ActionItem(downAlongLeftMargin(1), {
 				label = "Checkbox value"
 				checkBoxValue = booleanValue
 			})
-			+Textfield(strValue, widgetHandler, {
-				pos = downFromLastWidget()
+			parentActionItem = ActionItem(downAlongLeftMargin(1), {
+				label = "Parent"
+				hasSubMenu = true
+				onHover = {
+					showSubActionMenu = true
+				}
+				onHoverOut = {
+					showSubActionMenu = false
+				}
+			})
+			+parentActionItem!!
+			+Textfield(strValue, downAlongLeftMargin(), {
 				width = 200
 			})
-			+Button(widgetHandler, "Start", {
-				pos = downFromLastWidget()
+			+Button("Start", downAlongLeftMargin(), {
 				width = 200
 			})
 		}).drawAndHandleEvents()
+
+		if (showSubActionMenu) {
+			ActionMenu(parentActionItem!!.pos + AbsolutePos(20, 20), {
+				onClickOut = {
+					//showSubActionMenu = false
+				}
+				+ActionItem(downAlongLeftMargin(1), {
+					label = "Sub Normal"
+				})
+				+ActionItem(downAlongLeftMargin(1), {
+					label = "Sub Disabled"
+					disabled = true
+				})
+				+ActionItem(downAlongLeftMargin(1), {
+					label = "Sub Checkbox value"
+					checkBoxValue = booleanValue
+				})
+				+Textfield(strValue, downAlongLeftMargin(), {
+					width = 200
+				})
+				+Button("Sub Start", downAlongLeftMargin(), {
+					width = 200
+				})
+			}).drawAndHandleEvents()
+		}
+	}
+}
+
+fun onMouseDown(which: Int) {
+	when(which ) {
+		1 -> leftMouseDown = true
+		2 -> middleMouseDown = true
+		3 -> rightMouseDown = true
+	}
+}
+
+fun onMouseUp(which: Int) {
+	when(which ) {
+		1 -> leftMouseDown = false
+		2 -> middleMouseDown = false
+		3 -> rightMouseDown = false
 	}
 }
 
 fun main(args: Array<String>) {
 	jq {
-		jq(canvas).click() {
-			widgetHandler.mouse_pos = mousePos(it)
-			println("click bef: $leftMouseDown, $middleMouseDown, $rightMouseDown")
-			when(it.which ) {
-				// TODO: áthelyezni JS oldalra és ott figyelni a whichet!
-				1 -> leftMouseDown = true
-				2 -> middleMouseDown = true
-				3 -> rightMouseDown = true
-			}
-			println("click af: $leftMouseDown, $middleMouseDown, $rightMouseDown")
-		}
-		jq(canvas).mouseup {
-			println("mouseup bef: $leftMouseDown, $middleMouseDown, $rightMouseDown")
-			widgetHandler.mouse_pos = mousePos(it)
-			if (leftMouseDown) {
-				leftMouseDown = false
-			} else if (middleMouseDown) {
-				middleMouseDown = false
-			} else if (rightMouseDown) {
-				rightMouseDown = false
-			}
-			println("mouseup after: $leftMouseDown, $middleMouseDown, $rightMouseDown")
-		}
 		jq(canvas).mousemove {
-			widgetHandler.mouse_pos = mousePos(it)
+			widgetHandler.mousePos = mousePos(it)
 		}
 
+		// requestAnimationFrame
 		window.setInterval({
 			doFrame()
 		}, 40);

@@ -2,44 +2,64 @@ package widget
 
 import skin.Variant
 import timeline.BooleanValue
+import timeline.widgetHandler
 
-class ActionItem(widgetHandler: WidgetHandler, init: ActionItem.() -> Unit) : Widget(widgetHandler) {
+class ActionItem(pos: Pos, init: ActionItem.() -> Unit) : Widget(pos) {
 	var label = ""
 	var disabled = false
 	var checkBoxValue: BooleanValue? = null
 	var onClick: (() -> Unit)? = null
+	var onHover: (() -> Unit)? = null
+	var onHoverOut: (() -> Unit)? = null
 	var variant = Variant.DEFAULT
-	var parent: ActionMenu? = null
-	override var width: Int = 0
-		get() = if (parent == null) label.length() * widgetHandler.skin.charWidth else parent!!.width
-		private set
+	var hasSubMenu = false
 
-	override var height: Int = widgetHandler.skin.charHeight
+	override var height: Int = widgetHandler.skin.rowHeight
 		private set
 
 	{
-		this.init()
+		init()
 	}
 
-	val hover = widgetHandler.mouse_pos.is_in_rect(pos, AbsolutePos(width, height));
+	override var width: Int = label.length() * widgetHandler.skin.charWidth
+		private set
 
-	override var id = PositionBasedId(pos.x, pos.y, label.hashCode()).hashCode();
+	val hover: Boolean
+		get()= widgetHandler.mousePos.is_in_rect(pos, AbsolutePos(parent!!.width, height))
+
+	override val id = PositionBasedId(pos.x, pos.y, label.hashCode()).hashCode()
 
 	override fun draw() {
 		widgetHandler.skin.drawActionItem(this)
 	}
 
 	override fun handleEvents() {
+		val was_hot = widgetHandler.hot_widget_id == id
+		if (hover && !was_hot) {
+			widgetHandler.hot_widget_id = id
+			if (onHover != null) {
+				onHover!!()
+			}
+		} else if (was_hot && !hover) {
+			widgetHandler.hot_widget_id = null
+			if (onHoverOut != null) {
+				onHoverOut!!()
+			}
+		}
 
+		val clicked = widgetHandler.leftMouseButton.just_released && hover
+		if (clicked && onClick != null) {
+			onClick!!()
+		}
 	}
 }
 
-class CheckboxItem(widgetHandler: WidgetHandler, val checkBoxValue: BooleanValue, init: CheckboxItem.() -> Unit) : Widget(widgetHandler) {
+class CheckboxItem(val checkBoxValue: BooleanValue, pos: Pos, init: CheckboxItem.() -> Unit) : Widget(pos) {
 	var label = ""
 	var disabled = false
 	var onClick: (() -> Unit)? = null
 	var variant = Variant.DEFAULT
-	val hover = widgetHandler.mouse_pos.is_in_rect(pos, AbsolutePos(width, height))
+	val hover = widgetHandler.mousePos.is_in_rect(pos, AbsolutePos(width, height))
 	override var id = checkBoxValue.hashCode();
 
 	{
@@ -55,7 +75,7 @@ class CheckboxItem(widgetHandler: WidgetHandler, val checkBoxValue: BooleanValue
 
 }
 
-class Separator(widgetHandler: WidgetHandler) : Widget(widgetHandler) {
+class Separator(pos: Pos) : Widget(pos) {
 	override val id: Int = 0
 
 	override fun draw() {
@@ -67,11 +87,11 @@ class Separator(widgetHandler: WidgetHandler) : Widget(widgetHandler) {
 	}
 }
 
-open class ActionMenu(widget_handler: WidgetHandler, init: Panel.() -> Unit) : Panel(widget_handler, init) {
+open class ActionMenu(pos: Pos, init: Panel.() -> Unit) : Panel(pos, init) {
 	override val id: Int = 0
 
 	override fun draw() {
-		widget_handler.skin.drawActionMenu(this)
+		widgetHandler.skin.drawActionMenu(this)
 		widgets.forEach { it.draw() }
 	}
 }
