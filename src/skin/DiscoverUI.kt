@@ -12,14 +12,19 @@ import timeline.CursorStyle
 import widget.ActionItem
 import widget.ActionMenu
 import widget.AbsolutePos
+import widget.Checkbox
+import widget.RadioButton
+import widget.TabPanel
 
 public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: Int) : Skin {
+
+	private val OUTER_PANEL_COLOR: String = "#434343"
 
 	override val rowHeight = (height * (rowHeightPercent / 100.0)+0.5).toInt()
 	val margin = 5
 	val textMarginY = rowHeight/4
 	override val charHeight = rowHeight - textMarginY*2
-	val font = Font(charHeight, "Courier New");
+	override val font = Font(charHeight, "Courier New");
 	override val charWidth: Int
 
 	{
@@ -45,16 +50,52 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		}
 	}
 
+	override fun drawCheckbox(checkbox: Checkbox) {
+		val x = checkbox.pos.x
+		val y = checkbox.pos.y
+		drawButtonRect(x, y + textMarginY, charHeight, charHeight, checkbox.variant, checkbox.disabled, checkbox.hover, false)
+		if (checkbox.value.data) {
+			context.save()
+			context.beginPath();
+			context.strokeStyle = "black";
+			context.lineWidth = 4.0
+
+			// draw top and top right corner
+			context.moveTo(x+3, y+charHeight/2)
+			context.lineTo(x + charHeight/2-3, y + charHeight-3)
+			context.lineTo(x + charHeight-3, y + 3)
+			context.closePath()
+			context.stroke()
+			context.restore()
+		}
+		val textX = x + charHeight + charWidth/2
+		val textY = y + textMarginY
+		text(checkbox.label, textX, textY, "white", font)
+	}
+
+	override fun drawRadioButton(radioButton: RadioButton) {
+		val x = radioButton.pos.x
+		val y = radioButton.pos.y
+		val radius = charHeight/2
+		val circleX = x + radius
+		val circleY = y + rowHeight/2
+		drawCircle(circleX, circleY, radius, radioButton.variant, radioButton.disabled, radioButton.hover)
+		if (radioButton.value.data == radioButton.order) {
+			fillCircle(circleX, circleY, charHeight/4, "black")
+		}
+		val textX = circleX + radius + charWidth/2
+		val textY = y + textMarginY
+		text(radioButton.label, textX, textY, "white", font)
+	}
+
+
 	override fun drawButton(widget: Button) {
 		val w = widget.width
 		val h = widget.height
 		val x = widget.pos.x
 		val y = widget.pos.y
 		drawButtonRect(x, y, w, h, widget.variant, widget.disabled, widget.hover, widget.down)
-		val label_w = widget.label.length * charWidth
-		val textX = x + margin + widget.width / 2 - label_w/2
-		val textY = y + textMarginY
-		text(widget.label, textX, textY, "white", font)
+		drawButtonText(widget.label, x, y, w)
 		if (widget.hover) {
 			if (widget.disabled) {
 				setCursor(CursorStyle.NotAllowed);
@@ -62,6 +103,13 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 				setCursor(CursorStyle.Pointer);
 			}
 		}
+	}
+
+	private fun drawButtonText(label: String, x: Int, y: Int, w: Int) {
+		val label_w = label.length * charWidth
+		val textX = x + w / 2 - label_w / 2
+		val textY = y + textMarginY
+		text(label, textX, textY, "white", font)
 	}
 
 	override fun drawTextfield(widget: Textfield) {
@@ -101,6 +149,8 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		text(actionItem.label, textX, textY, textColor, font)
 		if (actionItem.hasSubMenu) {
 			text("▸", x + w - charWidth, textY, textColor, font)
+		} else if (actionItem.comment != null) {
+			text(actionItem.comment!!, x + w - charWidth*(actionItem.comment!!.length+1), textY, "#929292", font)
 		}
 	}
 
@@ -119,7 +169,7 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		context.arc(x+orange_bar_w, y+ rowHeight /2, rowHeight /2, 0, 2 * Math.PI, false);
 		context.fillStyle = "#F7F8F3"
 		context.fill()
-		context.closePath()
+
 		context.restore()
 	}
 
@@ -138,19 +188,40 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		context.arc(x+charWidth/2, y+orange_bar_h, charWidth/2, 0, 2 * Math.PI, false);
 		context.fillStyle = "#F7F8F3";
 		context.fill();
-		context.closePath()
 		context.restore()
 	}
 
-	override fun drawPanel(widget: Panel) {
+	public override fun drawPanelRect(x: Int, y: Int, w: Int, h: Int, variant: Variant) {
+		val (bottomColor, topColor) = when (variant) {
+			Variant.INFO -> Pair("#1D5388", "#6290BC")
+			Variant.SUCCESS -> Pair("#5D7A1F", "#C4FF44")
+			Variant.WARNING -> Pair("#FBB900", "#FBF000")
+			Variant.DANGER -> Pair("#FF4300", "#FFB096")
+			Variant.DEFAULT -> Pair("#3B3B3B", "#535353")
+		}
+		fillRect(x, y, w, h, topColor) // outer bg OUTER_PANEL_COLOR
+		strokeRect(x, y, w, h, "black") // outer line
+		fillRect(x + margin, y + margin, w - margin * 2, h - margin * 2, bottomColor) // "#323232" inner bg
+		strokeRect(x + margin, y + margin, w - margin * 2, h - margin * 2, "black") // outer line
+	}
+
+	override fun drawTabPanel(widget: TabPanel) {
 		val x = widget.pos.x
 		val y = widget.pos.y
 		val w = widget.width
 		val h = widget.height
-		fillRect(x, y, w, h, "#434343") // outer bg
-		strokeRect(x, y, w, h, "black") // outer line
-		fillRect(x+margin, y + margin, w - margin*2, h - margin*2, "#323232") // inner bg
-		strokeRect(x+margin, y + margin, w - margin*2, h - margin*2, "black") // outer line
+		var itemX = x
+		for ((i, item) in widget.items.withIndices()) {
+			val down = i == widget.value.data
+			if (down) {
+				drawPanelRect(x, y + rowHeight, w, h - rowHeight, item.variant)
+				drawSelectedTabPanelItem(itemX, y, item.width, item.height, item.variant)
+			} else {
+				drawButtonRect(itemX, y, item.width, item.height, item.variant, item.disabled, item.hover, down)
+			}
+			drawButtonText(item.label, itemX, y, item.width)
+			itemX += item.width
+		}
 	}
 
 	override fun drawActionMenu(actionMenu: ActionMenu) {
@@ -249,8 +320,61 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		}
 		context.fill()
 		context.stroke()
-		context.closePath();
 
+		context.restore()
+	}
+
+	private fun drawSelectedTabPanelItem(x: Int, y: Int, w: Int, h: Int, variant: Variant) {
+		val (bottomColor, topColor) = when (variant) {
+			Variant.INFO -> Pair("#1D5388", "#6290BC")
+			Variant.SUCCESS -> Pair("#5D7A1F", "#C4FF44")
+			Variant.WARNING -> Pair("#FBB900", "#FBF000")
+			Variant.DANGER -> Pair("#FF4300", "#FFB096")
+			Variant.DEFAULT -> Pair("#3B3B3B", "#535353")
+		}
+
+		var grd = context.createLinearGradient(x + w / 2, y + h, x + w / 2, y)!!
+		grd.addColorStop(0, topColor)
+		grd.addColorStop(1, bottomColor)
+		context.fillStyle = grd
+		context.save()
+		context.fillRect(x, y, w, h+4)
+		context.restore()
+	}
+
+	private fun fillCircle(x: Int, y: Int, r: Int, color: String) {
+		context.save()
+		context.beginPath()
+		context.arc(x, y, r, 0, 2*Math.PI, false)
+
+		context.fillStyle = color
+		context.fill()
+		context.restore()
+	}
+
+	private fun drawCircle(x: Int, y: Int, r: Int, variant: Variant, disabled: Boolean, hover: Boolean) {
+		val (bottomColor, topColor) = when (variant) {
+			Variant.INFO -> Pair("#1D5388", "#6290BC")
+			Variant.SUCCESS -> Pair("#5D7A1F", "#C4FF44")
+			Variant.WARNING -> Pair("#FBB900", "#FBF000")
+			Variant.DANGER -> Pair("#FF4300", "#FFB096")
+			Variant.DEFAULT -> Pair("#3B3B3B", "#535353")
+		}
+		val color = if (disabled){
+			"#434343"
+		} else if (hover) {
+			topColor
+		} else {
+			bottomColor
+		}
+		context.save()
+		context.beginPath()
+		context.lineWidth = 1.0
+		context.fillStyle = color
+		context.strokeStyle = "black"
+		context.arc(x, y, r, 0, 2*Math.PI, false)
+		context.fill()
+		context.stroke()
 		context.restore()
 	}
 
@@ -273,14 +397,11 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 
 		// draw left and top left corner
 		context.arcTo(x,y,x+radius,y,radius);
-
 		context.fillStyle = fillColor
 		context.strokeStyle = strokeColor
 
 		context.fill()
 		context.stroke()
-		context.closePath();
-
 		context.restore()
 	}
 
@@ -303,12 +424,5 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 
 		context.fill()
 		context.restore()
-	}
-
-	private fun text(text: String, x: Number, y: Number, color: String, font: Font) {
-		context.fillStyle = color;
-		context.font = font.toString()
-		context.textBaseline = "top"
-		context.fillText(text, x, y)
 	}
 }

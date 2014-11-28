@@ -28,9 +28,9 @@ class Textfield(val text: StrValue, pos: Pos, init: Textfield.() -> Unit) : Widg
 		private set
 
 	val isCursorShown: Boolean
-		get() = (widgetHandler.widgetDatas[id] as TextfieldData).isCursorShown
+		get() = (widgetHandler.getWidgetData("Textfield", id) as TextfieldData).isCursorShown
 	val cursorPos: Int
-		get() = (widgetHandler.widgetDatas[id] as TextfieldData).cursorPos
+		get() = (widgetHandler.getWidgetData("Textfield", id) as TextfieldData).cursorPos
 
 	{
 		init()
@@ -80,10 +80,10 @@ class Textfield(val text: StrValue, pos: Pos, init: Textfield.() -> Unit) : Widg
 	}
 
 	private fun getOrCreateMyData(): TextfieldData {
-		val dataPtr = widgetHandler.widgetDatas[id]
+		val dataPtr = widgetHandler.getWidgetData("Textfield", id)
 		return if (dataPtr == null) {
 			val data = TextfieldData()
-			widgetHandler.widgetDatas.put(id, data)
+			widgetHandler.setWidgetData("Textfield", id, data)
 			data
 		} else {
 			dataPtr as TextfieldData

@@ -13,6 +13,7 @@ class ActionItem(pos: Pos, init: ActionItem.() -> Unit) : Widget(pos) {
 	var onHoverOut: (() -> Unit)? = null
 	var variant = Variant.DEFAULT
 	var hasSubMenu = false
+	var comment: String? = null
 
 	override var height: Int = widgetHandler.skin.rowHeight
 		private set

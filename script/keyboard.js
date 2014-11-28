@@ -28,12 +28,17 @@ $(document).ready(function() {
         event.preventDefault();
         Kotlin.modules.timeline.timeline.onMouseDown(event.which);
     });
+    // using the event helper
+    $('canvas').mousewheel(function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        Kotlin.modules.timeline.timeline.onMouseScroll(event.deltaY);
+    });
     $('canvas').on("contextmenu",function(e){
         e.stopPropagation();
         e.preventDefault();
     });
 });
-
 function jsSetCursor(cursorStyle) {
     $("canvas").css('cursor', cursorStyle)
 }

@@ -24,6 +24,11 @@ import widget.ActionItem
 import widget.ActionMenu
 import widget.fromLastWidgetBottomLeft
 import widget.Widget
+import widget.Checkbox
+import widget.RadioButton
+import widget.TabPanel
+import timeline.Timeline
+import widget.chart.LineChart
 
 fun getImage(path: String): HTMLImageElement {
 	val image = window.document.createElement("img") as HTMLImageElement
@@ -40,160 +45,6 @@ val context: CanvasContext
 	get() {
 		return canvas.getContext("2d")!!
 	}
-
-/*class TimeLineWindow {
-	var avg_data: MutableList<Float> = ArrayList<Float>()
-	var data: MutableList<Float> = init_data();
-	var smoothing_constant = 0.9f;
-	var zoom_level = 100f;
-	var pos = 10000;
-
-	class object {
-		fun init_data(): MutableList<Float> {
-			var last = 30.0f;
-			val data = ArrayList<Float>(10000);
-			for (i in 0..100000) {
-				last = last + Math.random().toFloat() * 2.0f - 1.0f;
-				if (last < 0) {
-					last = 30f;
-				} else if (last > 60f) {
-					last = 30f;
-				}
-				data.add(last);
-			}
-			return data;
-		}
-	}
-
-	fun calc_ema() {
-		avg_data.clear();
-		var last_data = this.data[0];
-		for ((i, v) in data.enumerate().filter { pair -> pair.index > 0 }) {
-			val smoothing_percentage = 1f - this.smoothing_constant;
-			val curr_data = last_data + smoothing_percentage * (v - last_data);
-			avg_data.add(curr_data);
-			last_data = curr_data;
-		}
-	}
-
-	fun draw(mouse_pos: Pos) {
-		val a = (zoom_level / Math.sqrt(3.0));
-		val x1 = pos - a;
-		val x2 = pos + a;
-		val range_w = (x2 - x1);
-		val y1 = 300;
-		val y2 = 1500;
-		val range_h = (y2 - y1);
-		val widget_x = 0;
-		val widget_y = 0;
-		val widget_w = 800;
-		val widget_h = 600;
-		val bottom = (widget_y + widget_h) - (widget_h * 0.1f);
-		val screen_step_w = 800f / (2f * a);
-		val screen_step_h = 600f / (range_h);
-		val trend_value_rect_size = 5;
-
-		for ((i, v) in (x1..x2).enumerate()) {
-			val data_index = (x1 + i).toInt()
-			val real_value = (data[data_index] * 10f).toInt()
-			val trend = (avg_data[data_index] * 10f).toInt()
-			val color = if (real_value > trend) {
-				"red"
-			} else {
-				"green"
-			}
-			val real_y = bottom - 10 - real_value
-			val trend_y = bottom - 10 - trend
-			var x = (widget_x + i * screen_step_w).toInt()
-			fill_rect(
-					x - trend_value_rect_size / 2,
-					trend_y - trend_value_rect_size / 2,
-					trend_value_rect_size,
-					trend_value_rect_size,
-					color
-			);
-		}
-		draw_asd(mouse_pos)
-	}
-
-	fun draw_asd(mouse_pos: Pos) {
-		val a = (zoom_level / Math.sqrt(3.0));
-		val x1 = pos - a;
-		val x2 = pos + a;
-		val range_w = (x2 - x1);
-		val y1 = 300;
-		val y2 = 1500;
-		val range_h = (y2 - y1);
-		val widget_x = 0;
-		val widget_y = 0;
-		val widget_w = 800;
-		val widget_h = 600;
-		val bottom = (widget_y + widget_h) - (widget_h * 0.1f);
-		val screen_step_w = 800f / (2f * a);
-		val screen_step_h = 600f / (range_h);
-		val trend_value_rect_size = 5;
-
-		val mouse_index = (mouse_pos.x / screen_step_w).toInt();
-		val real_value = (data[mouse_index] * 10f).toInt();
-		val trend = (avg_data[mouse_index] * 10f).toInt();
-		val txt = "$real_value, $trend";
-		var x = (0 + mouse_index * screen_step_w).toInt();
-
-		val trend_y = bottom - 10 - trend;
-		fill_rect(x-15, trend_y-60, txt.length*30, 30, "red");
-		text(txt, x-15, trend_y-60, "white", Font())
-	}
-}*/
-
-class EnumerateStream<T>(val iter: EnumerateIterator<T>) : Stream<IteratorPair<T>> {
-	override fun iterator(): Iterator<IteratorPair<T>> {
-		return iter
-	}
-}
-
-class EnumerateIterator<T>(val iter: Iterator<T>) : Iterator<IteratorPair<T>> {
-	override fun hasNext(): Boolean {
-		return iter.iterator().hasNext()
-	}
-
-	var index = 0
-	override fun next(): IteratorPair<T> {
-		index++
-		return IteratorPair(index, iter.iterator().next())
-	}
-}
-
-fun <T> Iterable<T>.enumerate(): EnumerateStream<T> {
-	return EnumerateStream(EnumerateIterator(this.iterator()))
-}
-
-fun <T> List<T>.reversed(): List<T> {
-	val result = ArrayList<T>()
-	var i = size()
-	while (i > 0) {
-		result.add(get(--i))
-	}
-	return result
-}
-
-public class Pair<A, B> (
-		public val first: A,
-		public val second: B
-) {
-	public fun component1(): A = first
-	public fun component2(): B = second
-
-	override fun toString(): String = "($first, $second)"
-}
-
-public class IteratorPair<T> (
-		public val index: Int,
-		public val value: T
-) {
-	override fun toString(): String = "($index, $value)"
-	fun component1(): Int = index
-	fun component2(): T = value
-}
 
 fun mousePos(e: MouseEvent): AbsolutePos {
 	var offset = AbsolutePos(0, 0)
@@ -238,6 +89,7 @@ fun setPressedKeysFromJavascript(pressedChar: Char?, keyCode: Int) {
 	timeline.pressedChar = pressedChar
 	timeline.keyCode = keyCode
 }
+
 fun handleKeys() {
 	widgetHandler.upArrow.update(keyCode == 38)
 	widgetHandler.leftArrow.update(keyCode == 37)
@@ -267,16 +119,48 @@ val strValue2 = StrValue("")
 val strValue3 = StrValue("")
 val strValue4 = StrValue("")
 val strValue5 = StrValue("")
+val booleanValues = array<BooleanValue>(BooleanValue(true), BooleanValue(false), BooleanValue(false), BooleanValue(false), BooleanValue(false))
+val radioButtonValue = IntValue(0)
+val tabPanelValue = IntValue(0)
 val booleanValue = BooleanValue(true)
 var leftMouseDown = false;
 var middleMouseDown = false;
 var rightMouseDown = false;
 var showActionMenu = false
-var showSubActionMenu = false
+
 var actionMenuPos = AbsolutePos(0, 0)
+val graphData = array(init_data(), init_data(), init_data(), init_data(), init_data())
+val graphAvgData = array(calc_ema(graphData[0], 0.9f), calc_ema(graphData[1], 0.9f), calc_ema(graphData[2], 0.9f), calc_ema(graphData[3], 0.9f), calc_ema(graphData[4], 0.9f))
 
 fun String.allocNew(): String {
 	return StringBuilder().append(this).toString()
+}
+
+fun init_data(): MutableList<Float> {
+	var last = 30.0f;
+	val data = ArrayList<Float>(100000);
+	for (i in 0..100000) {
+		last = last + Math.random().toFloat() * 2.0f - 1.0f;
+		if (last < 0) {
+			last = 30f;
+		} else if (last > 60f) {
+			last = 30f;
+		}
+		data.add(last);
+	}
+	return data;
+}
+
+
+fun calc_ema(data: List<Float>, smoothingConstant: Float) {
+	val avgData = ArrayList<Float>(data.size)
+	var last_data = data[0];
+	for ((i, v) in data.withIndices().filter { pair -> pair.first > 0 }) {
+		val smoothing_percentage = 1f - smoothingConstant;
+		val curr_data = last_data + smoothing_percentage * (v - last_data);
+		avgData.add(curr_data);
+		last_data = curr_data;
+	}
 }
 
 fun doFrame() {
@@ -330,7 +214,7 @@ fun doFrame() {
 		})
 	}).drawAndHandleEvents()
 
-	Panel(AbsolutePos(500, 50), {
+	Panel(AbsolutePos(300, 50), {
 		+Textfield(strValue, downAlongLeftMargin(10), {
 			width = 200
 			variant = Variant.DEFAULT
@@ -357,6 +241,46 @@ fun doFrame() {
 		})
 	}).drawAndHandleEvents()
 
+	Panel(AbsolutePos(300, 430), {
+		+Checkbox("Default", booleanValues[0], downAlongLeftMargin(10))
+		+Checkbox("Info", booleanValues[1], downAlongLeftMargin(10), {
+			variant = Variant.INFO
+		})
+		+Checkbox("Warning", booleanValues[2], downAlongLeftMargin(10), {
+			variant = Variant.WARNING
+		})
+		+Checkbox("Error", booleanValues[3], downAlongLeftMargin(10), {
+			variant = Variant.DANGER
+		})
+		+Checkbox("Success", booleanValues[4], downAlongLeftMargin(10), {
+			variant = Variant.SUCCESS
+		})
+		+Checkbox("Disabled", booleanValues[0], downAlongLeftMargin(10), {
+			disabled = true
+		})
+	}).drawAndHandleEvents()
+
+	Panel(AbsolutePos(500, 430), {
+		+RadioButton("Default", radioButtonValue, 0, downAlongLeftMargin(10))
+		+RadioButton("Info", radioButtonValue, 1, downAlongLeftMargin(10), {
+			variant = Variant.INFO
+		})
+		+RadioButton("Warning", radioButtonValue, 2, downAlongLeftMargin(10), {
+			variant = Variant.WARNING
+		})
+		+RadioButton("Danger", radioButtonValue, 3, downAlongLeftMargin(10), {
+			variant = Variant.DANGER
+		})
+		+RadioButton("Success", radioButtonValue, 4, downAlongLeftMargin(10), {
+			variant = Variant.SUCCESS
+		})
+		+RadioButton("Disabled", radioButtonValue, 5, downAlongLeftMargin(10), {
+			disabled = true
+		})
+	}).drawAndHandleEvents()
+
+	tabPanel()
+
 
 	HScrollBar(value, AbsolutePos(470, 400), {
 		postfix = "%"
@@ -365,19 +289,17 @@ fun doFrame() {
 		postfix = "%"
 	}).drawAndHandleEvents()
 
-	if (!showActionMenu && widgetHandler.rightMouseButton.just_pressed) {
+	if (widgetHandler.rightMouseButton.just_pressed) {
 		showActionMenu = true
 		actionMenuPos = widgetHandler.mousePos
 	}
 
 	if (showActionMenu) {
-		var parentActionItem: Widget? = null
-		ActionMenu(actionMenuPos, {
-			onClickOut = {
-				showActionMenu = false
-			}
+		var parentActionItem: ActionItem? = null
+		val contextMenu = ActionMenu(actionMenuPos, {
 			+ActionItem(downAlongLeftMargin(margin), {
 				label = "Normal"
+				comment = "Ctrl+N"
 			})
 			+ActionItem(downAlongLeftMargin(1), {
 				label = "Disabled"
@@ -390,12 +312,6 @@ fun doFrame() {
 			parentActionItem = ActionItem(downAlongLeftMargin(1), {
 				label = "Parent"
 				hasSubMenu = true
-				onHover = {
-					showSubActionMenu = true
-				}
-				onHoverOut = {
-					showSubActionMenu = false
-				}
 			})
 			+parentActionItem!!
 			+Textfield(strValue, downAlongLeftMargin(), {
@@ -404,37 +320,41 @@ fun doFrame() {
 			+Button("Start", downAlongLeftMargin(), {
 				width = 200
 			})
-		}).drawAndHandleEvents()
+		})
+		contextMenu.drawAndHandleEvents()
 
+		val subMenu = ActionMenu(parentActionItem!!.pos + AbsolutePos(20, 20), {
+			+ActionItem(downAlongLeftMargin(1), {
+				label = "Sub Normal"
+			})
+			+ActionItem(downAlongLeftMargin(1), {
+				label = "Sub Disabled"
+				disabled = true
+			})
+			+ActionItem(downAlongLeftMargin(1), {
+				label = "Sub Checkbox value"
+				checkBoxValue = booleanValue
+			})
+			+Textfield(strValue, downAlongLeftMargin(), {
+				width = 200
+			})
+			+Button("Sub Start", downAlongLeftMargin(), {
+				width = 200
+			})
+		})
+		subMenu.handleEvents()
+		val showSubActionMenu = parentActionItem!!.hover || subMenu.hover
 		if (showSubActionMenu) {
-			ActionMenu(parentActionItem!!.pos + AbsolutePos(20, 20), {
-				onClickOut = {
-					//showSubActionMenu = false
-				}
-				+ActionItem(downAlongLeftMargin(1), {
-					label = "Sub Normal"
-				})
-				+ActionItem(downAlongLeftMargin(1), {
-					label = "Sub Disabled"
-					disabled = true
-				})
-				+ActionItem(downAlongLeftMargin(1), {
-					label = "Sub Checkbox value"
-					checkBoxValue = booleanValue
-				})
-				+Textfield(strValue, downAlongLeftMargin(), {
-					width = 200
-				})
-				+Button("Sub Start", downAlongLeftMargin(), {
-					width = 200
-				})
-			}).drawAndHandleEvents()
+			subMenu.draw()
+		}
+		if (widgetHandler.leftMouseButton.just_released) {
+			showActionMenu = contextMenu.hover || showSubActionMenu
 		}
 	}
 }
 
 fun onMouseDown(which: Int) {
-	when(which ) {
+	when (which ) {
 		1 -> leftMouseDown = true
 		2 -> middleMouseDown = true
 		3 -> rightMouseDown = true
@@ -442,11 +362,15 @@ fun onMouseDown(which: Int) {
 }
 
 fun onMouseUp(which: Int) {
-	when(which ) {
+	when (which ) {
 		1 -> leftMouseDown = false
 		2 -> middleMouseDown = false
 		3 -> rightMouseDown = false
 	}
+}
+
+fun onMouseScroll(delta: Int) {
+	widgetHandler.mouseScrollDelta = delta
 }
 
 fun main(args: Array<String>) {
@@ -458,6 +382,7 @@ fun main(args: Array<String>) {
 		// requestAnimationFrame
 		window.setInterval({
 			doFrame()
+			widgetHandler.mouseScrollDelta = 0
 		}, 40);
 	}
 }
@@ -476,6 +401,21 @@ native("key")
 fun callJavascript() {}
 */
 
+native
+public class Date(ms: Int) {
+	public fun getTime() : Int = noImpl
+	native("getDate")
+	public fun getDayOfMonth() : Int = noImpl
+	native("getDay")
+	public fun getDayOfWeek() : Int = noImpl
+	public fun getFullYear() : Int = noImpl
+	public fun getHours() : Int = noImpl
+	public fun getMilliseconds() : Int = noImpl
+	public fun getMinutes(): Int = noImpl
+	public fun getMonth(): Int = noImpl
+	public fun getSeconds(): Int = noImpl
+}
+
 fun Int.at_most(max: Int): Int {
 	return Math.min(this, max)
 }
@@ -486,4 +426,139 @@ fun Int.at_least(min: Int): Int {
 
 fun Int.limit_into(min: Int, max: Int): Int {
 	return this.at_least(min).at_most(max)
+}
+
+fun tabPanel() {
+	TabPanel(tabPanelValue, AbsolutePos(700, 20), {
+		height = 600
+		addTabPanelItem("Buttons")
+		addTabPanelItem("Textfields")
+		addTabPanelItem("Checkboxes", { variant = Variant.SUCCESS })
+		addTabPanelItem("Radioboxes")
+		addTabPanelItem("Graph", { variant = Variant.DANGER })
+		addTabPanelItem("Disabled", { disabled = true })
+		if (tabPanelValue.data == 0) {
+			+Panel(downAlongLeftMargin(10), {
+				+Button("Default Button", downAlongLeftMargin(10), {
+					width = 200
+					variant = Variant.DEFAULT
+					onClick = {
+						strValue.data = strValue.data + "Default"
+					}
+				})
+				+Button("Green Button", downAlongLeftMargin(20), {
+					width = 200
+					variant = Variant.SUCCESS
+					onClick = {
+						strValue.data = strValue.data + "Green"
+					}
+				})
+				+Button("Red Button", downAlongLeftMargin(20), {
+					width = 200
+					variant = Variant.DANGER
+				})
+				+Button("Yellow Button", downAlongLeftMargin(20), {
+					width = 200
+					variant = Variant.WARNING
+				})
+				+Button("Info Button", downAlongLeftMargin(20), {
+					width = 200
+					variant = Variant.INFO
+				})
+				+Button("Button".allocNew(), downAlongLeftMargin(20), {
+					width = 200
+					variant = Variant.WARNING
+				})
+				+Button("Button".allocNew(), downAlongLeftMargin(20), {
+					width = 200
+					variant = Variant.INFO
+				})
+				+Button("Inactive Button", downAlongLeftMargin(20), {
+					width = 200
+					disabled = true
+				})
+			})
+		} else if (tabPanelValue.data == 1) {
+			+Panel(downAlongLeftMargin(10), {
+				+Textfield(strValue, downAlongLeftMargin(10), {
+					width = 200
+					variant = Variant.DEFAULT
+				})
+				+Textfield(strValue1, downAlongLeftMargin(10), {
+					width = 200
+					variant = Variant.INFO
+				})
+				+Textfield(strValue2, downAlongLeftMargin(), {
+					width = 200
+					variant = Variant.WARNING
+				})
+				+Textfield(strValue3, downAlongLeftMargin(20), {
+					width = 200
+					variant = Variant.DANGER
+				})
+				+Textfield(strValue4, downAlongLeftMargin(20), {
+					width = 200
+					variant = Variant.SUCCESS
+				})
+				+Textfield(strValue5, downAlongLeftMargin(20), {
+					width = 200
+					disabled = true
+				})
+			})
+		} else if (tabPanelValue.data == 2) {
+			+Panel(downAlongLeftMargin(10), {
+				+Checkbox("Default", booleanValues[0], downAlongLeftMargin(10))
+				+Checkbox("Info", booleanValues[1], downAlongLeftMargin(10), {
+					variant = Variant.INFO
+				})
+				+Checkbox("Warning", booleanValues[2], downAlongLeftMargin(10), {
+					variant = Variant.WARNING
+				})
+				+Checkbox("Error", booleanValues[3], downAlongLeftMargin(10), {
+					variant = Variant.DANGER
+				})
+				+Checkbox("Success", booleanValues[4], downAlongLeftMargin(10), {
+					variant = Variant.SUCCESS
+				})
+				+Checkbox("Disabled", booleanValues[0], downAlongLeftMargin(10), {
+					disabled = true
+				})
+			})
+		} else if (tabPanelValue.data == 3) {
+			+Panel(downAlongLeftMargin(10), {
+				+RadioButton("Default", radioButtonValue, 0, downAlongLeftMargin(10))
+				+RadioButton("Info", radioButtonValue, 1, downAlongLeftMargin(10), {
+					variant = Variant.INFO
+				})
+				+RadioButton("Warning", radioButtonValue, 2, downAlongLeftMargin(10), {
+					variant = Variant.WARNING
+				})
+				+RadioButton("Danger", radioButtonValue, 3, downAlongLeftMargin(10), {
+					variant = Variant.DANGER
+				})
+				+RadioButton("Success", radioButtonValue, 4, downAlongLeftMargin(10), {
+					variant = Variant.SUCCESS
+				})
+				+RadioButton("Disabled", radioButtonValue, 5, downAlongLeftMargin(10), {
+					disabled = true
+				})
+			})
+		} else if (tabPanelValue.data == 4) {
+			+Timeline(downAlongLeftMargin(10), {
+				booleanValues.withIndices().forEach {
+					if (it.second.data) {
+						+LineChart(graphData[it.first], {
+							color = when (Variant.values()[it.first]) {
+								Variant.INFO -> "#29A1D3"
+								Variant.DEFAULT -> "#525864"
+								Variant.SUCCESS -> "#8AB71C"
+								Variant.WARNING -> "#F1B018"
+								Variant.DANGER -> "#EE4E10"
+							}
+						})
+					}
+				}
+			})
+		}
+	}).drawAndHandleEvents()
 }

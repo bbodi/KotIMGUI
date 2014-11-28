@@ -11,7 +11,7 @@ import timeline.widgetHandler
 	fun handleEvents()
 }*/
 
-private data class PositionBasedId(val x: Int, val y: Int, val id: Int)
+data class PositionBasedId(val x: Int, val y: Int, val id: Int)
 
 abstract class Widget(pos: Pos) {
 	open var width: Int = 0

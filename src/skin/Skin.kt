@@ -9,9 +9,13 @@ import widget.Textfield
 import timeline.context
 import widget.ActionItem
 import widget.ActionMenu
+import widget.Checkbox
+import widget.RadioButton
+import widget.TabPanel
 
 
 trait Skin {
+	val font: Font
 	val rowHeight: Int
 	val charWidth: Int
 	val charHeight: Int
@@ -22,13 +26,24 @@ trait Skin {
 
 	fun drawHorizontalScrollbar(widgetHandler: WidgetHandler, widget: HScrollBar)
 	fun drawVerticalScrollbar(widgetHandler: WidgetHandler, widget: VScrollBar)
-	fun drawPanel(widget: Panel)
 
 	fun drawTextfield(widget: Textfield)
 
 	fun drawActionItem(actionItem: ActionItem)
 	fun drawActionMenu(actionMenu: ActionMenu)
 
+	fun drawCheckbox(checkbox: Checkbox)
+
+	fun drawRadioButton(radioButton: RadioButton)
+	fun drawTabPanel(widget: TabPanel)
+	fun drawPanelRect(x: Int, y: Int, w: Int, h: Int, variant: Variant)
+
+	public fun text(text: String, x: Number, y: Number, color: String, font: Font) {
+		context.fillStyle = color;
+		context.font = font.toString()
+		context.textBaseline = "hanging"
+		context.fillText(text, x, y)
+	}
 }
 
 public enum class Variant {

@@ -3,6 +3,11 @@ package widget
 import timeline.widgetHandler
 
 abstract class WidgetContainer(pos: Pos) : Widget(pos) {
+	abstract val contentX: Int
+	abstract val contentY: Int
+	abstract val contentHeight: Int
+	abstract val contentWidth: Int
+
 	val widgets = arrayListOf<Widget>();
 	var margin: Int = 10
 
@@ -16,23 +21,23 @@ abstract class WidgetContainer(pos: Pos) : Widget(pos) {
 	}
 
 
-	fun calcOwnSize() {
-		if (width != 0 || height != 0) {
-			return
-		}
-		width = 0
-		height = 0
+	fun calcContentSize(): Pair<Int, Int> {
+		var calculatedWidth = 0
+		var calculatedHeight = 0
 		for (childWidget in widgets) {
 			val childrenPos = childWidget.pos - pos
-			if (childrenPos.x + childWidget.width > this.width) {
-				this.width = childrenPos.x + childWidget.width
+			if (this.width == 0) {
+				if (childrenPos.x + childWidget.width > calculatedWidth) {
+					calculatedWidth = childrenPos.x + childWidget.width
+				}
 			}
-			if (childrenPos.y + childWidget.height > this.height) {
-				this.height = childrenPos.y + childWidget.height
+			if (this.height == 0) {
+				if (childrenPos.y + childWidget.height > calculatedHeight) {
+					calculatedHeight = childrenPos.y + childWidget.height
+				}
 			}
 		}
-		width += margin
-		height += margin
+		return Pair(calculatedWidth, calculatedHeight)
 	}
 
 	fun WidgetContainer.downAlongLeftMargin(y: Int = 1): Pos {

@@ -7,10 +7,12 @@ import skin.Skin
 import timeline.widgetHandler
 
 class WidgetHandler(val skin: Skin) {
+	var mouseScrollDelta: Int = 0
+
 	var active_widget_id: Any? = null
 	var hot_widget_id: Any? = null
 	var mousePos = AbsolutePos(0, 0)
-	val widgetDatas = hashMapOf<Any, Any>()
+	private val widgetDatas = hashMapOf<Any, Any>()
 	val leftMouseButton = InputButton()
 	val rightMouseButton = InputButton()
 	val middleMouseButton = InputButton()
@@ -61,5 +63,13 @@ class WidgetHandler(val skin: Skin) {
 		skin.clear()
 		lastDrawnPos = AbsolutePos(0, 0)
 		lastDrawnWidget = null
+	}
+
+	fun getWidgetData(className: String, id: Int): Any? {
+		return widgetDatas[className + id.toString()]
+	}
+
+	fun setWidgetData(className: String, id: Int, data: Any){
+		widgetDatas[className + id.toString()] = data
 	}
 }
