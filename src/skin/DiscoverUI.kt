@@ -22,7 +22,7 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 	private val OUTER_PANEL_COLOR: String = "#434343"
 
 	override val rowHeight = (height * (rowHeightPercent / 100.0)+0.5).toInt()
-	val margin = 5
+	override val panelBorder = 5
 	override val textMarginY = rowHeight/4
 	override val charHeight = rowHeight - textMarginY*2
 	override val font = Font(charHeight, "Courier New");
@@ -100,6 +100,22 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		text(widget.label, widget.pos.x, widget.pos.y, bottomColor, font)
 	}
 
+	override fun drawMiniButton(widget: Button) {
+		val w = widget.width
+		val h = widget.height
+		val x = widget.pos.x
+		val y = widget.pos.y
+		drawButtonRect(x, y, w, h, widget.variant, widget.disabled, widget.hover, widget.down)
+		drawMiniButtonText(widget.label, x, y, w)
+		if (widget.hover) {
+			if (widget.disabled) {
+				setCursor(CursorStyle.NotAllowed);
+			} else {
+				setCursor(CursorStyle.Pointer);
+			}
+		}
+	}
+
 	override fun drawButton(widget: Button) {
 		val w = widget.width
 		val h = widget.height
@@ -123,6 +139,13 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		text(label, textX, textY, "white", font)
 	}
 
+	private fun drawMiniButtonText(label: String, x: Int, y: Int, w: Int) {
+		val label_w = label.length * charWidth
+		val textX = x + w / 2 - label_w / 2
+		val textY = y + textMarginY/2
+		text(label, textX, textY, "white", font)
+	}
+
 	override fun drawTextfield(widget: Textfield) {
 		val x = widget.pos.x
 		val y = widget.pos.y
@@ -139,19 +162,26 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 			stroke_rounded_rect(x, y, w, h, 5, normalColor)
 		}
 
-		val textX = x + margin
+		val textX = x + panelBorder
 		val textY = y + textMarginY
 		text(widget.text.data, textX, textY, "white", font)
 		if (widget.isCursorShown && isActive) {
 			text("_", textX + charWidth*widget.cursorPos, textY, "white", font)
+		}
+		if (widget.hover) {
+			if (widget.disabled) {
+				setCursor(CursorStyle.NotAllowed);
+			} else {
+				setCursor(CursorStyle.Text);
+			}
 		}
 	}
 
 	override fun drawActionItem(actionItem: ActionItem) {
 		val x = actionItem.pos.x
 		val y = actionItem.pos.y
-		val w = actionItem.parent!!.width - 2*actionItem.parent!!.margin
-		val textX = x + margin
+		val w = actionItem.parent!!.width - 2* panelBorder
+		val textX = x + panelBorder
 		val textY = y + textMarginY
 		val textColor = if (actionItem.disabled) {"#8C8C8C"} else {"white"}
 		if (!actionItem.disabled && actionItem.hover) {
@@ -202,7 +232,11 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		context.restore()
 	}
 
-	public override fun drawPanelRect(x: Int, y: Int, w: Int, h: Int, variant: Variant) {
+	public override fun drawPanelRect(x: Int,
+									  y: Int,
+									  w: Int,
+									  h: Int,
+									  variant: Variant) {
 		val (bottomColor, topColor) = when (variant) {
 			Variant.INFO -> Pair("#1D5388", "#6290BC")
 			Variant.SUCCESS -> Pair("#5D7A1F", "#C4FF44")
@@ -212,8 +246,8 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		}
 		fillRect(x, y, w, h, topColor) // outer bg OUTER_PANEL_COLOR
 		strokeRect(x, y, w, h, "black") // outer line
-		fillRect(x + margin, y + margin, w - margin * 2, h - margin * 2, bottomColor) // "#323232" inner bg
-		strokeRect(x + margin, y + margin, w - margin * 2, h - margin * 2, "black") // outer line
+		fillRect(x + panelBorder, y + panelBorder, w - panelBorder * 2, h - panelBorder * 2, bottomColor) // "#323232" inner bg
+		strokeRect(x + panelBorder, y + panelBorder, w - panelBorder * 2, h - panelBorder * 2, "black") // outer line
 	}
 
 	override fun drawTabPanel(widget: TabPanel) {

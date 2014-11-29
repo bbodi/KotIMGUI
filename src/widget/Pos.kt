@@ -41,6 +41,3 @@ enum class Direction {
 
 data class RelativePos(x: Int = 0, y: Int = 0, val dirs: Array<Direction>) : Pos(x, y) {
 }
-
-public fun fromLastWidgetBottom(y: Int = 1): RelativePos = RelativePos(0, y, array(Direction.DOWN))
-public fun fromLastWidgetBottomLeft(x: Int = 1, y: Int = 1): RelativePos = RelativePos(x, y, array(Direction.DOWN, Direction.LEFT))

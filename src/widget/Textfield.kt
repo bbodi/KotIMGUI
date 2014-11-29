@@ -3,6 +3,7 @@ package widget
 import skin.Variant
 import timeline.StrValue
 import timeline.widgetHandler
+import timeline.at_most
 
 public class TextfieldData {
 	var isCursorShown = false
@@ -10,7 +11,7 @@ public class TextfieldData {
 	var nextCursorToggleTick = 0
 }
 
-class Textfield(val text: StrValue, pos: Pos, init: Textfield.() -> Unit) : Widget(pos) {
+open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, init: Textfield.() -> Unit) : Widget(pos) {
 
 	val isActive: Boolean
 		get() = this.id == widgetHandler.active_widget_id
@@ -24,6 +25,7 @@ class Textfield(val text: StrValue, pos: Pos, init: Textfield.() -> Unit) : Widg
 		get() {
 			return widgetHandler.mousePos.is_in_rect(pos, AbsolutePos(width, height))
 		}
+	override var width = widthInCharacters * widgetHandler.skin.charWidth
 	override var height = widgetHandler.skin.rowHeight
 		private set
 
@@ -35,7 +37,7 @@ class Textfield(val text: StrValue, pos: Pos, init: Textfield.() -> Unit) : Widg
 	{
 		init()
 	}
-	override val id: Int = PositionBasedId(pos.x, pos.y, text.hashCode()).hashCode()
+	override val id: Int = PositionBasedId(this.pos.x, this.pos.y, text.hashCode()).hashCode()
 
 	override fun draw() {
 		widgetHandler.skin.drawTextfield(this)
@@ -44,7 +46,8 @@ class Textfield(val text: StrValue, pos: Pos, init: Textfield.() -> Unit) : Widg
 	override fun handleEvents() {
 		val was_hot = widgetHandler.hot_widget_id == id
 		val was_active = widgetHandler.active_widget_id == id
-		if (widgetHandler.leftMouseButton.down && hover && !was_active) {
+		val justClicked = !disabled && widgetHandler.leftMouseButton.down && hover && !was_active
+		if (justClicked) {
 			widgetHandler.active_widget_id = id
 		}
 
@@ -59,24 +62,47 @@ class Textfield(val text: StrValue, pos: Pos, init: Textfield.() -> Unit) : Widg
 		if (!active) {
 			return
 		}
-		if (widgetHandler.pressedChar != null) {
-			text.data = text.data + widgetHandler.pressedChar
-			data.cursorPos++
-		} else if (widgetHandler.backspace.down && data.cursorPos > 0) {
-			val head = text.data.substring(0, data.cursorPos - 1)
-			val tail = if (text.data.length > data.cursorPos) {
-				text.data.substring(data.cursorPos)
-			} else {
-				""
-			}
-			text.data = head + tail
-			data.cursorPos--
+		val clicked = widgetHandler.leftMouseButton.down && hover
+		if (clicked) {
+			data.cursorPos = (widgetHandler.mousePos.x - (this.pos.x + widgetHandler.skin.panelBorder)) / widgetHandler.skin.charWidth
+			data.cursorPos = data.cursorPos.at_most(text.data.length)
 		}
+		handleInput(data, widgetHandler.pressedChar)
 
 		if (data.nextCursorToggleTick <= widgetHandler.currentTick) {
 			data.isCursorShown = !data.isCursorShown
 			data.nextCursorToggleTick = widgetHandler.currentTick + 700
 		}
+	}
+
+	private fun handleInput(data: TextfieldData, pressedChar: Char?) {
+		if (widgetHandler.backspace.just_pressed && data.cursorPos > 0) {
+			handleBackspace(data)
+		} else if (widgetHandler.leftArrow.down && data.cursorPos > 0) {
+			data.cursorPos--
+		} else if (widgetHandler.rightArrow.down && data.cursorPos < text.data.length) {
+			data.cursorPos++
+		} else if (widgetHandler.home.down) {
+			data.cursorPos = 0
+		} else if (widgetHandler.end.down) {
+			data.cursorPos = text.data.length
+		} else if (pressedChar != null) {
+			handlePressedChar(data, pressedChar)
+		}
+	}
+
+	private fun handleBackspace(data: TextfieldData) {
+		text.data = text.data.substring(0, data.cursorPos-1) + text.data.substring(data.cursorPos, text.data.length());
+		data.cursorPos--
+	}
+
+	open protected fun handlePressedChar(data: TextfieldData, pressedChar: Char) {
+		insertChar(data, pressedChar)
+	}
+
+	protected fun insertChar(data: TextfieldData, pressedChar: Char) {
+		text.data = text.data.substring(0, data.cursorPos) + pressedChar + text.data.substring(data.cursorPos, text.data.length());
+		data.cursorPos++
 	}
 
 	private fun getOrCreateMyData(): TextfieldData {
@@ -88,9 +114,5 @@ class Textfield(val text: StrValue, pos: Pos, init: Textfield.() -> Unit) : Widg
 		} else {
 			dataPtr as TextfieldData
 		}
-	}
-
-	fun clicked(): Boolean {
-		return (widgetHandler.leftMouseButton.just_released && hover)
 	}
 }

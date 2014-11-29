@@ -32,7 +32,7 @@ class WidgetHandler(val skin: Skin) {
 	val end = InputButton()
 	val pageUp = InputButton()
 	val pageDown = InputButton()
-	val keys = hashMapOf<Char, InputButton>()
+	private val keys = hashMapOf<Char, InputButton>()
 	var pressedChar: Char? = null
 
 	var currentTick = 0
@@ -40,11 +40,19 @@ class WidgetHandler(val skin: Skin) {
 	var lastDrawnPos = AbsolutePos(0, 0)
 	var lastDrawnWidget: Widget? = null
 
-	{
-		for (ch in 'a'..'z') {
-			keys.put(ch, InputButton())
+	fun isJustPressed(key: Char): Boolean = keys[key]?.just_pressed ?: false
+	fun isJustReleased(key: Char): Boolean = keys[key]?.just_released ?: false
+	fun isDown(key: Char): Boolean = keys[key]?.down ?: false
+	fun updateKey(key: Char, down: Boolean) {
+		if (down && key !in keys) {
+			keys[key] = InputButton()
 		}
+		keys[key]?.update(down)
 	}
+	fun disableAllKeysExcept(key: Char?) {
+		keys.toList().filter({ it.first != key }).forEach { it.second.update(false) }
+	}
+
 
 	fun getAbsolutePos(widget: Widget, widgetPos: Pos): AbsolutePos {
 		val w = if (lastDrawnWidget == null) 0 else lastDrawnWidget!!.width

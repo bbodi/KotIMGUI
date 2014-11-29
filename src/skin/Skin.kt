@@ -21,6 +21,7 @@ trait Skin {
 	val textMarginY: Int
 	val charWidth: Int
 	val charHeight: Int
+	val panelBorder: Int
 
 	fun clear()
 
@@ -38,9 +39,15 @@ trait Skin {
 
 	fun drawRadioButton(radioButton: RadioButton)
 	fun drawTabPanel(widget: TabPanel)
-	fun drawPanelRect(x: Int, y: Int, w: Int, h: Int, variant: Variant)
+	fun drawPanelRect(x: Int,
+					  y: Int,
+					  w: Int,
+					  h: Int,
+					  variant: Variant)
 
 	fun drawLabel(widget: Label)
+	fun drawMiniButton(widget: Button)
+
 
 	public fun text(text: String, x: Number, y: Number, color: String, font: Font) {
 		context.fillStyle = color;

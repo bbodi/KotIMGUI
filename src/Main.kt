@@ -17,12 +17,10 @@ import skin.Variant
 import widget.Panel
 import widget.AbsolutePos
 import widget.RelativePos
-import widget.fromLastWidgetBottom
 import widget.Textfield
 import skin.DiscoverUI
 import widget.ActionItem
 import widget.ActionMenu
-import widget.fromLastWidgetBottomLeft
 import widget.Widget
 import widget.Checkbox
 import widget.RadioButton
@@ -30,12 +28,7 @@ import widget.TabPanel
 import timeline.Timeline
 import widget.chart.LineChart
 import widget.Label
-
-fun getImage(path: String): HTMLImageElement {
-	val image = window.document.createElement("img") as HTMLImageElement
-	image.src = path
-	return image
-}
+import widget.NumberField
 
 val canvas: HTMLCanvasElement
 	get() {
@@ -85,31 +78,70 @@ class InputButton {
 
 public val widgetHandler: WidgetHandler = WidgetHandler(DiscoverUI(1397, 796, 3))
 var pressedChar: Char? = null
-var keyCode: Int? = null
-fun setPressedKeysFromJavascript(pressedChar: Char?, keyCode: Int) {
-	timeline.pressedChar = pressedChar
-	timeline.keyCode = keyCode
+
+fun keyDown(pressedChar: Char?, keyCode: Int) {
+	when (keyCode) {
+		38 -> widgetHandler.upArrow.update(true)
+		37 -> widgetHandler.leftArrow.update(true)
+		40 -> widgetHandler.downArrow.update(true)
+		39 -> widgetHandler.rightArrow.update(true)
+		33 -> widgetHandler.pageUp.update(true)
+		34 -> widgetHandler.pageDown.update(true)
+		13 -> widgetHandler.enter.update(true)
+		17 -> widgetHandler.ctrl.update(true)
+		18 -> widgetHandler.alt.update(true)
+		9 -> widgetHandler.tab.update(true)
+		36 -> widgetHandler.home.update(true)
+		35 -> widgetHandler.end.update(true)
+		8 -> widgetHandler.backspace.update(true)
+		16 -> widgetHandler.shift.update(true)
+	}
+	if (pressedChar != null) {
+		timeline.pressedChar = pressedChar
+	}
+}
+
+fun keyUp(keyCode: Int) {
+	when (keyCode) {
+		38 -> widgetHandler.upArrow.update(false)
+		37 -> widgetHandler.leftArrow.update(false)
+		40 -> widgetHandler.downArrow.update(false)
+		39 -> widgetHandler.rightArrow.update(false)
+		33 -> widgetHandler.pageUp.update(false)
+		34 -> widgetHandler.pageDown.update(false)
+		13 -> widgetHandler.enter.update(false)
+		17 -> widgetHandler.ctrl.update(false)
+		18 -> widgetHandler.alt.update(false)
+		9 -> widgetHandler.tab.update(false)
+		36 -> widgetHandler.home.update(false)
+		35 -> widgetHandler.end.update(false)
+		8 -> widgetHandler.backspace.update(false)
+		16 -> widgetHandler.shift.update(false)
+		else -> {}
+	}
 }
 
 fun handleKeys() {
-	widgetHandler.upArrow.update(keyCode == 38)
-	widgetHandler.leftArrow.update(keyCode == 37)
-	widgetHandler.downArrow.update(keyCode == 40)
-	widgetHandler.rightArrow.update(keyCode == 39)
-	widgetHandler.pageUp.update(keyCode == 33)
-	widgetHandler.pageDown.update(keyCode == 34)
-	widgetHandler.enter.update(keyCode == 13)
-	widgetHandler.ctrl.update(keyCode == 17)
-	widgetHandler.alt.update(keyCode == 18)
-	widgetHandler.tab.update(keyCode == 9)
-	widgetHandler.home.update(keyCode == 36)
-	widgetHandler.end.update(keyCode == 35)
-	widgetHandler.backspace.update(keyCode == 8)
-	widgetHandler.shift.update(keyCode == 16)
-	for (ch in 'a'..'z') {
-		widgetHandler.keys[ch]!!.update(ch == pressedChar)
+	widgetHandler.upArrow.update(widgetHandler.upArrow.down)
+	widgetHandler.leftArrow.update(widgetHandler.leftArrow.down)
+	widgetHandler.downArrow.update(widgetHandler.downArrow.down)
+	widgetHandler.rightArrow.update(widgetHandler.rightArrow.down)
+	widgetHandler.pageUp.update(widgetHandler.pageUp.down)
+	widgetHandler.pageDown.update(widgetHandler.pageDown.down)
+	widgetHandler.enter.update(widgetHandler.enter.down)
+	widgetHandler.ctrl.update(widgetHandler.ctrl.down)
+	widgetHandler.alt.update(widgetHandler.alt.down)
+	widgetHandler.tab.update(widgetHandler.tab.down)
+	widgetHandler.home.update(widgetHandler.home.down)
+	widgetHandler.end.update(widgetHandler.end.down)
+	widgetHandler.backspace.update(widgetHandler.backspace.down)
+	widgetHandler.shift.update(widgetHandler.shift.down)
+	if (pressedChar != null) {
+		widgetHandler.updateKey(pressedChar!!, true)
 	}
+	widgetHandler.disableAllKeysExcept(pressedChar)
 	widgetHandler.pressedChar = pressedChar
+
 }
 
 val value = IntValue(50)
@@ -120,6 +152,7 @@ val strValue2 = StrValue("")
 val strValue3 = StrValue("")
 val strValue4 = StrValue("")
 val strValue5 = StrValue("")
+val intValues = array(IntValue(0), IntValue(100))
 val booleanValues = array<BooleanValue>(BooleanValue(true), BooleanValue(false), BooleanValue(false), BooleanValue(false), BooleanValue(false))
 val radioButtonValue = IntValue(0)
 val tabPanelValue = IntValue(0)
@@ -171,9 +204,15 @@ fun doFrame() {
 	widgetHandler.middleMouseButton.update(middleMouseDown)
 	handleKeys()
 	pressedChar = null
-	keyCode = null
 	widgetHandler.clear()
 	setCursor(CursorStyle.Default);
+	doAppLogic()
+	debugLines.clear()
+	widgetHandler.mouseScrollDelta = 0
+	requestAnimationFrame({ doFrame() })
+}
+
+private fun doAppLogic() {
 	Panel(AbsolutePos(70, 100), {
 		+Button("Default Button", downAlongLeftMargin(10), {
 			width = 200
@@ -216,29 +255,27 @@ fun doFrame() {
 	}).drawAndHandleEvents()
 
 	Panel(AbsolutePos(300, 50), {
-		+Textfield(strValue, downAlongLeftMargin(10), {
-			width = 200
+		+Textfield(strValue, 10, downAlongLeftMargin(10), {
 			variant = Variant.DEFAULT
 		})
-		+Textfield(strValue1, downAlongLeftMargin(10), {
-			width = 200
+		+Textfield(strValue1, 10, downAlongLeftMargin(10), {
 			variant = Variant.INFO
 		})
-		+Textfield(strValue2, downAlongLeftMargin(), {
-			width = 200
+		+Textfield(strValue2, 10, downAlongLeftMargin(), {
 			variant = Variant.WARNING
 		})
-		+Textfield(strValue3, downAlongLeftMargin(20), {
-			width = 200
+		+Textfield(strValue3, 10, downAlongLeftMargin(20), {
 			variant = Variant.DANGER
 		})
-		+Textfield(strValue4, downAlongLeftMargin(20), {
-			width = 200
+		+Textfield(strValue4, 10, downAlongLeftMargin(20), {
 			variant = Variant.SUCCESS
 		})
-		+Textfield(strValue5, downAlongLeftMargin(20), {
-			width = 200
+		+Textfield(strValue5, 10, downAlongLeftMargin(20), {
 			disabled = true
+		})
+		+NumberField(intValues[0], 4, downAlongLeftMargin(20), {
+		})
+		+NumberField(intValues[1], 4, downAlongLeftMargin(20), {
 		})
 	}).drawAndHandleEvents()
 
@@ -298,24 +335,24 @@ fun doFrame() {
 	if (showActionMenu) {
 		var parentActionItem: ActionItem? = null
 		val contextMenu = ActionMenu(actionMenuPos, {
-			+ActionItem(downAlongLeftMargin(margin), {
+			+ActionItem(downUnderMargin(), {
 				label = "Normal"
 				comment = "Ctrl+N"
 			})
-			+ActionItem(downAlongLeftMargin(1), {
+			+ActionItem(downAlongLeftMargin(), {
 				label = "Disabled"
 				disabled = true
 			})
-			+ActionItem(downAlongLeftMargin(1), {
+			+ActionItem(downAlongLeftMargin(), {
 				label = "Checkbox value"
 				checkBoxValue = booleanValue
 			})
-			parentActionItem = ActionItem(downAlongLeftMargin(1), {
+			parentActionItem = ActionItem(downAlongLeftMargin(), {
 				label = "Parent"
 				hasSubMenu = true
 			})
 			+parentActionItem!!
-			+Textfield(strValue, downAlongLeftMargin(), {
+			+Textfield(strValue, 10, downAlongLeftMargin(), {
 				width = 200
 			})
 			+Button("Start", downAlongLeftMargin(), {
@@ -325,19 +362,18 @@ fun doFrame() {
 		contextMenu.drawAndHandleEvents()
 
 		val subMenu = ActionMenu(parentActionItem!!.pos + AbsolutePos(20, 20), {
-			+ActionItem(downAlongLeftMargin(1), {
+			+ActionItem(downAlongLeftMargin(), {
 				label = "Sub Normal"
 			})
-			+ActionItem(downAlongLeftMargin(1), {
+			+ActionItem(downAlongLeftMargin(), {
 				label = "Sub Disabled"
 				disabled = true
 			})
-			+ActionItem(downAlongLeftMargin(1), {
+			+ActionItem(downAlongLeftMargin(), {
 				label = "Sub Checkbox value"
 				checkBoxValue = booleanValue
 			})
-			+Textfield(strValue, downAlongLeftMargin(), {
-				width = 200
+			+Textfield(strValue, 10, downAlongLeftMargin(), {
 			})
 			+Button("Sub Start", downAlongLeftMargin(), {
 				width = 200
@@ -352,23 +388,28 @@ fun doFrame() {
 			showActionMenu = contextMenu.hover || showSubActionMenu
 		}
 	}
-	if (widgetHandler.keys['h']!!.just_released) {
+	debugLines.add("shift: ${widgetHandler.shift.down}, ctrl: ${widgetHandler.ctrl.down}")
+	debugLines.add("h: ${widgetHandler.isDown('h')}")
+	debugLines.add("mousePos: ${widgetHandler.mousePos.x}, ${widgetHandler.mousePos.y}")
+	if (widgetHandler.isJustReleased('h')) {
 		showDebugLines = !showDebugLines
 	}
+	showDebugLines = true
 	if (showDebugLines) {
 		Panel(widgetHandler.mousePos, {
 			debugLines.withIndices().forEach {
-				+Label(it.second, if (it.first == 0) downUnderMargin() else  downAlongLeftMargin())
+				val pos = if (it.first == 0) downUnderMargin() else downAlongLeftMargin()
+				when (it.second) {
+					is String -> +Label(it.second as String, pos)
+					is IntValue -> +NumberField(it.second as IntValue, 4, pos)
+				}
 			}
 		}).drawAndHandleEvents()
 	}
-	debugLines.clear()
-	widgetHandler.mouseScrollDelta = 0
-	requestAnimationFrame({doFrame()})
 }
 
 var showDebugLines = false
-val debugLines = arrayListOf<String>()
+val debugLines = arrayListOf<Any>()
 
 fun onMouseDown(which: Int) {
 	when (which ) {
@@ -401,7 +442,7 @@ fun main(args: Array<String>) {
 			widgetHandler.mousePos = mousePos(it)
 		}
 
-		requestAnimationFrame({doFrame()})
+		requestAnimationFrame({ doFrame() })
 	}
 }
 
@@ -421,14 +462,16 @@ fun callJavascript() {}
 
 native
 public class Date(ms: Int) {
-	public fun getTime() : Int = noImpl
+	public fun getTime(): Int = noImpl
 	native("getDate")
-	public fun getDayOfMonth() : Int = noImpl
+	public fun getDayOfMonth(): Int = noImpl
+
 	native("getDay")
-	public fun getDayOfWeek() : Int = noImpl
-	public fun getFullYear() : Int = noImpl
-	public fun getHours() : Int = noImpl
-	public fun getMilliseconds() : Int = noImpl
+	public fun getDayOfWeek(): Int = noImpl
+
+	public fun getFullYear(): Int = noImpl
+	public fun getHours(): Int = noImpl
+	public fun getMilliseconds(): Int = noImpl
 	public fun getMinutes(): Int = noImpl
 	public fun getMonth(): Int = noImpl
 	public fun getSeconds(): Int = noImpl
@@ -498,28 +541,22 @@ fun tabPanel() {
 			})
 		} else if (tabPanelValue.data == 1) {
 			+Panel(downAlongLeftMargin(10), {
-				+Textfield(strValue, downAlongLeftMargin(10), {
-					width = 200
+				+Textfield(strValue, 10, downAlongLeftMargin(10), {
 					variant = Variant.DEFAULT
 				})
-				+Textfield(strValue1, downAlongLeftMargin(10), {
-					width = 200
+				+Textfield(strValue1, 10, downAlongLeftMargin(10), {
 					variant = Variant.INFO
 				})
-				+Textfield(strValue2, downAlongLeftMargin(), {
-					width = 200
+				+Textfield(strValue2, 10, downAlongLeftMargin(), {
 					variant = Variant.WARNING
 				})
-				+Textfield(strValue3, downAlongLeftMargin(20), {
-					width = 200
+				+Textfield(strValue3, 10, downAlongLeftMargin(20), {
 					variant = Variant.DANGER
 				})
-				+Textfield(strValue4, downAlongLeftMargin(20), {
-					width = 200
+				+Textfield(strValue4, 10, downAlongLeftMargin(20), {
 					variant = Variant.SUCCESS
 				})
-				+Textfield(strValue5, downAlongLeftMargin(20), {
-					width = 200
+				+Textfield(strValue5, 10, downAlongLeftMargin(20), {
 					disabled = true
 				})
 			})

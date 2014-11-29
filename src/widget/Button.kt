@@ -5,17 +5,14 @@ import timeline.widgetHandler
 
 class Button(val label: String, pos: Pos, init: Button.() -> Unit) : Widget(pos) {
 	var disabled: Boolean = false
-	var allow_multi_click = false
 	var hover = false
 		private set
 		get() = widgetHandler.mousePos.is_in_rect(pos, AbsolutePos(width, height))
 
 	override var width = 0
-		get() {
-			return if ($width == 0) (label.length+2) * widgetHandler.skin.charWidth else $width
-		}
+		get() = if ($width == 0) (label.length+2) * widgetHandler.skin.charWidth else $width
+
 	override var height = widgetHandler.skin.rowHeight
-		private set
 	var down = false
 	var variant = Variant.DEFAULT
 	var onClick: (() -> Unit)? = null

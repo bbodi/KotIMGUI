@@ -66,6 +66,7 @@ class Timeline(pos: Pos, init: Timeline.() -> Unit = {}) : Widget(pos) {
 		val data = getOrCreateMyData()
 
 		debugLines.add("Timeline - x1: ${data.x1}, x2: ${data.x2}")
+		debugLines.add(IntValue(12))
 		val timeRange = data.x2 - data.x1
 		val screenStepW = width / timeRange.toFloat()
 		val isApplicableForCurrentView = {(generator: XAxisLabelGenerator, secondRowGenerator: XAxisLabelGenerator) -> if (width / (timeRange / generator.rangeReducer) >= widgetHandler.skin.charWidth * (generator.labelWidth + 1))
@@ -82,20 +83,6 @@ class Timeline(pos: Pos, init: Timeline.() -> Unit = {}) : Widget(pos) {
 		val bottomForLabels = (pos.y + height) - (widgetHandler.skin.rowHeight)
 		val bottomForLines = (pos.y + height) - (widgetHandler.skin.rowHeight*3)
 		context.beginPath()
-		for ((i, v) in (data.x1..data.x2).withIndices()) {
-			entryRenderers.reverse().withIndices().forEach {
-				val entry = it.second.labelGenerator(v)
-				if (entry != null) {
-					if (it.first == entryRenderers.size - 1) {
-						context.moveTo(pos.x + i * screenStepW, bottomForLines)
-						context.lineTo(pos.x + i * screenStepW, pos.y)
-					}
-					val textX = pos.x + i * screenStepW - (entry.length * widgetHandler.skin.charWidth / 2)
-					var textY = bottomForLabels - it.first * widgetHandler.skin.rowHeight
-					widgetHandler.skin.text(entry, textX, textY, "white", widgetHandler.skin.font)
-				}
-			}
-		}
 		val valueRange = (data.y2 - data.y1).toFloat()
 		val screenStepH = height / valueRange
 		var valueReducer = 1
@@ -105,21 +92,48 @@ class Timeline(pos: Pos, init: Timeline.() -> Unit = {}) : Widget(pos) {
 			}
 			valueReducer *= 10
 		}
-		for ((i, v) in (data.y1..data.y2).withIndices()) {
+		val yAxisLabelLen = (data.y2/valueReducer).toString().length
+		val chartAreaX = pos.x + widgetHandler.skin.charWidth*(yAxisLabelLen+1) + widgetHandler.skin.panelBorder
+		val chartAreaY = pos.y + widgetHandler.skin.panelBorder
+		val chartAreaWidth = width-widgetHandler.skin.charWidth*(yAxisLabelLen+1) - widgetHandler.skin.panelBorder
+		val chartAreaHeight = height - (widgetHandler.skin.rowHeight*3) - widgetHandler.skin.panelBorder
+		for ((i, v) in (data.y1 .. data.y2).withIndices()) {
 			val entry = v.toString()
 			if (valueReducer == 1 || v % valueReducer == 0) {
 				var y = bottomForLines - i * screenStepH
-				context.moveTo(pos.x, y)
-				context.lineTo(pos.x + width, y)
-				val textX = pos.x
+				context.moveTo(chartAreaX, y)
+				context.lineTo(chartAreaX + chartAreaWidth, y)
+				val textX = pos.x + widgetHandler.skin.panelBorder
 				var textY = bottomForLines - i * screenStepH - widgetHandler.skin.charHeight/2
 				widgetHandler.skin.text(entry, textX, textY, "white", widgetHandler.skin.font)
+			}
+		}
+
+
+		for ((i, v) in (data.x1 .. data.x2).withIndices()) {
+			entryRenderers.reverse().withIndices().forEach {
+				val entry = it.second.labelGenerator(v)
+				if (entry != null) {
+					if (it.first == entryRenderers.size - 1) {
+						context.moveTo(chartAreaX + i * screenStepW, bottomForLines)
+						context.lineTo(chartAreaX + i * screenStepW, chartAreaY)
+					}
+					val textX = chartAreaX + i * screenStepW - (entry.length * widgetHandler.skin.charWidth / 2)
+					var textY = bottomForLabels - it.first * widgetHandler.skin.rowHeight
+					widgetHandler.skin.text(entry, textX, textY, "white", widgetHandler.skin.font)
+				}
 			}
 		}
 		context.strokeStyle = "#676767"
 		context.lineWidth = 1.0
 		context.stroke()
-		charts.forEach { it.draw(pos.x, pos.y, width, height, data.x1, data.x2) }
+		context.save()
+		context.beginPath()
+		context.rect(chartAreaX, pos.y, chartAreaWidth, chartAreaHeight)
+		context.clip()
+		context.translate(chartAreaX, pos.y)
+		charts.forEach { it.draw(width, height, data.x1, data.x2, data.y1, data.y2) }
+		context.restore()
 	}
 
 	override fun handleEvents() {
@@ -144,11 +158,20 @@ class Timeline(pos: Pos, init: Timeline.() -> Unit = {}) : Widget(pos) {
 			data.lastMousePos = widgetHandler.mousePos
 			setCursor(CursorStyle.Move)
 		} else if (down) {
-			val deltaX = widgetHandler.mousePos.x - data.lastMousePos.x
-			data.x1 -= deltaX
-			data.x2 -= deltaX
+			if (widgetHandler.shift.down) {
+				val deltaY = widgetHandler.mousePos.y - data.lastMousePos.y
+				data.y1 -= deltaY
+				data.y2 -= deltaY
+				intValues[0].data = data.y1
+				intValues[1].data = data.y2
+				setCursor(CursorStyle.NorthResize)
+			} else {
+				val deltaX = widgetHandler.mousePos.x - data.lastMousePos.x
+				data.x1 -= deltaX
+				data.x2 -= deltaX
+				setCursor(CursorStyle.WestResize)
+			}
 			data.lastMousePos = widgetHandler.mousePos
-			setCursor(CursorStyle.Move)
 		}
 		if (hover && widgetHandler.mouseScrollDelta != 0) {
 			data.x1 += widgetHandler.mouseScrollDelta

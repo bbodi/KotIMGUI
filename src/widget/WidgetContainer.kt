@@ -9,7 +9,7 @@ abstract class WidgetContainer(pos: Pos) : Widget(pos) {
 	abstract val contentWidth: Int
 
 	val widgets = arrayListOf<Widget>();
-	var margin: Int = 10
+	val margin = 2*widgetHandler.skin.panelBorder
 
 	fun Widget.plus() {
 		addWidget(this)
@@ -41,7 +41,7 @@ abstract class WidgetContainer(pos: Pos) : Widget(pos) {
 	}
 
 	fun WidgetContainer.downAlongLeftMargin(y: Int = 1): Pos {
-		return RelativePos(pos.x + margin, fromLastWidgetBottom(y).y, array(Direction.DOWN, Direction.X_IS_ABSOLUTE))
+		return RelativePos(pos.x + margin, y, array(Direction.DOWN, Direction.X_IS_ABSOLUTE))
 	}
 	fun WidgetContainer.downUnderMargin(): Pos {
 		return downAlongLeftMargin(margin)
