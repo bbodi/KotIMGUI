@@ -12,11 +12,13 @@ import widget.ActionMenu
 import widget.Checkbox
 import widget.RadioButton
 import widget.TabPanel
+import widget.Label
 
 
 trait Skin {
 	val font: Font
 	val rowHeight: Int
+	val textMarginY: Int
 	val charWidth: Int
 	val charHeight: Int
 
@@ -37,6 +39,8 @@ trait Skin {
 	fun drawRadioButton(radioButton: RadioButton)
 	fun drawTabPanel(widget: TabPanel)
 	fun drawPanelRect(x: Int, y: Int, w: Int, h: Int, variant: Variant)
+
+	fun drawLabel(widget: Label)
 
 	public fun text(text: String, x: Number, y: Number, color: String, font: Font) {
 		context.fillStyle = color;

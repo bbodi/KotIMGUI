@@ -15,6 +15,7 @@ import widget.AbsolutePos
 import widget.Checkbox
 import widget.RadioButton
 import widget.TabPanel
+import widget.Label
 
 public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: Int) : Skin {
 
@@ -22,7 +23,7 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 
 	override val rowHeight = (height * (rowHeightPercent / 100.0)+0.5).toInt()
 	val margin = 5
-	val textMarginY = rowHeight/4
+	override val textMarginY = rowHeight/4
 	override val charHeight = rowHeight - textMarginY*2
 	override val font = Font(charHeight, "Courier New");
 	override val charWidth: Int
@@ -88,6 +89,16 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		text(radioButton.label, textX, textY, "white", font)
 	}
 
+	override fun drawLabel(widget: Label) {
+		val bottomColor = when (widget.variant) {
+			Variant.INFO -> "#1D5388"
+			Variant.SUCCESS -> "#5D7A1F"
+			Variant.WARNING -> "#FBB900"
+			Variant.DANGER -> "#FF4300"
+			Variant.DEFAULT -> "white"
+		}
+		text(widget.label, widget.pos.x, widget.pos.y, bottomColor, font)
+	}
 
 	override fun drawButton(widget: Button) {
 		val w = widget.width

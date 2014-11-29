@@ -8,12 +8,10 @@ class LineChart(val data: List<Number>, init: LineChart.() -> Unit ) {
 		init()
 	}
 
-	fun draw(screenX: Int, screenY: Int, screenW: Int, screenH: Int, zoomLevel: Int, xAxisPos: Int) {
-		val a = (zoomLevel / Math.sqrt(3.0));
-		val x1 = (xAxisPos - a).toInt();
-		val x2 = (xAxisPos + a + 0.5).toInt();
+	fun draw(screenX: Int, screenY: Int, screenW: Int, screenH: Int, x1: Int, x2: Int) {
 		val bottom = (screenY + screenH) - (screenH * 0.1f);
-		val screenStepW = screenW / (2f * a);
+		val timeRange = x2 - x1
+		val screenStepW = screenW / timeRange.toFloat();
 
 		context.save()
 		context.beginPath()

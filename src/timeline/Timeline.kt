@@ -8,12 +8,42 @@ import widget.PositionBasedId
 import skin.Variant
 
 class TimelineData {
-	var zoomLevel = 100
-	var xAxisPos = 10000
+	var x1 = 100
+	var x2 = 200
+	var y1 = 0
+	var y2 = 120
 	var lastMousePos = AbsolutePos(0, 0)
 }
 
+private val monthNames: Array<String> = array("Jan", "Feb", "Mar", "Apr", "May", "Jun",
+		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+private enum class XAxisLabelGenerator(val labelWidth: Int, val rangeReducer: Int, val labelGenerator: (day: Int) -> String?) {
+
+	DayLabelGenerator : XAxisLabelGenerator(2, 1, { day ->
+		val date = Date(day * 24 * 60 * 60 * 1000)
+		date.getDayOfMonth().toString()
+	})
+	WeekLabelGenerator : XAxisLabelGenerator(2, 7, { day ->
+		val date = Date(day * 24 * 60 * 60 * 1000)
+		if (date.getDayOfWeek() != 0) null else date.getDayOfMonth().toString()
+	})
+	MonthLabelGenerator : XAxisLabelGenerator(3, 30, { day ->
+		val date = Date(day * 24 * 60 * 60 * 1000)
+		if (date.getDayOfMonth() != 1) null else monthNames[date.getMonth()]
+	})
+	ThreeMonthLabelGenerator : XAxisLabelGenerator(3, 90, { day ->
+		val date = Date(day * 24 * 60 * 60 * 1000)
+		if (date.getMonth() % 3 != 0 || date.getDayOfMonth() != 1) null else monthNames[date.getMonth()]
+	})
+	YearLabelGenerator : XAxisLabelGenerator(4, 365, { day ->
+		val date = Date(day * 24 * 60 * 60 * 1000)
+		if (date.getMonth() != 0 || date.getDayOfMonth() != 1) null else date.getFullYear().toString()
+	})
+}
+
 class Timeline(pos: Pos, init: Timeline.() -> Unit = {}) : Widget(pos) {
+
 	override var width = 0
 		get() = parent!!.contentWidth
 	override var height = widgetHandler.skin.rowHeight
@@ -35,47 +65,61 @@ class Timeline(pos: Pos, init: Timeline.() -> Unit = {}) : Widget(pos) {
 
 		val data = getOrCreateMyData()
 
-		val a = (data.zoomLevel / Math.sqrt(3.0))
-		val x1 = (data.xAxisPos - a).toInt()
-		val x2 = (data.xAxisPos + a + 0.5).toInt()
-		val timeRange = x2 - x1
-		val screenStepW = width / (2f * a)
-		val asd = if (width/timeRange >= widgetHandler.skin.charWidth * 3) {
-			"Day"
-		} else if (width/(timeRange/7) >= widgetHandler.skin.charWidth * 3) {
-			"Week"
-		} else if (width/(timeRange/30) >= widgetHandler.skin.charWidth * 3) {
-			"Mon"
-		} else if (width/(timeRange/90) * screenStepW >= widgetHandler.skin.charWidth * 3) {
-			"3Mon"
-		} else {
-			"Year"
-		}
-		val q = Date(1)
-		val qe = Date(1).getDayOfMonth()
-		val bottom = (pos.y + height) - widgetHandler.skin.rowHeight
+		debugLines.add("Timeline - x1: ${data.x1}, x2: ${data.x2}")
+		val timeRange = data.x2 - data.x1
+		val screenStepW = width / timeRange.toFloat()
+		val isApplicableForCurrentView = {(generator: XAxisLabelGenerator, secondRowGenerator: XAxisLabelGenerator) -> if (width / (timeRange / generator.rangeReducer) >= widgetHandler.skin.charWidth * (generator.labelWidth + 1))
+			array(generator, secondRowGenerator)
+		else
+			null}
+
+		val entryRenderers = isApplicableForCurrentView(XAxisLabelGenerator.DayLabelGenerator, XAxisLabelGenerator.MonthLabelGenerator)
+			?: isApplicableForCurrentView(XAxisLabelGenerator.WeekLabelGenerator, XAxisLabelGenerator.MonthLabelGenerator)
+			?: isApplicableForCurrentView(XAxisLabelGenerator.MonthLabelGenerator, XAxisLabelGenerator.YearLabelGenerator)
+			?: isApplicableForCurrentView(XAxisLabelGenerator.ThreeMonthLabelGenerator, XAxisLabelGenerator.YearLabelGenerator)
+			?: array(XAxisLabelGenerator.YearLabelGenerator)
+
+		val bottomForLabels = (pos.y + height) - (widgetHandler.skin.rowHeight)
+		val bottomForLines = (pos.y + height) - (widgetHandler.skin.rowHeight*3)
 		context.beginPath()
-		for ((i, v) in (x1..x2).withIndices()) {
-			val draw = when (asd) {
-				"Day" -> v.toString()
-				"Week" -> with(Date(v*24*60*60*1000), {if (getDayOfWeek() == 0) v.toString() else null})
-				"Mon" -> with(Date(v*24*60*60*1000), { if (getDayOfMonth() == 1) getMonth().toString() else null})
-				"3Mon" -> with(Date(v*24*60*60*1000), {if (getMonth() % 3 == 0 && getDayOfMonth() == 1) getMonth().toString() else null})
-				else -> with(Date(v*24*60*60*1000),  {if (getMonth() == 0 && getDayOfMonth() == 1) getFullYear().toString() else null})
+		for ((i, v) in (data.x1..data.x2).withIndices()) {
+			entryRenderers.reverse().withIndices().forEach {
+				val entry = it.second.labelGenerator(v)
+				if (entry != null) {
+					if (it.first == entryRenderers.size - 1) {
+						context.moveTo(pos.x + i * screenStepW, bottomForLines)
+						context.lineTo(pos.x + i * screenStepW, pos.y)
+					}
+					val textX = pos.x + i * screenStepW - (entry.length * widgetHandler.skin.charWidth / 2)
+					var textY = bottomForLabels - it.first * widgetHandler.skin.rowHeight
+					widgetHandler.skin.text(entry, textX, textY, "white", widgetHandler.skin.font)
+				}
 			}
-			if (draw != null) {
-				context.moveTo(pos.x + i * screenStepW, bottom)
-				context.lineTo(pos.x + i * screenStepW, pos.y)
-				val textX = pos.x + i * screenStepW - (draw.length*widgetHandler.skin.charWidth/2)
-				widgetHandler.skin.text(draw, textX, bottom, "white", widgetHandler.skin.font)
+		}
+		val valueRange = (data.y2 - data.y1).toFloat()
+		val screenStepH = height / valueRange
+		var valueReducer = 1
+		while (true) {
+			if (height/(valueRange/valueReducer) >= widgetHandler.skin.rowHeight) {
+				break
+			}
+			valueReducer *= 10
+		}
+		for ((i, v) in (data.y1..data.y2).withIndices()) {
+			val entry = v.toString()
+			if (valueReducer == 1 || v % valueReducer == 0) {
+				var y = bottomForLines - i * screenStepH
+				context.moveTo(pos.x, y)
+				context.lineTo(pos.x + width, y)
+				val textX = pos.x
+				var textY = bottomForLines - i * screenStepH - widgetHandler.skin.charHeight/2
+				widgetHandler.skin.text(entry, textX, textY, "white", widgetHandler.skin.font)
 			}
 		}
 		context.strokeStyle = "#676767"
 		context.lineWidth = 1.0
 		context.stroke()
-
-
-		charts.forEach { it.draw(pos.x, pos.y, width, height, data.zoomLevel, data.xAxisPos) }
+		charts.forEach { it.draw(pos.x, pos.y, width, height, data.x1, data.x2) }
 	}
 
 	override fun handleEvents() {
@@ -101,12 +145,14 @@ class Timeline(pos: Pos, init: Timeline.() -> Unit = {}) : Widget(pos) {
 			setCursor(CursorStyle.Move)
 		} else if (down) {
 			val deltaX = widgetHandler.mousePos.x - data.lastMousePos.x
-			data.xAxisPos -= deltaX
+			data.x1 -= deltaX
+			data.x2 -= deltaX
 			data.lastMousePos = widgetHandler.mousePos
 			setCursor(CursorStyle.Move)
 		}
 		if (hover && widgetHandler.mouseScrollDelta != 0) {
-			data.zoomLevel = (data.zoomLevel - widgetHandler.mouseScrollDelta * 10).at_least(10)
+			data.x1 += widgetHandler.mouseScrollDelta
+			data.x2 -= widgetHandler.mouseScrollDelta
 		}
 	}
 

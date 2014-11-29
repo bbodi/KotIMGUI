@@ -29,6 +29,7 @@ import widget.RadioButton
 import widget.TabPanel
 import timeline.Timeline
 import widget.chart.LineChart
+import widget.Label
 
 fun getImage(path: String): HTMLImageElement {
 	val image = window.document.createElement("img") as HTMLImageElement
@@ -82,7 +83,7 @@ class InputButton {
 	}
 }
 
-val widgetHandler = WidgetHandler(DiscoverUI(1397, 796, 3))
+public val widgetHandler: WidgetHandler = WidgetHandler(DiscoverUI(1397, 796, 3))
 var pressedChar: Char? = null
 var keyCode: Int? = null
 fun setPressedKeysFromJavascript(pressedChar: Char?, keyCode: Int) {
@@ -351,7 +352,23 @@ fun doFrame() {
 			showActionMenu = contextMenu.hover || showSubActionMenu
 		}
 	}
+	if (widgetHandler.keys['h']!!.just_released) {
+		showDebugLines = !showDebugLines
+	}
+	if (showDebugLines) {
+		Panel(widgetHandler.mousePos, {
+			debugLines.withIndices().forEach {
+				+Label(it.second, if (it.first == 0) downUnderMargin() else  downAlongLeftMargin())
+			}
+		}).drawAndHandleEvents()
+	}
+	debugLines.clear()
+	widgetHandler.mouseScrollDelta = 0
+	requestAnimationFrame({doFrame()})
 }
+
+var showDebugLines = false
+val debugLines = arrayListOf<String>()
 
 fun onMouseDown(which: Int) {
 	when (which ) {
@@ -373,17 +390,18 @@ fun onMouseScroll(delta: Int) {
 	widgetHandler.mouseScrollDelta = delta
 }
 
+native
+fun requestAnimationFrame(func: Any) {
+
+}
+
 fun main(args: Array<String>) {
 	jq {
 		jq(canvas).mousemove {
 			widgetHandler.mousePos = mousePos(it)
 		}
 
-		// requestAnimationFrame
-		window.setInterval({
-			doFrame()
-			widgetHandler.mouseScrollDelta = 0
-		}, 40);
+		requestAnimationFrame({doFrame()})
 	}
 }
 
