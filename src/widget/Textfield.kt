@@ -78,9 +78,9 @@ open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, init:
 	private fun handleInput(data: TextfieldData, pressedChar: Char?) {
 		if (widgetHandler.backspace.just_pressed && data.cursorPos > 0) {
 			handleBackspace(data)
-		} else if (widgetHandler.leftArrow.down && data.cursorPos > 0) {
+		} else if (widgetHandler.leftArrow.just_pressed && data.cursorPos > 0) {
 			data.cursorPos--
-		} else if (widgetHandler.rightArrow.down && data.cursorPos < text.data.length) {
+		} else if (widgetHandler.rightArrow.just_pressed && data.cursorPos < text.data.length) {
 			data.cursorPos++
 		} else if (widgetHandler.home.down) {
 			data.cursorPos = 0

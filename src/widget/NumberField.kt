@@ -37,6 +37,13 @@ class NumberField(val value: IntValue, width: Int, pos: Pos, init: Textfield.() 
 			value.data++
 		} else if (lowerButton.down) {
 			value.data--
+		} else if (widgetHandler.upArrow.down && isActive) {
+			value.data++
+			upperButton.down = true
+		} else if (widgetHandler.downArrow.down && isActive) {
+			value.data--
+			lowerButton.down = true
 		}
+
 	}
 }

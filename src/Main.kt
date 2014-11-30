@@ -61,14 +61,23 @@ class InputButton {
 
 	fun update(is_currently_down: Boolean) {
 		if (is_currently_down && !down) {
+			if (this == widgetHandler.leftArrow) {
+				down = down
+			}
 			just_pressed = true;
 			just_released = false;
 			down = true;
 		} else if (!is_currently_down && down) {
+			if (this == widgetHandler.leftArrow) {
+				down = down
+			}
 			just_pressed = false;
 			just_released = true;
 			down = false;
 		} else {
+			if (this == widgetHandler.leftArrow) {
+				down = down
+			}
 			just_pressed = false;
 			just_released = false;
 			down = is_currently_down;
@@ -78,51 +87,47 @@ class InputButton {
 
 public val widgetHandler: WidgetHandler = WidgetHandler(DiscoverUI(1397, 796, 3))
 var pressedChar: Char? = null
+var keyDownEvents: MutableList<Int> = arrayListOf<Int>()
+var keyUpEvents: MutableList<Int> = arrayListOf<Int>()
 
 fun keyDown(pressedChar: Char?, keyCode: Int) {
-	when (keyCode) {
-		38 -> widgetHandler.upArrow.update(true)
-		37 -> widgetHandler.leftArrow.update(true)
-		40 -> widgetHandler.downArrow.update(true)
-		39 -> widgetHandler.rightArrow.update(true)
-		33 -> widgetHandler.pageUp.update(true)
-		34 -> widgetHandler.pageDown.update(true)
-		13 -> widgetHandler.enter.update(true)
-		17 -> widgetHandler.ctrl.update(true)
-		18 -> widgetHandler.alt.update(true)
-		9 -> widgetHandler.tab.update(true)
-		36 -> widgetHandler.home.update(true)
-		35 -> widgetHandler.end.update(true)
-		8 -> widgetHandler.backspace.update(true)
-		16 -> widgetHandler.shift.update(true)
-	}
+	keyDownEvents.add(keyCode)
 	if (pressedChar != null) {
 		timeline.pressedChar = pressedChar
 	}
 }
 
 fun keyUp(keyCode: Int) {
-	when (keyCode) {
-		38 -> widgetHandler.upArrow.update(false)
-		37 -> widgetHandler.leftArrow.update(false)
-		40 -> widgetHandler.downArrow.update(false)
-		39 -> widgetHandler.rightArrow.update(false)
-		33 -> widgetHandler.pageUp.update(false)
-		34 -> widgetHandler.pageDown.update(false)
-		13 -> widgetHandler.enter.update(false)
-		17 -> widgetHandler.ctrl.update(false)
-		18 -> widgetHandler.alt.update(false)
-		9 -> widgetHandler.tab.update(false)
-		36 -> widgetHandler.home.update(false)
-		35 -> widgetHandler.end.update(false)
-		8 -> widgetHandler.backspace.update(false)
-		16 -> widgetHandler.shift.update(false)
-		else -> {}
-	}
+	keyUpEvents.add(keyCode)
 }
 
 fun handleKeys() {
-	widgetHandler.upArrow.update(widgetHandler.upArrow.down)
+	val asd = {(array: List<Int>, down: Boolean) ->
+		array.forEach {
+			when (it) {
+				38 -> widgetHandler.upArrow.update(down)
+				37 -> widgetHandler.leftArrow.update(down)
+				40 -> widgetHandler.downArrow.update(down)
+				39 -> widgetHandler.rightArrow.update(down)
+				33 -> widgetHandler.pageUp.update(down)
+				34 -> widgetHandler.pageDown.update(down)
+				13 -> widgetHandler.enter.update(down)
+				17 -> widgetHandler.ctrl.update(down)
+				18 -> widgetHandler.alt.update(down)
+				9 -> widgetHandler.tab.update(down)
+				36 -> widgetHandler.home.update(down)
+				35 -> widgetHandler.end.update(down)
+				8 -> widgetHandler.backspace.update(down)
+				16 -> widgetHandler.shift.update(down)
+			}
+		}
+	}
+	asd(keyUpEvents, false)
+	asd(keyDownEvents, true)
+	keyUpEvents.clear()
+	keyDownEvents.clear()
+
+	/*widgetHandler.upArrow.update(widgetHandler.upArrow.down)
 	widgetHandler.leftArrow.update(widgetHandler.leftArrow.down)
 	widgetHandler.downArrow.update(widgetHandler.downArrow.down)
 	widgetHandler.rightArrow.update(widgetHandler.rightArrow.down)
@@ -135,7 +140,7 @@ fun handleKeys() {
 	widgetHandler.home.update(widgetHandler.home.down)
 	widgetHandler.end.update(widgetHandler.end.down)
 	widgetHandler.backspace.update(widgetHandler.backspace.down)
-	widgetHandler.shift.update(widgetHandler.shift.down)
+	widgetHandler.shift.update(widgetHandler.shift.down)*/
 	if (pressedChar != null) {
 		widgetHandler.updateKey(pressedChar!!, true)
 	}
@@ -154,6 +159,7 @@ val strValue4 = StrValue("")
 val strValue5 = StrValue("")
 val intValues = array(IntValue(0), IntValue(100))
 val booleanValues = array<BooleanValue>(BooleanValue(true), BooleanValue(false), BooleanValue(false), BooleanValue(false), BooleanValue(false))
+val showAvgValues = array<BooleanValue>(BooleanValue(true), BooleanValue(false), BooleanValue(false), BooleanValue(false), BooleanValue(false))
 val radioButtonValue = IntValue(0)
 val tabPanelValue = IntValue(0)
 val booleanValue = BooleanValue(true)
@@ -174,7 +180,8 @@ fun init_data(): MutableList<Float> {
 	var last = 30.0f;
 	val data = ArrayList<Float>(100000);
 	for (i in 0..100000) {
-		last = last + Math.random().toFloat() * 2.0f - 1.0f;
+		//last = last + Math.random().toFloat() * 2.0f - 1.0f;
+		last = 20f
 		if (last < 0) {
 			last = 30f;
 		} else if (last > 60f) {
@@ -186,7 +193,7 @@ fun init_data(): MutableList<Float> {
 }
 
 
-fun calc_ema(data: List<Float>, smoothingConstant: Float) {
+fun calc_ema(data: List<Float>, smoothingConstant: Float): List<Float> {
 	val avgData = ArrayList<Float>(data.size)
 	var last_data = data[0];
 	for ((i, v) in data.withIndices().filter { pair -> pair.first > 0 }) {
@@ -195,6 +202,7 @@ fun calc_ema(data: List<Float>, smoothingConstant: Float) {
 		avgData.add(curr_data);
 		last_data = curr_data;
 	}
+	return avgData
 }
 
 fun doFrame() {
@@ -203,10 +211,10 @@ fun doFrame() {
 	widgetHandler.rightMouseButton.update(rightMouseDown)
 	widgetHandler.middleMouseButton.update(middleMouseDown)
 	handleKeys()
-	pressedChar = null
 	widgetHandler.clear()
 	setCursor(CursorStyle.Default);
 	doAppLogic()
+	pressedChar = null
 	debugLines.clear()
 	widgetHandler.mouseScrollDelta = 0
 	requestAnimationFrame({ doFrame() })
@@ -281,17 +289,32 @@ private fun doAppLogic() {
 
 	Panel(AbsolutePos(300, 430), {
 		+Checkbox("Default", booleanValues[0], downAlongLeftMargin(10))
+		+Checkbox("Avg", showAvgValues[0], toRight(10), {
+			disabled = booleanValues[0].data == false
+		})
 		+Checkbox("Info", booleanValues[1], downAlongLeftMargin(10), {
 			variant = Variant.INFO
+		})
+		+Checkbox("Avg", showAvgValues[1], toRight(10), {
+			disabled = booleanValues[1].data == false
 		})
 		+Checkbox("Warning", booleanValues[2], downAlongLeftMargin(10), {
 			variant = Variant.WARNING
 		})
+		+Checkbox("Avg", showAvgValues[2], toRight(10), {
+			disabled = booleanValues[2].data == false
+		})
 		+Checkbox("Error", booleanValues[3], downAlongLeftMargin(10), {
 			variant = Variant.DANGER
 		})
+		+Checkbox("Avg", showAvgValues[3], toRight(10), {
+			disabled = booleanValues[3].data == false
+		})
 		+Checkbox("Success", booleanValues[4], downAlongLeftMargin(10), {
 			variant = Variant.SUCCESS
+		})
+		+Checkbox("Avg", showAvgValues[4], toRight(10), {
+			disabled = booleanValues[4].data == false
 		})
 		+Checkbox("Disabled", booleanValues[0], downAlongLeftMargin(10), {
 			disabled = true
@@ -389,12 +412,14 @@ private fun doAppLogic() {
 		}
 	}
 	debugLines.add("shift: ${widgetHandler.shift.down}, ctrl: ${widgetHandler.ctrl.down}")
+	debugLines.add("left: ${widgetHandler.leftArrow.down}, pressed: ${widgetHandler.leftArrow.just_pressed}, released: ${widgetHandler.leftArrow.just_released}")
 	debugLines.add("h: ${widgetHandler.isDown('h')}")
 	debugLines.add("mousePos: ${widgetHandler.mousePos.x}, ${widgetHandler.mousePos.y}")
+	debugLines.add("mouseScrollDelta: ${widgetHandler.mouseScrollDelta}")
+
 	if (widgetHandler.isJustReleased('h')) {
 		showDebugLines = !showDebugLines
 	}
-	showDebugLines = true
 	if (showDebugLines) {
 		Panel(widgetHandler.mousePos, {
 			debugLines.withIndices().forEach {
@@ -600,15 +625,27 @@ fun tabPanel() {
 			})
 		} else if (tabPanelValue.data == 4) {
 			+Timeline(downAlongLeftMargin(10), {
-				booleanValues.withIndices().forEach {
-					if (it.second.data) {
-						+LineChart(graphData[it.first], {
-							color = when (Variant.values()[it.first]) {
+				for ( (i, v) in booleanValues.zip(showAvgValues).withIndices()) {
+					val (showGraph, showAvg) = v
+					if (showGraph.data) {
+						+LineChart(graphData[i], {
+							color = when (Variant.values()[i]) {
 								Variant.INFO -> "#29A1D3"
 								Variant.DEFAULT -> "#525864"
 								Variant.SUCCESS -> "#8AB71C"
 								Variant.WARNING -> "#F1B018"
 								Variant.DANGER -> "#EE4E10"
+							}
+						})
+					}
+					if (showAvg.data) {
+						+LineChart(graphAvgData[i], {
+							color = when (Variant.values()[i]) {
+								Variant.DANGER -> "#58B4DB"
+								Variant.WARNING -> "#6B6B6B"
+								Variant.INFO -> "#9BBC45"
+								Variant.DEFAULT -> "#F7C44C"
+								Variant.SUCCESS -> "#F47344"
 							}
 						})
 					}

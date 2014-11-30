@@ -40,6 +40,10 @@ abstract class WidgetContainer(pos: Pos) : Widget(pos) {
 		return Pair(calculatedWidth, calculatedHeight)
 	}
 
+
+	fun WidgetContainer.toRight(x: Int = 1): Pos {
+		return RelativePos(x, 0, array(Direction.RIGHT))
+	}
 	fun WidgetContainer.downAlongLeftMargin(y: Int = 1): Pos {
 		return RelativePos(pos.x + margin, y, array(Direction.DOWN, Direction.X_IS_ABSOLUTE))
 	}

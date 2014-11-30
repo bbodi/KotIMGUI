@@ -51,6 +51,9 @@ class Timeline(pos: Pos, init: Timeline.() -> Unit = {}) : Widget(pos) {
 		get() = parent!!.contentHeight
 	var charts: MutableList<LineChart> = arrayListOf();
 
+	var chartAreaX = 0
+	var chartAreaY = 0
+
 	{
 		init()
 	}
@@ -64,53 +67,57 @@ class Timeline(pos: Pos, init: Timeline.() -> Unit = {}) : Widget(pos) {
 		widgetHandler.skin.drawPanelRect(pos.x, pos.y, width, height, Variant.DEFAULT)
 
 		val data = getOrCreateMyData()
+		data.y1 = intValues[0].data
+		data.y2 = intValues[1].data
 
 		debugLines.add("Timeline - x1: ${data.x1}, x2: ${data.x2}")
 		debugLines.add(IntValue(12))
 		val timeRange = data.x2 - data.x1
 		val screenStepW = width / timeRange.toFloat()
-		val isApplicableForCurrentView = {(generator: XAxisLabelGenerator, secondRowGenerator: XAxisLabelGenerator) -> if (width / (timeRange / generator.rangeReducer) >= widgetHandler.skin.charWidth * (generator.labelWidth + 1))
-			array(generator, secondRowGenerator)
-		else
-			null}
+		val isApplicableForCurrentView = {(generator: XAxisLabelGenerator, secondRowGenerator: XAxisLabelGenerator) ->
+			if (width / (timeRange / generator.rangeReducer) >= widgetHandler.skin.charWidth * (generator.labelWidth + 1))
+				array(generator, secondRowGenerator)
+			else
+				null
+		}
 
 		val entryRenderers = isApplicableForCurrentView(XAxisLabelGenerator.DayLabelGenerator, XAxisLabelGenerator.MonthLabelGenerator)
-			?: isApplicableForCurrentView(XAxisLabelGenerator.WeekLabelGenerator, XAxisLabelGenerator.MonthLabelGenerator)
-			?: isApplicableForCurrentView(XAxisLabelGenerator.MonthLabelGenerator, XAxisLabelGenerator.YearLabelGenerator)
-			?: isApplicableForCurrentView(XAxisLabelGenerator.ThreeMonthLabelGenerator, XAxisLabelGenerator.YearLabelGenerator)
-			?: array(XAxisLabelGenerator.YearLabelGenerator)
+				?: isApplicableForCurrentView(XAxisLabelGenerator.WeekLabelGenerator, XAxisLabelGenerator.MonthLabelGenerator)
+				?: isApplicableForCurrentView(XAxisLabelGenerator.MonthLabelGenerator, XAxisLabelGenerator.YearLabelGenerator)
+				?: isApplicableForCurrentView(XAxisLabelGenerator.ThreeMonthLabelGenerator, XAxisLabelGenerator.YearLabelGenerator)
+				?: array(XAxisLabelGenerator.YearLabelGenerator)
 
-		val bottomForLabels = (pos.y + height) - (widgetHandler.skin.rowHeight)
-		val bottomForLines = (pos.y + height) - (widgetHandler.skin.rowHeight*3)
+		val bottomForLabels = (pos.y + height) - (widgetHandler.skin.rowHeight) - widgetHandler.skin.panelBorder
+		val bottomForLines = (pos.y + height) - (widgetHandler.skin.rowHeight * 3) - widgetHandler.skin.panelBorder
 		context.beginPath()
 		val valueRange = (data.y2 - data.y1).toFloat()
 		val screenStepH = height / valueRange
 		var valueReducer = 1
 		while (true) {
-			if (height/(valueRange/valueReducer) >= widgetHandler.skin.rowHeight) {
+			if (height / (valueRange / valueReducer) >= widgetHandler.skin.rowHeight) {
 				break
 			}
 			valueReducer *= 10
 		}
-		val yAxisLabelLen = (data.y2/valueReducer).toString().length
-		val chartAreaX = pos.x + widgetHandler.skin.charWidth*(yAxisLabelLen+1) + widgetHandler.skin.panelBorder
-		val chartAreaY = pos.y + widgetHandler.skin.panelBorder
-		val chartAreaWidth = width-widgetHandler.skin.charWidth*(yAxisLabelLen+1) - widgetHandler.skin.panelBorder
-		val chartAreaHeight = height - (widgetHandler.skin.rowHeight*3) - widgetHandler.skin.panelBorder
-		for ((i, v) in (data.y1 .. data.y2).withIndices()) {
+		val yAxisLabelLen = (data.y2 / valueReducer).toString().length
+		chartAreaX = pos.x + widgetHandler.skin.charWidth * (yAxisLabelLen + 1) + widgetHandler.skin.panelBorder
+		chartAreaY = pos.y + widgetHandler.skin.panelBorder
+		val chartAreaWidth = width - widgetHandler.skin.charWidth * (yAxisLabelLen + 1) - widgetHandler.skin.panelBorder
+		val chartAreaHeight = height - (widgetHandler.skin.rowHeight * 3) - (widgetHandler.skin.panelBorder*2)
+		for ((i, v) in (data.y1..data.y2).withIndices()) {
 			val entry = v.toString()
 			if (valueReducer == 1 || v % valueReducer == 0) {
 				var y = bottomForLines - i * screenStepH
 				context.moveTo(chartAreaX, y)
 				context.lineTo(chartAreaX + chartAreaWidth, y)
 				val textX = pos.x + widgetHandler.skin.panelBorder
-				var textY = bottomForLines - i * screenStepH - widgetHandler.skin.charHeight/2
+				var textY = bottomForLines - i * screenStepH - widgetHandler.skin.charHeight / 2
 				widgetHandler.skin.text(entry, textX, textY, "white", widgetHandler.skin.font)
 			}
 		}
 
 
-		for ((i, v) in (data.x1 .. data.x2).withIndices()) {
+		for ((i, v) in (data.x1..data.x2).withIndices()) {
 			entryRenderers.reverse().withIndices().forEach {
 				val entry = it.second.labelGenerator(v)
 				if (entry != null) {
@@ -129,11 +136,12 @@ class Timeline(pos: Pos, init: Timeline.() -> Unit = {}) : Widget(pos) {
 		context.stroke()
 		context.save()
 		context.beginPath()
-		context.rect(chartAreaX, pos.y, chartAreaWidth, chartAreaHeight)
+		context.rect(chartAreaX, chartAreaY, chartAreaWidth, chartAreaHeight)
 		context.clip()
-		context.translate(chartAreaX, pos.y)
-		charts.forEach { it.draw(width, height, data.x1, data.x2, data.y1, data.y2) }
+		context.translate(chartAreaX, chartAreaY)
+		charts.forEach { it.draw(chartAreaWidth, chartAreaHeight, data.x1, data.x2, data.y1, data.y2) }
 		context.restore()
+		charts.forEach { it.handleEvents(this, chartAreaWidth, chartAreaHeight, data.x1, data.x2, data.y1, data.y2) }
 	}
 
 	override fun handleEvents() {
@@ -154,28 +162,36 @@ class Timeline(pos: Pos, init: Timeline.() -> Unit = {}) : Widget(pos) {
 		}
 		val clicked = widgetHandler.leftMouseButton.just_pressed && hover
 		val data = getOrCreateMyData()
+		if (hover) {
+			setCursor(CursorStyle.Grab)
+		}
 		if (clicked) {
 			data.lastMousePos = widgetHandler.mousePos
-			setCursor(CursorStyle.Move)
 		} else if (down) {
+			val deltaX = widgetHandler.mousePos.x - data.lastMousePos.x
+			data.x1 -= deltaX
+			data.x2 -= deltaX
+			val deltaY = widgetHandler.mousePos.y - data.lastMousePos.y
+			data.y1 += deltaY
+			data.y2 += deltaY
+			intValues[0].data = data.y1
+			intValues[1].data = data.y2
+			data.lastMousePos = widgetHandler.mousePos
+			setCursor(CursorStyle.Grabbing)
+		}
+		if (hover && widgetHandler.mouseScrollDelta != 0) {
+			val asd = widgetHandler.shift
 			if (widgetHandler.shift.down) {
-				val deltaY = widgetHandler.mousePos.y - data.lastMousePos.y
-				data.y1 -= deltaY
-				data.y2 -= deltaY
+				data.y1 += widgetHandler.mouseScrollDelta
+				data.y2 -= widgetHandler.mouseScrollDelta
 				intValues[0].data = data.y1
 				intValues[1].data = data.y2
 				setCursor(CursorStyle.NorthResize)
 			} else {
-				val deltaX = widgetHandler.mousePos.x - data.lastMousePos.x
-				data.x1 -= deltaX
-				data.x2 -= deltaX
-				setCursor(CursorStyle.WestResize)
+				setCursor(if (widgetHandler.mouseScrollDelta > 0) CursorStyle.ZoomIn else CursorStyle.ZoomOut)
+				data.x1 += widgetHandler.mouseScrollDelta
+				data.x2 -= widgetHandler.mouseScrollDelta
 			}
-			data.lastMousePos = widgetHandler.mousePos
-		}
-		if (hover && widgetHandler.mouseScrollDelta != 0) {
-			data.x1 += widgetHandler.mouseScrollDelta
-			data.x2 -= widgetHandler.mouseScrollDelta
 		}
 	}
 

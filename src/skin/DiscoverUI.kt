@@ -71,7 +71,7 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		}
 		val textX = x + charHeight + charWidth/2
 		val textY = y + textMarginY
-		text(checkbox.label, textX, textY, "white", font)
+		text(checkbox.label, textX, textY, if (checkbox.disabled) "#8C8C8C" else "white", font)
 	}
 
 	override fun drawRadioButton(radioButton: RadioButton) {
@@ -86,7 +86,7 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		}
 		val textX = circleX + radius + charWidth/2
 		val textY = y + textMarginY
-		text(radioButton.label, textX, textY, "white", font)
+		text(radioButton.label, textX, textY, if (radioButton.disabled) "#8C8C8C" else "white", font)
 	}
 
 	override fun drawLabel(widget: Label) {
@@ -106,7 +106,7 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		val x = widget.pos.x
 		val y = widget.pos.y
 		drawButtonRect(x, y, w, h, widget.variant, widget.disabled, widget.hover, widget.down)
-		drawMiniButtonText(widget.label, x, y, w)
+		drawMiniButtonText(widget.label, x, y, w, if (widget.disabled) "#8C8C8C" else "white")
 		if (widget.hover) {
 			if (widget.disabled) {
 				setCursor(CursorStyle.NotAllowed);
@@ -122,7 +122,7 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		val x = widget.pos.x
 		val y = widget.pos.y
 		drawButtonRect(x, y, w, h, widget.variant, widget.disabled, widget.hover, widget.down)
-		drawButtonText(widget.label, x, y, w)
+		drawButtonText(widget.label, x, y, w, if (widget.disabled) "#8C8C8C" else "white")
 		if (widget.hover) {
 			if (widget.disabled) {
 				setCursor(CursorStyle.NotAllowed);
@@ -132,18 +132,18 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		}
 	}
 
-	private fun drawButtonText(label: String, x: Int, y: Int, w: Int) {
+	private fun drawButtonText(label: String, x: Int, y: Int, w: Int, color: String) {
 		val label_w = label.length * charWidth
 		val textX = x + w / 2 - label_w / 2
 		val textY = y + textMarginY
-		text(label, textX, textY, "white", font)
+		text(label, textX, textY, color, font)
 	}
 
-	private fun drawMiniButtonText(label: String, x: Int, y: Int, w: Int) {
+	private fun drawMiniButtonText(label: String, x: Int, y: Int, w: Int, color: String) {
 		val label_w = label.length * charWidth
 		val textX = x + w / 2 - label_w / 2
 		val textY = y + textMarginY/2
-		text(label, textX, textY, "white", font)
+		text(label, textX, textY, color, font)
 	}
 
 	override fun drawTextfield(widget: Textfield) {
@@ -264,7 +264,7 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 			} else {
 				drawButtonRect(itemX, y, item.width, item.height, item.variant, item.disabled, item.hover, down)
 			}
-			drawButtonText(item.label, itemX, y, item.width)
+			drawButtonText(item.label, itemX, y, item.width, if (item.disabled) "#8C8C8C" else "white")
 			itemX += item.width
 		}
 	}
