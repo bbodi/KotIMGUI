@@ -1,0 +1,1 @@
+c:\app\kotlinc\bin\kotlinc-js -output out\production\timeline\timeline.js -library-files C:\app\kotlinc\lib\kotlin-jslib.jar src
