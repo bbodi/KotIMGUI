@@ -1,21 +1,26 @@
 package widget
 
 import timeline.BooleanValue
-import timeline.widgetHandler
+import timeline.app
 import timeline.IntValue
 import timeline.context
 
 open class TabPanel(val value: IntValue, pos: Pos, init: TabPanel.() -> Unit) : Panel(pos) {
 	val items = arrayListOf<Button>()
-	override val id: Int = 0
+	override val contentY: Int = this.pos.y + app.skin.rowHeight
+	override val contentWidth: Int
+		get() = width - marginY * 2
+	override val contentHeight: Int
+		get() = height - app.skin.rowHeight - marginY
+
 	{
 		init()
 		val (w, h) = calcContentSize()
 		if (this.width == 0) {
-			this.width = w + margin
+			this.width = w + marginY
 		}
 		if (this.height == 0) {
-			this.height = h + widgetHandler.skin.rowHeight + margin
+			this.height = h + app.skin.rowHeight + marginY
 		}
 		val headerRowWidth = items.foldRight(0, {(item, w) -> w+item.width})
 		if (this.width < headerRowWidth) {
@@ -23,20 +28,11 @@ open class TabPanel(val value: IntValue, pos: Pos, init: TabPanel.() -> Unit) : 
 		}
 	}
 
-	override val contentX: Int
-		get() = pos.x + margin
-	override val contentY: Int
-		get() = pos.y + widgetHandler.skin.rowHeight
-	override val contentWidth: Int
-		get() = width - margin * 2
-	override val contentHeight: Int
-		get() = height - widgetHandler.skin.rowHeight - margin
-
 	override fun draw() {
-		if (!visible.data) {
+		if (!visible.value) {
 			return
 		}
-		widgetHandler.skin.drawTabPanel(this)
+		app.skin.drawTabPanel(this)
 		context.save()
 		context.rect(contentX, contentY, contentWidth, contentHeight)
 		context.clip()
@@ -45,13 +41,13 @@ open class TabPanel(val value: IntValue, pos: Pos, init: TabPanel.() -> Unit) : 
 	}
 
 	override fun handleEvents() {
-		if (!visible.data) {
+		if (!visible.value) {
 			return
 		}
 		items.withIndices().forEach {
 			it.second.handleEvents()
 			if (it.second.clicked) {
-				value.data = it.first
+				value.value = it.first
 			}
 		}
 		widgets.forEach { it.handleEvents() }
@@ -59,7 +55,7 @@ open class TabPanel(val value: IntValue, pos: Pos, init: TabPanel.() -> Unit) : 
 
 	fun addTabPanelItem(label: String, buttonInit: Button.() -> Unit = {}) {
 		val x = items.foldRight(pos.x, {(item, w) -> w+item.width})
-		val pos = AbsolutePos(x, pos.y)
+		val pos = Pos(x, pos.y)
 		items.add(Button(label, pos, buttonInit))
 	}
 }

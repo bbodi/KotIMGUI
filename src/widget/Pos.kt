@@ -1,33 +1,12 @@
 package widget
 
-abstract class Pos(val x: Int = 0, val y: Int = 0) {
+class Pos(val x: Int = 0, val y: Int = 0) {
 	fun is_in_rect(topLeft: Pos, size: Pos) = (x >= topLeft.x) && (x <= topLeft.x + size.x) &&
 			(y >= topLeft.y) && (y <= topLeft.y + size.y)
-}
-
-data class AbsolutePos(x: Int = 0, y: Int = 0) : Pos(x, y) {
-	fun plus(v: Pos) = AbsolutePos(x + v.x, y + v.y)
-	fun minus() = AbsolutePos(-x, -y)
-	fun minus(v: AbsolutePos) = AbsolutePos(x - v.x, y - v.y)
-	fun times(koef: Int) = AbsolutePos(x * koef, y * koef)
-
-	fun add(relativePos: RelativePos, w: Int, h: Int): AbsolutePos {
-		var pos = this
-		if (Direction.LEFT in relativePos.dirs) {
-			pos += AbsolutePos(relativePos.x, 0)
-		} else if (Direction.RIGHT in relativePos.dirs) {
-			pos += AbsolutePos(relativePos.x + w, 0)
-		}
-		if (Direction.DOWN in relativePos.dirs) {
-			pos += AbsolutePos(0, relativePos.y + h)
-		} else if (Direction.UP in relativePos.dirs) {
-			pos += AbsolutePos(0, relativePos.y)
-		}
-		if (Direction.X_IS_ABSOLUTE in relativePos.dirs) {
-			pos = AbsolutePos(relativePos.x, pos.y)
-		}
-		return pos
-	}
+	fun plus(v: Pos) = Pos(x + v.x, y + v.y)
+	fun minus() = Pos(-x, -y)
+	fun minus(v: Pos) = Pos(x - v.x, y - v.y)
+	fun times(koef: Int) = Pos(x * koef, y * koef)
 }
 
 enum class Direction {
@@ -39,5 +18,18 @@ enum class Direction {
 	Y_IS_ABSOLUTE
 }
 
-data class RelativePos(x: Int = 0, y: Int = 0, val dirs: Array<Direction>) : Pos(x, y) {
+data class Rect(val x: Int, val y: Int, val width: Int, val height: Int) {
+	class object {
+		fun fromPositions(pos: Pos, pos2: Pos): Rect {
+			val x1 = Math.min(pos.x, pos2.x)
+			val x2 = Math.max(pos.x, pos2.x)
+			val y1 = Math.min(pos.y, pos2.y)
+			val y2 = Math.max(pos.y, pos2.y)
+			return Rect(x1, y1, x2-x1, y2-y1)
+		}
+	}
+	val topLeft: Pos
+		get() = Pos(x, y)
+	val bottomRight: Pos
+		get() = Pos(x+width, y + height)
 }

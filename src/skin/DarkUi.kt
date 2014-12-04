@@ -25,7 +25,7 @@ public class DarkUi(override val charHeight: Int) : Skin {
 		}
 	}
 
-	override fun drawButton(widgetHandler: WidgetHandler,  widget: Button) {
+	override fun drawButton(app: WidgetHandler,  widget: Button) {
 		val (normalColor, hoverColor, activeColor) = getColor(widget.variant)
 		val w = widget.width
 		val h = widget.height
@@ -46,13 +46,13 @@ public class DarkUi(override val charHeight: Int) : Skin {
 		text(widget.label.toUpperCase(), textX, textY, "white", Font(mod=FontModifier.BOLD))
 	}
 
-	override fun drawTextfield(widgetHandler: WidgetHandler, widget: Textfield) {
+	override fun drawTextfield(app: WidgetHandler, widget: Textfield) {
 		val x = widget.pos.x
 		val y = widget.pos.y
 		val w = widget.width
 		val h = widget.height
 
-		val isActive = widget.id == widgetHandler.active_widget_id
+		val isActive = widget.id == app.active_widget_id
 		val (normalColor, hoverColor, activeColor) = getColor(widget.variant)
 		fill_rounded_rect(x, y, w, h, 5, "#24252A")
 		if (widget.variant != Variant.DEFAULT || isActive) {
@@ -63,12 +63,12 @@ public class DarkUi(override val charHeight: Int) : Skin {
 		val textY = y + charHeight /4
 		text(widget.text.data, textX, textY, "white", Font())
 		if (widget.isCursorShown && isActive) {
-			val charW = widgetHandler.char_w()
+			val charW = app.char_w()
 			text("_", textX + charW*widget.cursorPos, textY, "white", Font())
 		}
 	}
 
-	override fun drawHorizontalScrollbar(widgetHandler: WidgetHandler, widget: HScrollBar) {
+	override fun drawHorizontalScrollbar(app: WidgetHandler, widget: HScrollBar) {
 		val x = widget.pos.x
 		val y = widget.pos.y
 		fill_rounded_rect(x, y+ charHeight /4, widget.width, charHeight /2, charHeight /4, "#24252A")
@@ -87,8 +87,8 @@ public class DarkUi(override val charHeight: Int) : Skin {
 		context.restore()
 	}
 
-	override fun drawVerticalScrollbar(widgetHandler: WidgetHandler, widget: VScrollBar) {
-		val char_w = widgetHandler.char_w()
+	override fun drawVerticalScrollbar(app: WidgetHandler, widget: VScrollBar) {
+		val char_w = app.char_w()
 		val x = widget.pos.x
 		val y = widget.pos.y
 		fill_rounded_rect(x + char_w/4, y, char_w/2, widget.height, char_w/4, "#24252A")
@@ -107,7 +107,7 @@ public class DarkUi(override val charHeight: Int) : Skin {
 		context.restore()
 	}
 
-	override fun drawPanel(widgetHandler: WidgetHandler, widget: Panel) {
+	override fun drawPanel(app: WidgetHandler, widget: Panel) {
 		val x = widget.pos.x
 		val y = widget.pos.y
 		fill_rounded_rect(x, y, widget.width, widget.height, 5, "#454954")

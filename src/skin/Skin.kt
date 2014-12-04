@@ -1,7 +1,6 @@
 package skin
 
 import widget.Button
-import widget.WidgetHandler
 import widget.HScrollBar
 import widget.VScrollBar
 import widget.Panel
@@ -13,6 +12,7 @@ import widget.Checkbox
 import widget.RadioButton
 import widget.TabPanel
 import widget.Label
+import timeline.Application
 
 
 trait Skin {
@@ -27,8 +27,8 @@ trait Skin {
 
 	fun drawButton(widget: Button)
 
-	fun drawHorizontalScrollbar(widgetHandler: WidgetHandler, widget: HScrollBar)
-	fun drawVerticalScrollbar(widgetHandler: WidgetHandler, widget: VScrollBar)
+	fun drawHorizontalScrollbar(app: Application, widget: HScrollBar)
+	fun drawVerticalScrollbar(app: Application, widget: VScrollBar)
 
 	fun drawTextfield(widget: Textfield)
 

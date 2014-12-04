@@ -1,15 +1,17 @@
 package widget
 
-import timeline.widgetHandler
+import timeline.app
 
 abstract class WidgetContainer(pos: Pos) : Widget(pos) {
-	abstract val contentX: Int
-	abstract val contentY: Int
-	abstract val contentHeight: Int
-	abstract val contentWidth: Int
-
 	val widgets = arrayListOf<Widget>();
-	val margin = 2*widgetHandler.skin.panelBorder
+	val marginX = app.skin.panelBorder
+	val marginY = app.skin.panelBorder
+	open val contentX = this.pos.x + marginX
+	open val contentY = this.pos.y + marginY
+	open val contentWidth: Int
+		get() = width - marginX * 2
+	open val contentHeight: Int
+		get() = height - marginY * 2
 
 	fun Widget.plus() {
 		addWidget(this)
@@ -17,6 +19,7 @@ abstract class WidgetContainer(pos: Pos) : Widget(pos) {
 
 	fun addWidget(widget: Widget) {
 		widget.parent = this
+		widget.additionalIdInfo += this.additionalIdInfo
 		widgets.add(widget)
 	}
 
@@ -41,13 +44,19 @@ abstract class WidgetContainer(pos: Pos) : Widget(pos) {
 	}
 
 
-	fun WidgetContainer.toRight(x: Int = 1): Pos {
-		return RelativePos(x, 0, array(Direction.RIGHT))
+	fun downAlongLeftMargin(y: Int = 1): Pos {
+		val fromY = if (widgets.last != null) {
+			widgets.last!!.pos.y + widgets.last!!.height
+		} else contentY
+		return Pos(contentX, fromY + y)
 	}
-	fun WidgetContainer.downAlongLeftMargin(y: Int = 1): Pos {
-		return RelativePos(pos.x + margin, y, array(Direction.DOWN, Direction.X_IS_ABSOLUTE))
+
+	fun downUnderMargin(): Pos {
+		return downAlongLeftMargin(marginX)
 	}
-	fun WidgetContainer.downUnderMargin(): Pos {
-		return downAlongLeftMargin(margin)
+
+	fun toRightFromLastWidget(x: Int = 1): Pos {
+		val lastWidget = widgets.last!!
+		return Pos(lastWidget.pos.x + lastWidget.width + x, lastWidget.pos.y)
 	}
 }

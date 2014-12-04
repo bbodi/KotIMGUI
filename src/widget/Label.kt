@@ -1,23 +1,22 @@
 package widget
 
 import skin.Variant
-import timeline.widgetHandler
+import timeline.app
 import timeline.BooleanValue
 
 class Label(val label: String, pos: Pos, init: Label.() -> Unit = {}) : Widget(pos) {
-	override var height = widgetHandler.skin.rowHeight
+	override var height = app.skin.rowHeight
 		private set
 	var variant = Variant.DEFAULT
 
 	{
 		init()
 	}
-	override var width = label.length * widgetHandler.skin.charWidth
+	override var width = label.length * app.skin.charWidth
 		private set
-	override val id: Int = PositionBasedId(pos.x, pos.y, label.hashCode()).hashCode()
 
 	override fun draw() {
-		widgetHandler.skin.drawLabel(this)
+		app.skin.drawLabel(this)
 	}
 
 	override fun handleEvents() {

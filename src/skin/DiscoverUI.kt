@@ -1,7 +1,6 @@
 package skin
 
 import widget.Button
-import widget.WidgetHandler
 import timeline.context
 import widget.HScrollBar
 import widget.VScrollBar
@@ -11,11 +10,12 @@ import timeline.setCursor
 import timeline.CursorStyle
 import widget.ActionItem
 import widget.ActionMenu
-import widget.AbsolutePos
+import widget.Pos
 import widget.Checkbox
 import widget.RadioButton
 import widget.TabPanel
 import widget.Label
+import timeline.Application
 
 public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: Int) : Skin {
 
@@ -55,7 +55,7 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		val x = checkbox.pos.x
 		val y = checkbox.pos.y
 		drawButtonRect(x, y + textMarginY, charHeight, charHeight, checkbox.variant, checkbox.disabled, checkbox.hover, false)
-		if (checkbox.value.data) {
+		if (checkbox.value.value) {
 			context.save()
 			context.beginPath();
 			context.strokeStyle = "black";
@@ -81,7 +81,7 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		val circleX = x + radius
 		val circleY = y + rowHeight/2
 		drawCircle(circleX, circleY, radius, radioButton.variant, radioButton.disabled, radioButton.hover)
-		if (radioButton.value.data == radioButton.order) {
+		if (radioButton.value.value == radioButton.order) {
 			fillCircle(circleX, circleY, charHeight/4, "black")
 		}
 		val textX = circleX + radius + charWidth/2
@@ -97,7 +97,7 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 			Variant.DANGER -> "#FF4300"
 			Variant.DEFAULT -> "white"
 		}
-		text(widget.label, widget.pos.x, widget.pos.y, bottomColor, font)
+		text(widget.label, widget.pos.x, widget.pos.y + textMarginY, bottomColor, font)
 	}
 
 	override fun drawMiniButton(widget: Button) {
@@ -164,7 +164,7 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 
 		val textX = x + panelBorder
 		val textY = y + textMarginY
-		text(widget.text.data, textX, textY, "white", font)
+		text(widget.text.value, textX, textY, "white", font)
 		if (widget.isCursorShown && isActive) {
 			text("_", textX + charWidth*widget.cursorPos, textY, "white", font)
 		}
@@ -184,7 +184,7 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		val textX = x + panelBorder
 		val textY = y + textMarginY
 		val textColor = if (actionItem.disabled) {"#8C8C8C"} else {"white"}
-		if (!actionItem.disabled && actionItem.hover) {
+		if (!actionItem.disabled && actionItem.highlight) {
 			fillRect(x, y, w, actionItem.height, "#2C2C2C")
 		}
 		text(actionItem.label, textX, textY, textColor, font)
@@ -195,11 +195,11 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		}
 	}
 
-	override fun drawHorizontalScrollbar(widgetHandler: WidgetHandler, widget: HScrollBar) {
+	override fun drawHorizontalScrollbar(app: Application, widget: HScrollBar) {
 		val x = widget.pos.x
 		val y = widget.pos.y
 		fill_rounded_rect(x, y+ rowHeight /4, widget.width, rowHeight /2, rowHeight /4, "#24252A")
-		val value = widget.value.data
+		val value = widget.value.value
 		val value_range = widget.max_value - widget.min_value
 		val value_percent = (value - widget.min_value) / value_range.toDouble()
 		val orange_bar_w = widget.width * value_percent
@@ -214,11 +214,11 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		context.restore()
 	}
 
-	override fun drawVerticalScrollbar(widgetHandler: WidgetHandler, widget: VScrollBar) {
+	override fun drawVerticalScrollbar(app: Application, widget: VScrollBar) {
 		val x = widget.pos.x
 		val y = widget.pos.y
 		fill_rounded_rect(x + charWidth/4, y, charWidth/2, widget.height, charWidth/4, "#24252A")
-		val value = widget.value.data
+		val value = widget.value.value
 		val value_range = widget.max_value - widget.min_value
 		val value_percent = (value - widget.min_value) / value_range.toDouble()
 		val orange_bar_h = widget.height * value_percent
@@ -257,7 +257,7 @@ public class DiscoverUI(val width: Int, val height: Int, val rowHeightPercent: I
 		val h = widget.height
 		var itemX = x
 		for ((i, item) in widget.items.withIndices()) {
-			val down = i == widget.value.data
+			val down = i == widget.value.value
 			if (down) {
 				drawPanelRect(x, y + rowHeight, w, h - rowHeight, item.variant)
 				drawSelectedTabPanelItem(itemX, y, item.width, item.height, item.variant)

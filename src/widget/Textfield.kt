@@ -2,97 +2,142 @@ package widget
 
 import skin.Variant
 import timeline.StrValue
-import timeline.widgetHandler
+import timeline.app
 import timeline.at_most
+import timeline.InputButton
 
 public class TextfieldData {
 	var isCursorShown = false
 	var cursorPos = 0
 	var nextCursorToggleTick = 0
+	private val buttonTimers = hashMapOf(app.leftArrow to ButtonTimer(), app.rightArrow to ButtonTimer(), app.backspace to ButtonTimer())
+
+	fun isPressable(btn: InputButton, now: Int) = this.buttonTimers[btn]!!.isPressable(now)
+	fun clearButtonsExcept(btn: InputButton?) {
+		buttonTimers.filter { it.key != btn }.values().forEach { it.clear() }
+	}
+	fun setPressed(btn: InputButton, now: Int) {
+		this.buttonTimers[btn]!!.setPressed(now)
+	}
+	fun addButton(btn: InputButton) {if (btn !in buttonTimers) buttonTimers[btn] = ButtonTimer()}
+}
+
+public class ButtonTimer {
+	private var lastPressed = 0
+	private var pressCount = 0
+
+	fun isPressable(now: Int): Boolean = (now - lastPressed) > (200 + (if (pressCount==1) 1 else 0)*800)
+	fun setPressed(now: Int) {
+		pressCount++
+		lastPressed = now
+	}
+
+	fun clear() {
+		pressCount = 0
+		lastPressed = 0
+	}
 }
 
 open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, init: Textfield.() -> Unit) : Widget(pos) {
 
 	val isActive: Boolean
-		get() = this.id == widgetHandler.active_widget_id
+		get() = this.id == app.active_widget_id
 
 	var disabled: Boolean = false
 	var variant = Variant.DEFAULT
 	var margin = 5
 	var defaultText = ""
+	var onChange: (()->Unit)? = null
 	var hover = false
 		private set
 		get() {
-			return widgetHandler.mousePos.is_in_rect(pos, AbsolutePos(width, height))
+			return app.mousePos.is_in_rect(pos, Pos(width, height))
 		}
-	override var width = widthInCharacters * widgetHandler.skin.charWidth
-	override var height = widgetHandler.skin.rowHeight
+	override var width = widthInCharacters * app.skin.charWidth
+	override var height = app.skin.rowHeight
 		private set
 
-	val isCursorShown: Boolean
-		get() = (widgetHandler.getWidgetData("Textfield", id) as TextfieldData).isCursorShown
-	val cursorPos: Int
-		get() = (widgetHandler.getWidgetData("Textfield", id) as TextfieldData).cursorPos
-
 	{
+		additionalIdInfo = text.hashCode().toString()
 		init()
 	}
-	override val id: Int = PositionBasedId(this.pos.x, this.pos.y, text.hashCode()).hashCode()
+
+	val isCursorShown: Boolean
+		get() = (app.getWidgetData("Textfield", id) as TextfieldData).isCursorShown
+	val cursorPos: Int
+		get() = (app.getWidgetData("Textfield", id) as TextfieldData).cursorPos
 
 	override fun draw() {
-		widgetHandler.skin.drawTextfield(this)
+		app.skin.drawTextfield(this)
 	}
 
 	override fun handleEvents() {
-		val was_hot = widgetHandler.hot_widget_id == id
-		val was_active = widgetHandler.active_widget_id == id
-		val justClicked = !disabled && widgetHandler.leftMouseButton.down && hover && !was_active
+		val was_hot = app.hot_widget_id == id
+		val was_active = app.active_widget_id == id
+		val justClicked = !disabled && app.leftMouseButton.down && hover && !was_active
 		if (justClicked) {
-			widgetHandler.active_widget_id = id
+			app.active_widget_id = id
 		}
 
 		if (hover && !was_hot) {
-			widgetHandler.hot_widget_id = id
+			app.hot_widget_id = id
 		} else if (was_hot && !hover) {
-			widgetHandler.hot_widget_id = null
+			app.hot_widget_id = null
 		}
 
-		val active = widgetHandler.active_widget_id == id
+		val active = app.active_widget_id == id
 		val data = getOrCreateMyData()
 		if (!active) {
 			return
 		}
-		val clicked = widgetHandler.leftMouseButton.down && hover
+		val clicked = app.leftMouseButton.down && hover
 		if (clicked) {
-			data.cursorPos = (widgetHandler.mousePos.x - (this.pos.x + widgetHandler.skin.panelBorder)) / widgetHandler.skin.charWidth
-			data.cursorPos = data.cursorPos.at_most(text.data.length)
+			data.cursorPos = (app.mousePos.x - (this.pos.x + app.skin.panelBorder)) / app.skin.charWidth
+			data.cursorPos = data.cursorPos.at_most(text.value.length)
 		}
-		handleInput(data, widgetHandler.pressedChar)
+		handleInput(data, app.pressedChar)
 
-		if (data.nextCursorToggleTick <= widgetHandler.currentTick) {
+		if (data.nextCursorToggleTick <= app.currentTick) {
 			data.isCursorShown = !data.isCursorShown
-			data.nextCursorToggleTick = widgetHandler.currentTick + 700
+			data.nextCursorToggleTick = app.currentTick + 700
 		}
 	}
 
 	private fun handleInput(data: TextfieldData, pressedChar: Char?) {
-		if (widgetHandler.backspace.just_pressed && data.cursorPos > 0) {
+		val now = app.currentTick
+		//println("$now: handleInput")
+		val beforeValue = text.value
+		if (app.backspace.down && data.cursorPos > 0 && data.isPressable(app.backspace, now)) {
 			handleBackspace(data)
-		} else if (widgetHandler.leftArrow.just_pressed && data.cursorPos > 0) {
+			data.clearButtonsExcept(app.backspace)
+			data.setPressed(app.backspace, now)
+		} else if (app.leftArrow.down && data.cursorPos > 0 && data.isPressable(app.leftArrow, now)) {
+			println("$now: left pressed")
 			data.cursorPos--
-		} else if (widgetHandler.rightArrow.just_pressed && data.cursorPos < text.data.length) {
+			data.clearButtonsExcept(app.leftArrow)
+			data.setPressed(app.leftArrow, now)
+		} else if (app.rightArrow.down && data.cursorPos < text.value.length && data.isPressable(app.rightArrow, now)) {
 			data.cursorPos++
-		} else if (widgetHandler.home.down) {
+			data.clearButtonsExcept(app.rightArrow)
+			data.setPressed(app.rightArrow, now)
+		} else if (app.home.down) {
+			data.clearButtonsExcept(null)
 			data.cursorPos = 0
-		} else if (widgetHandler.end.down) {
-			data.cursorPos = text.data.length
+		} else if (app.end.down) {
+			data.clearButtonsExcept(null)
+			data.cursorPos = text.value.length
 		} else if (pressedChar != null) {
+			data.clearButtonsExcept(null)
 			handlePressedChar(data, pressedChar)
+		}
+		val afterValue = text.value
+		if (beforeValue != afterValue && onChange != null) {
+			onChange!!()
 		}
 	}
 
 	private fun handleBackspace(data: TextfieldData) {
-		text.data = text.data.substring(0, data.cursorPos-1) + text.data.substring(data.cursorPos, text.data.length());
+		text.value = text.value.substring(0, data.cursorPos-1) + text.value.substring(data.cursorPos, text.value.length());
 		data.cursorPos--
 	}
 
@@ -101,15 +146,15 @@ open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, init:
 	}
 
 	protected fun insertChar(data: TextfieldData, pressedChar: Char) {
-		text.data = text.data.substring(0, data.cursorPos) + pressedChar + text.data.substring(data.cursorPos, text.data.length());
+		text.value = text.value.substring(0, data.cursorPos) + pressedChar + text.value.substring(data.cursorPos, text.value.length());
 		data.cursorPos++
 	}
 
-	private fun getOrCreateMyData(): TextfieldData {
-		val dataPtr = widgetHandler.getWidgetData("Textfield", id)
+	protected fun getOrCreateMyData(): TextfieldData {
+		val dataPtr = app.getWidgetData("Textfield", id)
 		return if (dataPtr == null) {
 			val data = TextfieldData()
-			widgetHandler.setWidgetData("Textfield", id, data)
+			app.setWidgetData("Textfield", id, data)
 			data
 		} else {
 			dataPtr as TextfieldData

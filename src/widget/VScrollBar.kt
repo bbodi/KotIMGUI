@@ -4,11 +4,10 @@ import timeline.IntValue
 import timeline.at_least
 import timeline.at_most
 import timeline.limit_into
-import timeline.widgetHandler
+import timeline.app
 
 
 public class VScrollBar(val value: IntValue, pos: Pos, init: VScrollBar.() -> Unit = {}) : Widget(pos) {
-	override val id: Int = value.hashCode()
 	var disabled: Boolean = false
 	var postfix: String = ""
 	var hover = false
@@ -21,50 +20,50 @@ public class VScrollBar(val value: IntValue, pos: Pos, init: VScrollBar.() -> Un
 	}
 
 	override fun draw() {
-		widgetHandler.skin.drawVerticalScrollbar(widgetHandler, this)
+		app.skin.drawVerticalScrollbar(app, this)
 	}
 
 
 	override fun handleEvents() {
-		val w = widgetHandler.skin.charWidth
-		val was_hot = widgetHandler.hot_widget_id == value.hashCode()
-		val was_active = widgetHandler.active_widget_id == value.hashCode()
-		val active = was_active && widgetHandler.leftMouseButton.down
-		hover = widgetHandler.mousePos.is_in_rect(pos, AbsolutePos(w*2, height))
+		val w = app.skin.charWidth
+		val was_hot = app.hot_widget_id == value.hashCode()
+		val was_active = app.active_widget_id == value.hashCode()
+		val active = was_active && app.leftMouseButton.down
+		hover = app.mousePos.is_in_rect(pos, Pos(w*2, height))
 
-		if (widgetHandler.leftMouseButton.down && hover && !was_active) {
-			widgetHandler.active_widget_id = value.hashCode()
-		} else if (was_active && widgetHandler.leftMouseButton.just_released) {
-			widgetHandler.active_widget_id = null
+		if (app.leftMouseButton.down && hover && !was_active) {
+			app.active_widget_id = value.hashCode()
+		} else if (was_active && app.leftMouseButton.just_released) {
+			app.active_widget_id = null
 		}
 
 		if (hover && !was_hot) {
-			widgetHandler.hot_widget_id = value.hashCode()
+			app.hot_widget_id = value.hashCode()
 		} else if (was_hot && !hover) {
-			widgetHandler.hot_widget_id = null
+			app.hot_widget_id = null
 		}
 
-		val clicked = hover && widgetHandler.leftMouseButton.just_released
+		val clicked = hover && app.leftMouseButton.just_released
 		if (clicked || active) {
-			val click_y = widgetHandler.mousePos.y - this.pos.y
+			val click_y = app.mousePos.y - this.pos.y
 			val value_range = max_value - min_value
-			val value_percent = (value.data - min_value) / value_range.toDouble()
+			val value_percent = (value.value - min_value) / value_range.toDouble()
 			val orange_bar_h = height * value_percent
 			if (clicked) {
 				if (click_y < orange_bar_h) {
-					value.data = (value.data - 1) at_least min_value
+					value.value = (value.value - 1) at_least min_value
 				} else if (click_y > orange_bar_h) {
-					value.data = (value.data + 1) at_most max_value
+					value.value = (value.value + 1) at_most max_value
 				}
 			} else if (active) {
 				val click_percent = click_y.toDouble() / height
-				value.data = (min_value + value_range * click_percent).toInt().limit_into(min_value, max_value)
+				value.value = (min_value + value_range * click_percent).toInt().limit_into(min_value, max_value)
 			}
 		}
 	}
 
 
 	fun clicked(): Boolean {
-		return (widgetHandler.leftMouseButton.just_released && hover)
+		return (app.leftMouseButton.just_released && hover)
 	}
 }
