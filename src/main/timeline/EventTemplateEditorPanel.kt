@@ -22,9 +22,8 @@ class EventTemplatePanel(val metrics: AppSizeMetricData) {
 
 		val contextMenu = ActionMenu(pos, metrics, {
 			eventTemplates.withIndices().forEach {
-				+ActionItem(downUnderMargin(), metrics, {
-					val (index, template) = it
-					label = template.name.value
+				val (index, template) = it
+				+ActionItem(template.name.value, downUnderMargin(), metrics, {
 					onClick = {selectedItemIndex = index}
 					highlight = selectedItemIndex == index
 				})
@@ -42,7 +41,7 @@ class EventTemplatePanel(val metrics: AppSizeMetricData) {
 	}
 
 	private fun createNewTemplate(eventTemplates: MutableList<EventTemplate>) {
-		eventTemplates.add(EventTemplate(""))
+		eventTemplates.add(EventTemplate("Unnamed"))
 	}
 
 	private fun drawItemPanel(pos: Pos,
@@ -52,7 +51,7 @@ class EventTemplatePanel(val metrics: AppSizeMetricData) {
 		Panel(pos, metrics, {
 			additionalIdInfo = "SelectedTemplatePanel"
 			+Label("Template name: ", downAlongLeftMargin(), metrics)
-			+Textfield(eventTemplate.name, 10, toRightFromLastWidget(10), metrics, {
+			+Textfield(eventTemplate.name, eventTemplate.name.value.length.at_least(10), toRightFromLastWidget(10), metrics, {
 				variant = if (eventTemplate.name.value.length == 0) Variant.DANGER else Variant.DEFAULT
 			})
 
@@ -61,7 +60,7 @@ class EventTemplatePanel(val metrics: AppSizeMetricData) {
 					val (index, field) = it
 					val fieldType = IntValue(field.type.ordinal())
 					+Label("Field name: ", downAlongLeftMargin(), metrics)
-					+Textfield(field.name, 10, toRightFromLastWidget(10), metrics, {
+					+Textfield(field.name, field.name.value.length.at_least(10), toRightFromLastWidget(10), metrics, {
 						variant = if (field.name.value.length == 0) Variant.DANGER else Variant.DEFAULT
 					})
 					+NumberField(fieldType, 10, toRightFromLastWidget(10), metrics, {

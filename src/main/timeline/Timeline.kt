@@ -213,7 +213,7 @@ class Timeline(pos: Pos, val metrics: AppSizeMetricData, init: Timeline.() -> Un
 		if (clickedJustNow) {
 			persistentData.lastMousePos = state.mousePos
 		} else if (down) {
-			if (state.ctrl.down) {
+			if (state.isKeyDown(Keys.Ctrl)) {
 				persistentData.areaSelectionRect = Rect.fromPositions(persistentData.lastMousePos, state.mousePos)
 			} else {
 				val (x, y) = projectIntoChartSpace(chartDrawingAreaInfo, persistentData, state.mousePos)
@@ -238,7 +238,7 @@ class Timeline(pos: Pos, val metrics: AppSizeMetricData, init: Timeline.() -> Un
 			persistentData.areaSelectionRect = null
 		}
 		if (hover && state.mouseScrollDelta != 0) {
-			if (state.ctrl.down) {
+			if (state.isKeyDown(Keys.Ctrl)) {
 				persistentData.bottomRange += state.mouseScrollDelta
 				persistentData.topRange -= state.mouseScrollDelta
 				setCursor(CursorStyle.NorthResize)

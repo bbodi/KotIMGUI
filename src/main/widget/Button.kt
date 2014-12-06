@@ -32,20 +32,21 @@ class Button(val label: String, pos: Pos, val metrics: AppSizeMetricData, init: 
 		hover = state.mousePos.isInRect(pos, Pos(width, height))
 		val was_hot = state.hot_widget_id == id
 		val was_active = state.active_widget_id == id
-		down = was_active && !state.leftMouseButton.just_released;
 
 		if (state.leftMouseButton.down && hover && !was_active) {
 			state.active_widget_id = id
 		} else if (was_active && state.leftMouseButton.just_released) {
 			state.active_widget_id = null
 		}
+		val isActive = state.leftMouseButton.down && hover
+		down = isActive
 
 		if (hover && !was_hot) {
 			state.hot_widget_id = id
 		} else if (was_hot && !hover) {
 			state.hot_widget_id = null
 		}
-		clicked = !disabled && state.leftMouseButton.just_released && hover
+		clicked = !disabled && state.leftMouseButton.just_released && hover && was_active
 		if (clicked && onClick != null) {
 			onClick!!()
 		}

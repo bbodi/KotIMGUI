@@ -7,8 +7,7 @@ import timeline.AppSizeMetricData
 import timeline.AppState
 import skin.Skin
 
-class ActionItem(pos: Pos, metrics: AppSizeMetricData, init: ActionItem.() -> Unit) : Widget(pos) {
-	var label = ""
+class ActionItem(val label: String, pos: Pos, metrics: AppSizeMetricData, init: ActionItem.() -> Unit = {}) : Widget(pos) {
 	var disabled = false
 	var checkBoxValue: BooleanValue? = null
 	var onClick: (() -> Unit)? = null

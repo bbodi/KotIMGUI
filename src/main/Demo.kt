@@ -49,20 +49,12 @@ var rightMouseDown = false;
 var showActionMenu = false
 
 var actionMenuPos = Pos(0, 0)
-val graphData = array(initBali(), initMaki(), init_data(), init_data(), init_data())
-val graphAvgData = array(calc_ema(graphData[0], 0.9f), calc_ema(graphData[1], 0.9f), calc_ema(graphData[2], 0.9f), calc_ema(graphData[3], 0.9f), calc_ema(graphData[4], 0.9f))
-val bestFitLines = array<List<Float>>(arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf())
+
 
 
 fun String.allocNew(): String {
 	return StringBuilder().append(this).toString()
 }
-
-fun initBali(): MutableList<Float?> = arrayListOf<Float?>(80f, 79.5f, 79.0f, 78.4f, 78.3f, 78.5f, 78.6f, 78.4f,
-78.6f, 78.1f, null, 77.9f, 78f, 78f, null, 78.5f, 78.1f, 78f, 77.9f)
-
-fun initMaki(): MutableList<Float?> = arrayListOf<Float?>(55f, 55.1f, 54.8f, 54.5f, 54.3f, 54.4f, null, 54.8f,
-54.9f, 54.5f, 53.9f, 53.8f, 53.6f, 53.7f, null, 54.7f, 54.4f, 54.0f, 53.9f)
 
 fun init_data(): MutableList<Float> {
 	var last = 30.0f;
@@ -176,20 +168,16 @@ private fun demoAppLogic(app: Application, state: AppState) {
 	if (showActionMenu) {
 		var parentActionItem: ActionItem? = null
 		val contextMenu = ActionMenu(actionMenuPos, state.metrics, {
-			+ActionItem(downUnderMargin(), state.metrics, {
-				label = "Normal"
+			+ActionItem("Normal", downUnderMargin(), state.metrics, {
 				comment = "Ctrl+N"
 			})
-			+ActionItem(downAlongLeftMargin(), state.metrics, {
-				label = "Disabled"
+			+ActionItem("Disabled", downAlongLeftMargin(), state.metrics, {
 				disabled = true
 			})
-			+ActionItem(downAlongLeftMargin(), state.metrics, {
-				label = "Checkbox value"
+			+ActionItem("Checkbox value", downAlongLeftMargin(), state.metrics, {
 				checkBoxValue = booleanValue
 			})
-			parentActionItem = ActionItem(downAlongLeftMargin(), state.metrics, {
-				label = "Parent"
+			parentActionItem = ActionItem("Parent", downAlongLeftMargin(), state.metrics, {
 				hasSubMenu = true
 			})
 			+parentActionItem!!
@@ -203,15 +191,12 @@ private fun demoAppLogic(app: Application, state: AppState) {
 		contextMenu.drawAndHandleEvents(state, app.skin)
 
 		val subMenu = ActionMenu(parentActionItem!!.pos + Pos(20, 20), state.metrics, {
-			+ActionItem(downAlongLeftMargin(), state.metrics, {
-				label = "Sub Normal"
+			+ActionItem("Sub Normal", downAlongLeftMargin(), state.metrics, {
 			})
-			+ActionItem(downAlongLeftMargin(), state.metrics, {
-				label = "Sub Disabled"
+			+ActionItem("Sub Disabled", downAlongLeftMargin(), state.metrics, {
 				disabled = true
 			})
-			+ActionItem(downAlongLeftMargin(), state.metrics, {
-				label = "Sub Checkbox value"
+			+ActionItem("Sub Checkbox value", downAlongLeftMargin(), state.metrics, {
 				checkBoxValue = booleanValue
 			})
 			+Textfield(strValue, 10, downAlongLeftMargin(), state.metrics, {
@@ -229,8 +214,6 @@ private fun demoAppLogic(app: Application, state: AppState) {
 			showActionMenu = contextMenu.hover || showSubActionMenu
 		}
 	}
-	debugLines.add("shift: ${state.shift.down}, ctrl: ${state.ctrl.down}")
-	debugLines.add("left: ${state.leftArrow.down}, pressed: ${state.leftArrow.just_pressed}, released: ${state.leftArrow.just_released}")
 	debugLines.add("h: ${state.isDown('h')}")
 	debugLines.add("mousePos: ${state.mousePos.x}, ${state.mousePos.y}")
 	debugLines.add("mouseScrollDelta: ${state.mouseScrollDelta}")

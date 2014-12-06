@@ -8,6 +8,7 @@ import timeline.AppSizeMetricData
 import timeline.AppState
 import timeline.AppSizeMetricData
 import skin.Skin
+import timeline.Keys
 
 public class TextfieldData {
 	var isCursorShown = false
@@ -31,7 +32,7 @@ public class ButtonTimer {
 	}
 }
 
-open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, metrics: AppSizeMetricData, init: Textfield.() -> Unit) : Widget(pos) {
+open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, metrics: AppSizeMetricData, init: Textfield.() -> Unit = {}) : Widget(pos) {
 
 	var disabled: Boolean = false
 	var variant = Variant.DEFAULT
@@ -51,7 +52,7 @@ open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, metri
 	}
 
 	var isCursorShown: Boolean = false
-	var cursorPos: Int = 0
+	var cursorPos: Int = text.value.length
 	var hover = false
 
 	override fun draw(skin: Skin) {
@@ -59,9 +60,11 @@ open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, metri
 	}
 
 	override fun handleEvents(state: AppState) {
-		val data = getOrCreateMyData(state)
+		val (isNew, data) = getOrCreateMyData(state)
+		if (!isNew) {
+			cursorPos = data.cursorPos
+		}
 		isCursorShown = data.isCursorShown
-		cursorPos = data.cursorPos
 		hover = state.mousePos.isInRect(pos, Pos(width, height))
 		val was_hot = state.hot_widget_id == id
 		val was_active = state.active_widget_id == id
@@ -85,37 +88,41 @@ open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, metri
 			data.cursorPos = (state.mousePos.x - (this.pos.x + state.metrics.panelBorder)) / state.metrics.charWidth
 			data.cursorPos = data.cursorPos.at_most(text.value.length)
 		}
-		handleInput(data, state.pressedChar, state)
+		handleInput(state.pressedChar, state)
 
 		if (data.nextCursorToggleTick <= state.currentTick) {
 			data.isCursorShown = !data.isCursorShown
 			data.nextCursorToggleTick = state.currentTick + 700
 		}
+		data.cursorPos = cursorPos
 	}
 
-	private fun handleInput(data: TextfieldData, pressedChar: Char?, state: AppState) {
+	private fun handleInput(pressedChar: Char?, state: AppState) {
 		val beforeValue = text.value
-		if (state.backspace.down && data.cursorPos > 0 && state.isPressable(state.backspace)) {
-			handleBackspace(data)
-			state.clearButtonsExcept(state.backspace)
-			state.setPressed(state.backspace)
-		} else if (state.leftArrow.down && data.cursorPos > 0 && state.isPressable(state.leftArrow)) {
-			data.cursorPos--
-			state.clearButtonsExcept(state.leftArrow)
-			state.setPressed(state.leftArrow)
-		} else if (state.rightArrow.down && data.cursorPos < text.value.length && state.isPressable(state.rightArrow)) {
-			data.cursorPos++
-			state.clearButtonsExcept(state.rightArrow)
-			state.setPressed(state.rightArrow)
-		} else if (state.home.down) {
-			state.clearButtonsExcept(null)
-			data.cursorPos = 0
-		} else if (state.end.down) {
-			state.clearButtonsExcept(null)
-			data.cursorPos = text.value.length
+		val fakk = state.isPressable(Keys.Backspace)
+		val makk = state.isKeyDown(Keys.Backspace)
+		val sakk = cursorPos
+		if (makk && cursorPos > 0 && fakk) {
+			handleBackspace(state.isKeyDown(Keys.Ctrl))
+			state.clearKeysExcept(Keys.Backspace)
+			state.setPressed(Keys.Backspace)
+		} else if (state.isKeyDown(Keys.LeftArrow) && cursorPos > 0 && state.isPressable(Keys.LeftArrow)) {
+			cursorPos--
+			state.clearKeysExcept(Keys.LeftArrow)
+			state.setPressed(Keys.LeftArrow)
+		} else if (state.isKeyDown(Keys.RightArrow) && cursorPos < text.value.length && state.isPressable(Keys.RightArrow)) {
+			cursorPos++
+			state.clearKeysExcept(Keys.RightArrow)
+			state.setPressed(Keys.RightArrow)
+		} else if (state.isKeyDown(Keys.Home)) {
+			state.clearKeysExcept(null)
+			cursorPos = 0
+		} else if (state.isKeyDown(Keys.End)) {
+			state.clearKeysExcept(null)
+			cursorPos = text.value.length
 		} else if (pressedChar != null) {
-			state.clearButtonsExcept(null)
-			handlePressedChar(data, pressedChar)
+			state.clearKeysExcept(null)
+			handlePressedChar(pressedChar)
 		}
 		val afterValue = text.value
 		if (beforeValue != afterValue && onChange != null) {
@@ -123,28 +130,33 @@ open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, metri
 		}
 	}
 
-	private fun handleBackspace(data: TextfieldData) {
-		text.value = text.value.substring(0, data.cursorPos-1) + text.value.substring(data.cursorPos, text.value.length());
-		data.cursorPos--
+	private fun handleBackspace(isCtrlDown: Boolean) {
+		if (isCtrlDown) {
+			text.value = ""
+			cursorPos = 0
+		} else {
+			text.value = text.value.substring(0, cursorPos - 1) + text.value.substring(cursorPos, text.value.length());
+			cursorPos--
+		}
 	}
 
-	open protected fun handlePressedChar(data: TextfieldData, pressedChar: Char) {
-		insertChar(data, pressedChar)
+	open protected fun handlePressedChar(pressedChar: Char) {
+		insertChar(pressedChar)
 	}
 
-	protected fun insertChar(data: TextfieldData, pressedChar: Char) {
-		text.value = text.value.substring(0, data.cursorPos) + pressedChar + text.value.substring(data.cursorPos, text.value.length());
-		data.cursorPos++
+	protected fun insertChar(pressedChar: Char) {
+		text.value = text.value.substring(0, cursorPos) + pressedChar + text.value.substring(cursorPos, text.value.length());
+		cursorPos++
 	}
 
-	protected fun getOrCreateMyData(state: AppState): TextfieldData {
+	protected fun getOrCreateMyData(state: AppState): Pair<Boolean, TextfieldData> {
 		val dataPtr = state.getWidgetData("Textfield", id)
 		return if (dataPtr == null) {
 			val data = TextfieldData()
 			state.setWidgetData("Textfield", id, data)
-			data
+			Pair(true, data)
 		} else {
-			dataPtr as TextfieldData
+			Pair(false, dataPtr as TextfieldData)
 		}
 	}
 }

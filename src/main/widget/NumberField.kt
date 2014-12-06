@@ -8,6 +8,7 @@ import timeline.AppState
 import org.junit.Test
 import kotlin.test.assertEquals
 import skin.Skin
+import timeline.Keys
 
 data class NumberFieldData(val text: StrValue)
 
@@ -42,9 +43,9 @@ open class NumberField(val value: IntValue, width: Int, pos: Pos, metrics: AppSi
 		skin.drawMiniButton(lowerButton)
 	}
 
-	override protected fun handlePressedChar(data: TextfieldData, pressedChar: Char) {
+	override protected fun handlePressedChar(pressedChar: Char) {
 		if (pressedChar in '0' .. '9') {
-			insertChar(data, pressedChar)
+			insertChar(pressedChar)
 		}
 	}
 
@@ -54,28 +55,31 @@ open class NumberField(val value: IntValue, width: Int, pos: Pos, metrics: AppSi
 		upperButton.handleEvents(state)
 		lowerButton.handleEvents(state)
 		val beforeValue = value.value
-		if (upperButton.down && state.isPressable(state.upArrow)) {
+		if (upperButton.clicked) {
 			increaseValue()
-			state.clearButtonsExcept(state.upArrow)
-			state.setPressed(state.upArrow)
-		} else if (lowerButton.down && state.isPressable(state.downArrow)) {
+			state.clearKeysExcept(Keys.UpArrow)
+			state.setPressed(Keys.UpArrow)
+		} else if (lowerButton.clicked) {
 			decreaseValue()
-			state.clearButtonsExcept(state.downArrow)
-			state.setPressed(state.downArrow)
-		} else if (state.upArrow.down && state.isActive(this) && state.isPressable(state.upArrow)) {
+			state.clearKeysExcept(Keys.DownArrow)
+			state.setPressed(Keys.DownArrow)
+		} else if (state.isKeyDown(Keys.UpArrow) && state.isActive(this) && state.isPressable(Keys.UpArrow)) {
 			increaseValue()
 			upperButton.down = true
-			state.clearButtonsExcept(state.upArrow)
-			state.setPressed(state.upArrow)
-		} else if (state.downArrow.down && state.isActive(this) && state.isPressable(state.downArrow)) {
+			state.clearKeysExcept(Keys.UpArrow)
+			state.setPressed(Keys.UpArrow)
+		} else if (state.isKeyDown(Keys.DownArrow) && state.isActive(this) && state.isPressable(Keys.DownArrow)) {
 			decreaseValue()
 			lowerButton.down = true
-			state.clearButtonsExcept(state.downArrow)
-			state.setPressed(state.downArrow)
+			state.clearKeysExcept(Keys.DownArrow)
+			state.setPressed(Keys.DownArrow)
 		}
 		val afterValue = value.value
-		if (beforeValue != afterValue && onChange != null) {
-			onChange!!()
+		if (beforeValue != afterValue) {
+			text.value = afterValue.toString()
+			if (onChange != null) {
+				onChange!!()
+			}
 		}
 	}
 

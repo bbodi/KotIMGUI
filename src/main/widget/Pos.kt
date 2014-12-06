@@ -1,8 +1,8 @@
 package widget
 
 class Pos(val x: Int = 0, val y: Int = 0) {
-	fun isInRect(topLeft: Pos, size: Pos) = (x >= topLeft.x) && (x <= topLeft.x + size.x) &&
-			(y >= topLeft.y) && (y <= topLeft.y + size.y)
+	fun isInRect(topLeft: Pos, size: Pos) = (x >= topLeft.x) && (x < topLeft.x + size.x) &&
+			(y >= topLeft.y) && (y < topLeft.y + size.y)
 	fun plus(v: Pos) = Pos(x + v.x, y + v.y)
 	fun minus() = Pos(-x, -y)
 	fun minus(v: Pos) = Pos(x - v.x, y - v.y)

@@ -1,6 +1,6 @@
 package timeline;
 
-public class IntValue(var value: Int) : Comparable<Int> by value {}
+public class IntValue(var value: Int)
 
 public class FloatValue(var value: Float) : Comparable<Float> by value {}
 // Ez egyelőre nem működik, JS hiba keletkezik a CharSequence miatt

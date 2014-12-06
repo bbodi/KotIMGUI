@@ -124,13 +124,30 @@ fun onMouseScroll(delta: Int) {
 }
 
 public class AppSizeMetricData (
-	val font: Font,
-	val rowHeight: Int,
-	val textMarginY: Int,
-	val charWidth: Int,
-	val charHeight: Int,
-	val panelBorder: Int
+		val font: Font,
+		val rowHeight: Int,
+		val textMarginY: Int,
+		val charWidth: Int,
+		val charHeight: Int,
+		val panelBorder: Int
 )
+
+public enum class Keys {
+	LeftArrow
+	RightArrow
+	UpArrow
+	DownArrow
+	Backspace
+	Enter
+	Ctrl
+	Alt
+	Shift
+	Tab
+	Home
+	End
+	PageUp
+	PageDown
+}
 
 public class AppState(val metrics: AppSizeMetricData) {
 
@@ -139,60 +156,54 @@ public class AppState(val metrics: AppSizeMetricData) {
 	val leftMouseButton = InputButton()
 	val rightMouseButton = InputButton()
 	val middleMouseButton = InputButton()
-	val leftArrow = InputButton()
-	val rightArrow = InputButton()
-	val upArrow = InputButton()
-	val downArrow = InputButton()
-
-	val backspace = InputButton()
-	val enter = InputButton()
-	val ctrl = InputButton()
-	val alt = InputButton()
-	val shift = InputButton()
-	val tab = InputButton()
-
-	val home = InputButton()
-	val end = InputButton()
-	val pageUp = InputButton()
-	val pageDown = InputButton()
-	private val keys = hashMapOf<Char, InputButton>()
 	var pressedChar: Char? = null
 	var active_widget_id: Any? = null
 	var hot_widget_id: Any? = null
 
-	var currentTick = 0
+	var currentTick = 10000
 
 	fun isActive(widget: Widget) = widget.id == active_widget_id
 
-	private val buttonTimers: Map<InputButton, ButtonTimer> = array(leftArrow, rightArrow, backspace, upArrow, downArrow).map { Pair(it, ButtonTimer()) }.toMap()
+	private val chars = hashMapOf<Char, InputButton>()
+	private val keys: Map<Keys, InputButton> = Keys.values().map { Pair(it, InputButton()) }.toMap()
+	private val buttonTimers: Map<Keys, ButtonTimer> = Keys.values().map { Pair(it, ButtonTimer()) }.toMap()
 	private val widgetData = hashMapOf<Any, Any>()
 
-	fun isPressable(btn: InputButton) = this.buttonTimers[btn]!!.isPressable(currentTick)
-	fun clearButtonsExcept(btn: InputButton?) {
-		buttonTimers.filter { it.key != btn }.values().forEach { it.clear() }
-	}
-	fun setPressed(btn: InputButton) {
-		this.buttonTimers[btn]!!.setPressed(currentTick)
+	fun isPressable(key: Keys) = this.buttonTimers[key]!!.isPressable(currentTick)
+	fun clearKeysExcept(key: Keys?) {
+		buttonTimers.filter { it.key != key }.values().forEach { it.clear() }
 	}
 
-	fun isJustPressed(key: Char): Boolean = keys[key]?.just_pressed ?: false
-	fun isJustReleased(key: Char): Boolean = keys[key]?.just_released ?: false
-	fun isDown(key: Char): Boolean = keys[key]?.down ?: false
-	fun updateKey(key: Char, down: Boolean) {
-		if (down && key !in keys) {
-			keys[key] = InputButton()
-		}
-		keys[key]?.update(down)
+	fun setPressed(key: Keys) {
+		this.buttonTimers[key]!!.setPressed(currentTick)
 	}
+
+	fun isJustPressed(char: Char): Boolean = chars[char]?.just_pressed ?: false
+	fun isJustReleased(char: Char): Boolean = chars[char]?.just_released ?: false
+	fun isDown(char: Char): Boolean = chars[char]?.down ?: false
+	fun updateChar(char: Char, down: Boolean) {
+		if (down && char !in chars) {
+			chars[char] = InputButton()
+		}
+		chars[char]?.update(down)
+	}
+
+	fun isJustPressed(key: Keys): Boolean = keys[key]!!.just_pressed
+	fun isJustReleased(key: Keys): Boolean = keys[key]!!.just_released
+	fun isKeyDown(key: Keys): Boolean = keys[key]!!.down
+	fun updateKey(key: Keys, down: Boolean) {
+		keys[key]!!.update(down)
+	}
+
 	fun disableAllKeysExcept(key: Char?) {
-		keys.toList().filter({ it.first != key }).forEach { it.second.update(false) }
+		chars.toList().filter({ it.first != key }).forEach { it.second.update(false) }
 	}
 
 	fun getWidgetData(className: String, id: Int): Any? {
 		return widgetData[className + id.toString()]
 	}
 
-	fun setWidgetData(className: String, id: Int, data: Any){
+	fun setWidgetData(className: String, id: Int, data: Any) {
 		widgetData[className + id.toString()] = data
 	}
 
@@ -205,38 +216,37 @@ public class AppState(val metrics: AppSizeMetricData) {
 	}
 
 	fun handleKeys() {
-		fun handleKeys() {
-			val asd = {(array: List<Int>, down: Boolean) ->
-				array.forEach {
-					when (it) {
-						38 -> upArrow.update(down)
-						37 -> leftArrow.update(down)
-						40 -> downArrow.update(down)
-						39 -> rightArrow.update(down)
-						33 -> pageUp.update(down)
-						34 -> pageDown.update(down)
-						13 -> enter.update(down)
-						17 -> ctrl.update(down)
-						18 -> alt.update(down)
-						9 -> tab.update(down)
-						36 -> home.update(down)
-						35 -> end.update(down)
-						8 -> backspace.update(down)
-						16 -> shift.update(down)
-					}
+		val asd = {(array: List<Int>, down: Boolean) ->
+			array.forEach {
+				when (it) {
+					38 -> updateKey(Keys.UpArrow, down)
+					37 -> updateKey(Keys.LeftArrow, down)
+					40 -> updateKey(Keys.DownArrow, down)
+					39 -> updateKey(Keys.RightArrow, down)
+					33 -> updateKey(Keys.PageUp, down)
+					34 -> updateKey(Keys.PageDown, down)
+					13 -> updateKey(Keys.Enter, down)
+					17 -> updateKey(Keys.Ctrl, down)
+					18 -> updateKey(Keys.Alt, down)
+					9 -> updateKey(Keys.Tab, down)
+					36 -> updateKey(Keys.Home, down)
+					35 -> updateKey(Keys.End, down)
+					8 -> updateKey(Keys.Backspace, down)
+					16 -> updateKey(Keys.Shift, down)
 				}
 			}
-			asd(keyDownEvents, true)
-			asd(keyUpEvents, false)
-			keyUpEvents.clear()
-			keyDownEvents.clear()
-
-			if (global_pressedChar != null) {
-				updateKey(global_pressedChar!!, true)
-			}
-			disableAllKeysExcept(global_pressedChar)
-			pressedChar = global_pressedChar
 		}
+		asd(keyDownEvents, true)
+		asd(keyUpEvents, false)
+		keyUpEvents.clear()
+		keyDownEvents.clear()
+
+		if (global_pressedChar != null) {
+			updateChar(global_pressedChar!!, true)
+		}
+		disableAllKeysExcept(global_pressedChar)
+		pressedChar = global_pressedChar
+
 	}
 }
 
@@ -262,11 +272,14 @@ abstract class Application(val skin: Skin) {
 
 	{
 		jq {
-			jq(canvas).mousemove {
-				appState.mousePos = mousePos(it)
-			}
+			val onlyTests = window.document.getElementsByTagName("canvas").item(0).attributes.getNamedItem("only_tests") != null
+			if (!onlyTests) {
+				jq(canvas).mousemove {
+					appState.mousePos = mousePos(it)
+				}
 
-			requestAnimationFrame({ frame() })
+				requestAnimationFrame({ frame() })
+			}
 		}
 	}
 
