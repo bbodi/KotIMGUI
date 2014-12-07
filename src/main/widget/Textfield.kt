@@ -46,13 +46,13 @@ open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, metri
 	override var height = metrics.rowHeight
 		private set
 
+	var cursorPos: Int = text.value.length
 	{
 		additionalIdInfo = text.hashCode().toString()
 		init()
 	}
 
 	var isCursorShown: Boolean = false
-	var cursorPos: Int = text.value.length
 	var hover = false
 
 	override fun draw(skin: Skin) {
@@ -60,11 +60,7 @@ open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, metri
 	}
 
 	override fun handleEvents(state: AppState) {
-		val (isNew, data) = getOrCreateMyData(state)
-		if (!isNew) {
-			cursorPos = data.cursorPos
-		}
-		isCursorShown = data.isCursorShown
+		readPersistentInfo(state)
 		hover = state.mousePos.isInRect(pos, Pos(width, height))
 		val was_hot = state.hot_widget_id == id
 		val was_active = state.active_widget_id == id
@@ -85,11 +81,12 @@ open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, metri
 		}
 		val clicked = state.leftMouseButton.down && hover
 		if (clicked) {
-			data.cursorPos = (state.mousePos.x - (this.pos.x + state.metrics.panelBorder)) / state.metrics.charWidth
-			data.cursorPos = data.cursorPos.at_most(text.value.length)
+			cursorPos = (state.mousePos.x - (this.pos.x + state.metrics.panelBorder)) / state.metrics.charWidth
+			cursorPos = cursorPos.at_most(text.value.length)
 		}
 		handleInput(state.pressedChar, state)
 
+		val (isNew, data) = getOrCreateMyData(state)
 		if (data.nextCursorToggleTick <= state.currentTick) {
 			data.isCursorShown = !data.isCursorShown
 			data.nextCursorToggleTick = state.currentTick + 700
@@ -97,12 +94,21 @@ open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, metri
 		data.cursorPos = cursorPos
 	}
 
+	private fun readPersistentInfo(state: AppState) {
+		val (isNew, data) = getOrCreateMyData(state)
+		if (!isNew) {
+			cursorPos = data.cursorPos
+		}
+		isCursorShown = data.isCursorShown
+	}
+
 	private fun handleInput(pressedChar: Char?, state: AppState) {
 		val beforeValue = text.value
-		val fakk = state.isPressable(Keys.Backspace)
-		val makk = state.isKeyDown(Keys.Backspace)
-		val sakk = cursorPos
-		if (makk && cursorPos > 0 && fakk) {
+		if (state.isKeyDown(Keys.Del) && cursorPos < text.value.length && state.isPressable(Keys.Del)) {
+			handleDelButton(state.isKeyDown(Keys.Ctrl))
+			state.clearKeysExcept(Keys.Del)
+			state.setPressed(Keys.Del)
+		} else if (state.isKeyDown(Keys.Backspace) && cursorPos > 0 && state.isPressable(Keys.Backspace)) {
 			handleBackspace(state.isKeyDown(Keys.Ctrl))
 			state.clearKeysExcept(Keys.Backspace)
 			state.setPressed(Keys.Backspace)
@@ -137,6 +143,14 @@ open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, metri
 		} else {
 			text.value = text.value.substring(0, cursorPos - 1) + text.value.substring(cursorPos, text.value.length());
 			cursorPos--
+		}
+	}
+
+	private fun handleDelButton(isCtrlDown: Boolean) {
+		if (isCtrlDown) {
+			text.value = text.value.substring(0, cursorPos)
+		} else {
+			text.value = text.value.substring(0, cursorPos) + text.value.substring(cursorPos+1, text.value.length());
 		}
 	}
 

@@ -111,15 +111,10 @@ data class ChartDrawingAreaInfo(timeline: Timeline, data: TimelineData, metrics:
 	}
 }
 
-class Timeline(pos: Pos, val metrics: AppSizeMetricData, init: Timeline.() -> Unit = {}) : Widget(pos) {
+class Timeline(pos: Pos, override var width: Int, override var height: Int, val metrics: AppSizeMetricData, init: Timeline.() -> Unit = {}) : Widget(pos) {
 
 	private var chartDrawingAreaInfo: ChartDrawingAreaInfo by kotlin.properties.Delegates.notNull()
 
-	override var width = 0
-		get() = parent!!.contentWidth
-	override var height = metrics.rowHeight
-		private set
-		get() = parent!!.contentHeight
 	var charts: MutableList<Chart> = arrayListOf();
 
 	{

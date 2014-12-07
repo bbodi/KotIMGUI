@@ -1,7 +1,7 @@
 package widget
 
 import timeline.IntValue
-import timeline.at_least
+import timeline.atLeast
 import timeline.at_most
 import timeline.limit_into
 import timeline.AppSizeMetricData
@@ -52,7 +52,7 @@ public class HScrollBar(val value: IntValue, pos: Pos, metrics: AppSizeMetricDat
 			val orange_bar_w = width * value_percent
 			if (clicked) {
 				if (click_x < orange_bar_w) {
-					value.value = (value.value -1) at_least min_value
+					value.value = (value.value -1) atLeast min_value
 				} else if (click_x > orange_bar_w) {
 					value.value = (value.value +1) at_most max_value
 				}

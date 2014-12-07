@@ -2,16 +2,14 @@ package widget
 
 import timeline.AppSizeMetricData
 
-abstract class WidgetContainer(pos: Pos, metrics: AppSizeMetricData) : Widget(pos) {
+abstract class WidgetContainer(pos: Pos, val metrics: AppSizeMetricData) : Widget(pos) {
 	val widgets = arrayListOf<Widget>();
-	val marginX = metrics.panelBorder
-	val marginY = metrics.panelBorder
-	open val contentX = this.pos.x + marginX
-	open val contentY = this.pos.y + marginY
+	open val contentX = this.pos.x + metrics.panelBorder
+	open val contentY = this.pos.y + metrics.panelBorder
 	open val contentWidth: Int
-		get() = width - marginX * 2
+		get() = width - metrics.panelBorder * 2
 	open val contentHeight: Int
-		get() = height - marginY * 2
+		get() = height - metrics.panelBorder * 2
 
 	fun Widget.plus() {
 		addWidget(this)
@@ -28,7 +26,7 @@ abstract class WidgetContainer(pos: Pos, metrics: AppSizeMetricData) : Widget(po
 		var calculatedWidth = 0
 		var calculatedHeight = 0
 		for (childWidget in widgets) {
-			val childrenPos = childWidget.pos - pos
+			val childrenPos = childWidget.pos - Pos(contentX, contentY)
 			if (this.width == 0) {
 				if (childrenPos.x + childWidget.width > calculatedWidth) {
 					calculatedWidth = childrenPos.x + childWidget.width
@@ -44,19 +42,19 @@ abstract class WidgetContainer(pos: Pos, metrics: AppSizeMetricData) : Widget(po
 	}
 
 
-	fun downAlongLeftMargin(y: Int = 1): Pos {
+	fun downAlongLeftMargin(y: Int = 0): Pos {
 		val fromY = if (widgets.last != null) {
 			widgets.last!!.pos.y + widgets.last!!.height
 		} else contentY
 		return Pos(contentX, fromY + y)
 	}
 
-	fun downUnderMargin(): Pos {
-		return downAlongLeftMargin(marginX)
-	}
-
 	fun toRightFromLastWidget(x: Int = 1): Pos {
 		val lastWidget = widgets.last!!
 		return Pos(lastWidget.pos.x + lastWidget.width + x, lastWidget.pos.y)
+	}
+
+	fun plus(func: WidgetContainer.() -> Unit) {
+		func()
 	}
 }

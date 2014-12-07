@@ -1,5 +1,7 @@
 package timeline
 
+import java.io.Serializable
+
 // full list: http://www.w3schools.com/cssref/playit.asp?filename=playcss_cursor&preval=copy
 public enum class CursorStyle(val htmlName: String) {
 	Auto: CursorStyle("auto")
@@ -33,6 +35,10 @@ fun setCursor(cursorStyle: CursorStyle) {
 }
 
 native
-private fun jsSetCursor(cursorStyle: String) {
+private fun jsSetCursor(cursorStyle: String): Unit = noImpl
 
-}
+native("localStorage_setItem")
+private fun setLocalStorageItem(key: String, item: String): Unit = noImpl
+
+native("localStorage_getItem")
+private fun getLocalStorageItem(key: String): Any? = noImpl

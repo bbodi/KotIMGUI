@@ -147,6 +147,7 @@ public enum class Keys {
 	End
 	PageUp
 	PageDown
+	Del
 }
 
 public class AppState(val metrics: AppSizeMetricData) {
@@ -233,6 +234,7 @@ public class AppState(val metrics: AppSizeMetricData) {
 					35 -> updateKey(Keys.End, down)
 					8 -> updateKey(Keys.Backspace, down)
 					16 -> updateKey(Keys.Shift, down)
+					46 -> updateKey(Keys.Del, down)
 				}
 			}
 		}
@@ -287,7 +289,7 @@ abstract class Application(val skin: Skin) {
 		if (showDebugLines) {
 			Panel(appState.mousePos, appState.metrics, {
 				debugLines.withIndices().forEach {
-					val pos = if (it.first == 0) downUnderMargin() else downAlongLeftMargin()
+					val pos = if (it.first == 0) downAlongLeftMargin() else downAlongLeftMargin()
 					when (it.second) {
 						is String -> +Label(it.second as String, pos, appState.metrics)
 						is IntValue -> +NumberField(it.second as IntValue, 4, pos, appState.metrics)

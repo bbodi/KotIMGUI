@@ -1,8 +1,9 @@
 package timeline
 
 import kotlin.js
+import java.io.Serializable
 
-enum class EventFieldType {
+enum class EventType {
 	NUMBER
 	OCCURRED_OR_NOT
 	RANGE
@@ -11,16 +12,10 @@ enum class EventFieldType {
 	EVENT_LINK
 }
 
-class EventField() {
-	var type: EventFieldType = EventFieldType.NUMBER
-	var name: StrValue = StrValue("")
-}
-
-class EventTemplate(name: String) {
+class EventTemplate(name: String, var type: EventType = EventType.NUMBER) {
 	val name = StrValue(name)
-	val fields: MutableList<EventField> = arrayListOf()
 }
 
-class Event(val date: js.Date, val comment: String) {
-	val fields: MutableList<EventField> = arrayListOf()
+class Event(val date: js.Date, val comment: String): Serializable {
+	//val fields: EventType = arrayListOf<>()
 }

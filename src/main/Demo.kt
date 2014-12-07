@@ -168,7 +168,7 @@ private fun demoAppLogic(app: Application, state: AppState) {
 	if (showActionMenu) {
 		var parentActionItem: ActionItem? = null
 		val contextMenu = ActionMenu(actionMenuPos, state.metrics, {
-			+ActionItem("Normal", downUnderMargin(), state.metrics, {
+			+ActionItem("Normal", downAlongLeftMargin(), state.metrics, {
 				comment = "Ctrl+N"
 			})
 			+ActionItem("Disabled", downAlongLeftMargin(), state.metrics, {
@@ -253,8 +253,8 @@ fun tabPanel(metrics: AppSizeMetricData, state: AppState): TabPanel {
 		addTabPanelItem("Graph", { variant = Variant.DANGER })
 		addTabPanelItem("Disabled", { disabled = true })
 		if (tabPanelValue.value == 0) {
-			+Panel(downUnderMargin(), state.metrics, {
-				+Button("Default Button", downUnderMargin(), state.metrics, {
+			+Panel(downAlongLeftMargin(), state.metrics, {
+				+Button("Default Button", downAlongLeftMargin(), state.metrics, {
 					width = 200
 					variant = Variant.DEFAULT
 					onClick = {
@@ -294,7 +294,7 @@ fun tabPanel(metrics: AppSizeMetricData, state: AppState): TabPanel {
 				})
 			})
 		} else if (tabPanelValue.value == 1) {
-			+Panel(downUnderMargin(), state.metrics, {
+			+Panel(downAlongLeftMargin(), state.metrics, {
 				+Textfield(strValue, 10, downAlongLeftMargin(10), state.metrics, {
 					variant = Variant.DEFAULT
 				})
@@ -315,7 +315,7 @@ fun tabPanel(metrics: AppSizeMetricData, state: AppState): TabPanel {
 				})
 			})
 		} else if (tabPanelValue.value == 2) {
-			+Panel(downUnderMargin(), state.metrics, {
+			+Panel(downAlongLeftMargin(), state.metrics, {
 				+Checkbox("Default", booleanValues[0], downAlongLeftMargin(10), metrics)
 				+Checkbox("Info", booleanValues[1], downAlongLeftMargin(10), state.metrics, {
 					variant = Variant.INFO
@@ -334,7 +334,7 @@ fun tabPanel(metrics: AppSizeMetricData, state: AppState): TabPanel {
 				})
 			})
 		} else if (tabPanelValue.value == 3) {
-			+Panel(downUnderMargin(), state.metrics, {
+			+Panel(downAlongLeftMargin(), state.metrics, {
 				+RadioButton("Default", radioButtonValue, 0, downAlongLeftMargin(10), metrics)
 				+RadioButton("Info", radioButtonValue, 1, downAlongLeftMargin(10), state.metrics, {
 					variant = Variant.INFO
@@ -353,7 +353,7 @@ fun tabPanel(metrics: AppSizeMetricData, state: AppState): TabPanel {
 				})
 			})
 		} else if (tabPanelValue.value == 4) {
-			+Timeline(downUnderMargin(), state.metrics, {
+			+Timeline(downAlongLeftMargin(), 500, 500, state.metrics, {
 				for ( (i, v) in booleanValues.zip(showAvgValues).withIndices()) {
 					val (showGraph, showAvg) = v
 					if (i == 0 && showGraph.value) {

@@ -2,7 +2,6 @@ import kotlin.test.assertEquals
 import org.junit.Test;
 import widget.Button
 import widget.NumberField
-import timeline.EventFieldType
 import timeline.IntValue
 import widget.Pos
 import timeline.AppState
@@ -20,7 +19,7 @@ public class ActionMenuTest {
 		val metrics = AppSizeMetricData(Font(16, "Courier New"), rowHeight = 20, textMarginY = 5, charWidth = 10, charHeight = 10, panelBorder = 5)
 		val state = AppState(metrics)
 		val actionMenu = ActionMenu(Pos(10, 10), metrics, {
-			+ActionItem("First", downUnderMargin(), metrics)
+			+ActionItem("First", downAlongLeftMargin(), metrics)
 			val secondItem = ActionItem("Second", downAlongLeftMargin(10), metrics)
 			+secondItem
 			moveMouseToSecondItem(secondItem, metrics, state)

@@ -10,72 +10,53 @@ import skin.Variant
 import widget.NumberField
 import widget.Label
 import skin.Skin
+import widget.TabPanel
+import widget.WidgetContainer
 
 
 class EventTemplatePanel(val metrics: AppSizeMetricData) {
-	private var selectedItemIndex: Int? = null
 
-	fun drawEventTemplatePanel(pos: Pos,
-							   eventTemplates: MutableList<EventTemplate>,
-							   appEvent: AppState,
-							   skin: Skin) {
+	fun drawEventTemplatePanel(eventTemplates: MutableList<EventTemplate>,
+							   appState: AppState,
+							   parent: WidgetContainer): Boolean {
+		var isTemplateChanged = false
+		parent + {
+			eventTemplates.forEach { template ->
+				+Label("Template name: ", downAlongLeftMargin(), metrics)
+				+Textfield(template.name, (template.name.value.length+1).atLeast(10), toRightFromLastWidget(10), metrics, {
+					variant = if (template.name.value.length == 0) Variant.DANGER else Variant.DEFAULT
+					onChange = {
+						isTemplateChanged = true
+					}
+				})
+				val fieldType = IntValue(template.type.ordinal())
+				+NumberField(fieldType, 10, toRightFromLastWidget(10), metrics, {
+					valueLabels = EventType.values().map { it.toString() }.copyToArray()
+					onChange = {
+						template.type = EventType.values()[fieldType.value]
+						isTemplateChanged = true
+					}
+				})
+				+Button("Delete", toRightFromLastWidget(10), metrics, {
+					width = 200
+					onClick = {
 
-		val contextMenu = ActionMenu(pos, metrics, {
-			eventTemplates.withIndices().forEach {
-				val (index, template) = it
-				+ActionItem(template.name.value, downUnderMargin(), metrics, {
-					onClick = {selectedItemIndex = index}
-					highlight = selectedItemIndex == index
+					}
 				})
 			}
 			+Button("CreateNew", downAlongLeftMargin(), metrics, {
 				width = 200
-				onClick = {createNewTemplate(eventTemplates)}
+				onClick = {
+					createNewTemplate(eventTemplates)
+					isTemplateChanged = true
+				}
 			})
-		})
-		contextMenu.drawAndHandleEvents(appEvent, skin)
-
-		if (selectedItemIndex != null) {
-			drawItemPanel(contextMenu.toRight(10), eventTemplates[selectedItemIndex!!], appEvent, skin);
 		}
+
+		return isTemplateChanged
 	}
 
 	private fun createNewTemplate(eventTemplates: MutableList<EventTemplate>) {
 		eventTemplates.add(EventTemplate("Unnamed"))
-	}
-
-	private fun drawItemPanel(pos: Pos,
-							  eventTemplate: EventTemplate,
-							  appEvent: timeline.AppState,
-							  skin: Skin) {
-		Panel(pos, metrics, {
-			additionalIdInfo = "SelectedTemplatePanel"
-			+Label("Template name: ", downAlongLeftMargin(), metrics)
-			+Textfield(eventTemplate.name, eventTemplate.name.value.length.at_least(10), toRightFromLastWidget(10), metrics, {
-				variant = if (eventTemplate.name.value.length == 0) Variant.DANGER else Variant.DEFAULT
-			})
-
-			+Panel(downAlongLeftMargin(20), metrics, {
-				eventTemplate.fields.withIndices().forEach {
-					val (index, field) = it
-					val fieldType = IntValue(field.type.ordinal())
-					+Label("Field name: ", downAlongLeftMargin(), metrics)
-					+Textfield(field.name, field.name.value.length.at_least(10), toRightFromLastWidget(10), metrics, {
-						variant = if (field.name.value.length == 0) Variant.DANGER else Variant.DEFAULT
-					})
-					+NumberField(fieldType, 10, toRightFromLastWidget(10), metrics, {
-						additionalIdInfo = "$index"
-						valueLabels = EventFieldType.values().map { it.toString() }.copyToArray()
-						onChange = {
-							field.type = EventFieldType.values()[fieldType.value]
-						}
-					})
-				}
-				+Button("CreateNew", downAlongLeftMargin(), metrics, {
-					width = 200
-					onClick = {eventTemplate.fields.add(EventField())}
-				})
-			})
-		}).drawAndHandleEvents(appEvent, skin)
 	}
 }

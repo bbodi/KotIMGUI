@@ -5,13 +5,11 @@ import timeline.AppState
 import skin.Variant
 import skin.Skin
 
-class Button(val label: String, pos: Pos, val metrics: AppSizeMetricData, init: Button.() -> Unit) : Widget(pos) {
+class Button(val label: String, pos: Pos, val metrics: AppSizeMetricData, init: Button.() -> Unit = {}) : Widget(pos) {
 
 	var clicked: Boolean = false
 	var disabled: Boolean = false
 	var hover = false
-
-
 
 	override var height = metrics.rowHeight
 	var down = false

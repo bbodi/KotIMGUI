@@ -2,7 +2,6 @@ import kotlin.test.assertEquals
 import org.junit.Test;
 import widget.Button
 import widget.NumberField
-import timeline.EventFieldType
 import timeline.IntValue
 import widget.Pos
 import timeline.AppState
@@ -41,6 +40,41 @@ public class TextfieldTest {
 		focus(textfield, state)
 		state.updateKey(Keys.Ctrl, true)
 		state.updateKey(Keys.Backspace, true)
+		textfield.handleEvents(state)
+		assertEquals("", text.value)
+		assertEquals(0, textfield.cursorPos)
+	}
+
+	Test
+	fun testDelete() {
+		val metrics = AppSizeMetricData(Font(16, "Courier New"), rowHeight = 20, textMarginY = 5, charWidth = 10, charHeight = 10, panelBorder = 5)
+		val state = AppState(metrics)
+
+		val text = StrValue("asd")
+		val textfield = Textfield(text, 10, Pos(10, 10), metrics, {
+			cursorPos = 0
+		})
+		assertEquals(0, textfield.cursorPos)
+		focus(textfield, state)
+		state.updateKey(Keys.Del, true)
+		textfield.handleEvents(state)
+		assertEquals("sd", text.value)
+		assertEquals(0, textfield.cursorPos)
+	}
+
+	Test
+	fun testCtrlDelete() {
+		val text = StrValue("asd")
+		val metrics = AppSizeMetricData(Font(16, "Courier New"), rowHeight = 20, textMarginY = 5, charWidth = 10, charHeight = 10, panelBorder = 5)
+		val state = AppState(metrics)
+
+		val textfield = Textfield(text, 10, Pos(10, 10), metrics, {
+			cursorPos = 0
+		})
+		assertEquals(0, textfield.cursorPos)
+		focus(textfield, state)
+		state.updateKey(Keys.Ctrl, true)
+		state.updateKey(Keys.Del, true)
 		textfield.handleEvents(state)
 		assertEquals("", text.value)
 		assertEquals(0, textfield.cursorPos)

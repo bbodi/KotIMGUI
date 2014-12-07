@@ -7,27 +7,26 @@ import timeline.AppSizeMetricData
 import timeline.AppState
 import skin.Skin
 
-open class TabPanel(val value: IntValue, pos: Pos, val metrics: AppSizeMetricData, init: TabPanel.() -> Unit) : Panel(pos, metrics) {
+open class TabPanel(val value: IntValue, pos: Pos, metrics: AppSizeMetricData, init: TabPanel.() -> Unit) : WidgetContainer(pos, metrics) {
+	var visible: BooleanValue = BooleanValue(true);
 	val items = arrayListOf<Button>()
-	override val contentY: Int = this.pos.y + metrics.rowHeight
-	override val contentWidth: Int
-		get() = width - marginY * 2
-	override val contentHeight = height - metrics.rowHeight - marginY
-
+	override val contentY: Int = this.pos.y + metrics.rowHeight + metrics.panelBorder
 	{
 		init()
-		val (w, h) = calcContentSize()
+		val (contentWidth, contentHeight) = calcContentSize()
 		if (this.width == 0) {
-			this.width = w + marginY
+			this.width = contentWidth + metrics.panelBorder*2
 		}
 		if (this.height == 0) {
-			this.height = h + metrics.rowHeight + marginY
+			this.height = contentHeight + metrics.rowHeight + metrics.panelBorder*2
 		}
 		val headerRowWidth = items.foldRight(0, {(item, w) -> w+item.width})
 		if (this.width < headerRowWidth) {
 			this.width = headerRowWidth
 		}
 	}
+	override val contentWidth: Int = width - metrics.panelBorder * 2
+	override val contentHeight = height - metrics.rowHeight - (metrics.panelBorder*2)
 
 	override fun draw(skin: Skin) {
 		if (!visible.value) {

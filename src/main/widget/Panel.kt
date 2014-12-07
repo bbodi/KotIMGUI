@@ -14,10 +14,10 @@ open class Panel(pos: Pos, metrics: AppSizeMetricData, init: Panel.() -> Unit = 
 		init()
 		val (w, h) = calcContentSize()
 		if (this.width == 0) {
-			this.width = w + marginX
+			this.width = w + metrics.panelBorder
 		}
 		if (this.height == 0) {
-			this.height = h + marginY
+			this.height = h + metrics.panelBorder
 		}
 	}
 	var hover = false
