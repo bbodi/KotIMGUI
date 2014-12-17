@@ -1,13 +1,14 @@
 package widget.chart
 
-import timeline.context
 import timeline.Timeline
 import timeline.ChartDrawingAreaInfo
 import timeline.TimelineData
 import timeline.debugLines
 import timeline.AppState
+import kotlin.js.dom.html5.CanvasContext
+import timeline.Ptr
 
-class FloatsAndSinkersChart(val data: List<Number?>, val trend: List<Number>, init: FloatsAndSinkersChart.() -> Unit): Chart {
+class FloatsAndSinkersChart(val data: Map<Int, Ptr<Float>>, val trend: Map<Int, Float>, init: FloatsAndSinkersChart.() -> Unit): Chart {
 	var actualDataColor = "green"
 	var trendColor = "red"
 	var lineWidth = 2.0
@@ -16,15 +17,15 @@ class FloatsAndSinkersChart(val data: List<Number?>, val trend: List<Number>, in
 		init()
 	}
 
-	override fun draw(info: ChartDrawingAreaInfo) {
-		plot(info, { (x, actualY, trendY) ->
+	override fun draw(context: CanvasContext, info: ChartDrawingAreaInfo) {
+		plot(context, info, { (x, actualY, trendY) ->
 			context.lineTo(x, trendY)
 		})
 		context.lineJoin = "round";
 		context.strokeStyle = actualDataColor
 		context.lineWidth = lineWidth
 		context.stroke()
-		plot(info, { (x, actualY, trendY) ->
+		plot(context, info, { (x, actualY, trendY) ->
 			if (actualY > trendY) {
 				context.moveTo(x, actualY)
 				context.arc(x, actualY, 2, 0, 2 * Math.PI, false)
@@ -36,7 +37,7 @@ class FloatsAndSinkersChart(val data: List<Number?>, val trend: List<Number>, in
 		context.strokeStyle = "red"
 		context.stroke()
 		context.fill()
-		plot(info, { (x, actualY, trendY) ->
+		plot(context, info, { (x, actualY, trendY) ->
 			if (actualY <= trendY) {
 				context.moveTo(x, actualY)
 				context.arc(x, actualY, 2, 0, 2 * Math.PI, false)
@@ -51,17 +52,15 @@ class FloatsAndSinkersChart(val data: List<Number?>, val trend: List<Number>, in
 	}
 
 
-	private fun plot(info: ChartDrawingAreaInfo, body: (Int, Float, Float)-> Unit) {
+	private fun plot(context: CanvasContext, info: ChartDrawingAreaInfo, body: (Int, Float, Float)-> Unit) {
 		context.beginPath()
 		for ((i, v) in (info.leftRange.. info.rightRange).withIndices()) {
 			val dataIndex = (info.leftRange + i).toInt()
-			if (dataIndex < 0) {
+			val trendValue = trend[dataIndex]
+			if (trendValue == null) {
 				continue
-			} else if (dataIndex >= trend.size) {
-				break
 			}
-			val trendValue = trend[dataIndex].toFloat()
-			val actualValue = data[dataIndex]?.toFloat() ?: trendValue
+			val actualValue = data[dataIndex]?.value ?: trendValue
 
 			val actualY = info.chartAreaHeight - (actualValue - info.bottomRange) * (info.chartAreaHeight / info.valueRange)
 			val trendY = info.chartAreaHeight - (trendValue - info.bottomRange) * (info.chartAreaHeight / info.valueRange)
@@ -78,13 +77,10 @@ class FloatsAndSinkersChart(val data: List<Number?>, val trend: List<Number>, in
 		val valueRange = (info.topRange - info.bottomRange).toFloat()
 
 		var data_index = (info.leftRange + mouseAxisX / screenStepW).toInt()
-		if (data_index < 0 || data_index >= data.size) {
-			return
-		}
 		if (data[data_index] == null) {
 			return
 		}
-		val value = data[data_index]!!
+		val value = data[data_index]!!.value
 		val trend = trend[data_index]
 		val valueY = (info.chartAreaHeight - (value.toInt() - info.bottomRange) * (info.chartAreaHeight / valueRange)).toInt()
 		val mouseY = state.mousePos.y - info.chartAreaY

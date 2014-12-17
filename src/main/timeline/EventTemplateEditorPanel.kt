@@ -10,11 +10,12 @@ import skin.Variant
 import widget.NumberField
 import widget.Label
 import skin.Skin
-import widget.TabPanel
 import widget.WidgetContainer
+import widget.IntNumberField
+import widget.EnumNumberField
 
 
-class EventTemplatePanel(val metrics: AppSizeMetricData) {
+class EventTemplateEditorPanel(val metrics: AppSizeMetricData) {
 
 	fun drawEventTemplatePanel(eventTemplates: MutableList<EventTemplate>,
 							   appState: AppState,
@@ -29,11 +30,9 @@ class EventTemplatePanel(val metrics: AppSizeMetricData) {
 						isTemplateChanged = true
 					}
 				})
-				val fieldType = IntValue(template.type.ordinal())
-				+NumberField(fieldType, 10, toRightFromLastWidget(10), metrics, {
-					valueLabels = EventType.values().map { it.toString() }.copyToArray()
+				+EnumNumberField(template.typePtr, EventType.values(), 10, toRightFromLastWidget(10), metrics, {
+					additionalIdInfo = template.name.hashCode().toString()
 					onChange = {
-						template.type = EventType.values()[fieldType.value]
 						isTemplateChanged = true
 					}
 				})

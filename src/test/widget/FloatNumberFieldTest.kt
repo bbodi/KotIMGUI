@@ -1,23 +1,22 @@
 import kotlin.test.assertEquals
 import org.junit.Test;
 import widget.Button
-import widget.IntNumberField
 import widget.Pos
 import timeline.AppState
 import timeline.AppSizeMetricData
 import skin.Font
 import kotlin.test.assertTrue
 import timeline.Ptr
-import widget.IntNumberField
+import widget.FloatNumberField
 
-public class NumberButtonTest {
+public class FloatNumberFieldTest {
 	Test
 	fun testUpperButtonDown() {
-		val value = Ptr(2)
+		val value = Ptr(2f)
 		val metrics = AppSizeMetricData(Font(16, "Courier New"), rowHeight = 20, textMarginY = 5, charWidth = 10, charHeight = 10, panelBorder = 5)
 		val state = AppState(metrics)
 		assertEquals(2, value.value)
-		val field = IntNumberField(value, 10, Pos(10, 10), metrics, {
+		val field = FloatNumberField(value, 10, Pos(10, 10), metrics, {
 		})
 		moveMouseToUpperButton(field, metrics, state)
 		click(field, state)
@@ -26,11 +25,11 @@ public class NumberButtonTest {
 
 	Test
 	fun testLowerButtonDown() {
-		val value = Ptr(2)
+		val value = Ptr(2f)
 		val metrics = AppSizeMetricData(Font(16, "Courier New"), rowHeight = 20, textMarginY = 5, charWidth = 10, charHeight = 10, panelBorder = 5)
 		val state = AppState(metrics)
 		assertEquals(2, value.value)
-		val field = IntNumberField(value, 10, Pos(10, 10), metrics, {
+		val field = FloatNumberField(value, 10, Pos(10, 10), metrics, {
 		})
 		moveMouseToLowerButton(field, metrics, state)
 		click(field, state)
@@ -38,12 +37,18 @@ public class NumberButtonTest {
 	}
 
 	Test
+	fun testKeyDownPressed() {
+		// TODO
+
+	}
+
+	Test
 	fun testButtonPressingWhenMouseIsReleased() {
-		val value = Ptr(2)
+		val value = Ptr(2f)
 		val metrics = AppSizeMetricData(Font(16, "Courier New"), rowHeight = 20, textMarginY = 5, charWidth = 10, charHeight = 10, panelBorder = 5)
 		val state = AppState(metrics)
 		assertEquals(2, value.value)
-		val field = IntNumberField(value, 10, Pos(10, 10), metrics, {
+		val field = FloatNumberField(value, 10, Pos(10, 10), metrics, {
 		})
 		moveMouseToUpperButton(field, metrics, state)
 		state.leftMouseButton.update(true)
@@ -58,11 +63,11 @@ public class NumberButtonTest {
 
 	Test
 	fun testButtonPressingWhenMouseIsNotReleasedButDown() {
-		val value = Ptr(2)
+		val value = Ptr(2f)
 		val metrics = AppSizeMetricData(Font(16, "Courier New"), rowHeight = 20, textMarginY = 5, charWidth = 10, charHeight = 10, panelBorder = 5)
 		val state = AppState(metrics)
 		assertEquals(2, value.value)
-		val field = IntNumberField(value, 10, Pos(10, 10), metrics, {
+		val field = FloatNumberField(value, 10, Pos(10, 10), metrics, {
 		})
 		moveMouseToUpperButton(field, metrics, state)
 		state.leftMouseButton.update(true)
@@ -83,24 +88,22 @@ public class NumberButtonTest {
 
 	Test
 	fun testTextChangesAsValueChanges() {
-		val value = Ptr(2)
+		val value = Ptr(2f)
 		val metrics = AppSizeMetricData(Font(16, "Courier New"), rowHeight = 20, textMarginY = 5, charWidth = 10, charHeight = 10, panelBorder = 5)
-		val state = AppState(metrics)
 		assertEquals(2, value.value)
-		val field = IntNumberField(value, 10, Pos(10, 10), metrics, {
+		val field = FloatNumberField(value, 10, Pos(10, 10), metrics, {
 		})
-		moveMouseToUpperButton(field, metrics, state)
-		click(field, state)
-		assertEquals(3, value.value)
+		assertEquals("2", field.textPtr.value, "Tthe text must be changed accordingly too!")
+		value.value = 3f
 		assertEquals("3", field.textPtr.value, "The value increased, so the text must be changed accordingly too!")
 	}
 
 	Test
 	fun testFocus() {
-		val value = Ptr(2)
+		val value = Ptr(2f)
 		val metrics = AppSizeMetricData(Font(16, "Courier New"), rowHeight = 20, textMarginY = 5, charWidth = 10, charHeight = 10, panelBorder = 5)
 		val state = AppState(metrics)
-		val field = IntNumberField(value, 10, Pos(10, 10), metrics, {
+		val field = FloatNumberField(value, 10, Pos(10, 10), metrics, {
 		})
 		focus(field, state)
 		assertTrue(field.isActive)
@@ -108,28 +111,28 @@ public class NumberButtonTest {
 		assertTrue(field.isActive, "It should keep the focus!")
 	}
 
-	private fun click(field: IntNumberField, state: AppState) {
+	private fun click(field: FloatNumberField, state: AppState) {
 		state.leftMouseButton.update(true)
 		field.handleEvents(state)
 		state.leftMouseButton.update(false)
 		field.handleEvents(state)
 	}
 
-	private fun focus(field: IntNumberField, state: AppState) {
+	private fun focus(field: FloatNumberField, state: AppState) {
 		state.mousePos = field.pos + Pos(1, 1)
 		click(field, state)
 	}
 
-	private fun handleMouseDownState(field: IntNumberField, state: AppState) {
+	private fun handleMouseDownState(field: FloatNumberField, state: AppState) {
 		field.handleEvents(state)
 	}
 
-	private fun moveMouseToUpperButton(field: IntNumberField, metrics: AppSizeMetricData, state: AppState) {
+	private fun moveMouseToUpperButton(field: FloatNumberField, metrics: AppSizeMetricData, state: AppState) {
 		val upperButtonPos = field.pos + Pos(field.width - (metrics.charWidth * 3), 0)
 		state.mousePos = upperButtonPos
 	}
 
-	private fun moveMouseToLowerButton(field: IntNumberField, metrics: AppSizeMetricData, state: AppState) {
+	private fun moveMouseToLowerButton(field: FloatNumberField, metrics: AppSizeMetricData, state: AppState) {
 		val upperButtonPos = field.pos + Pos(field.width - (metrics.charWidth * 3), metrics.rowHeight / 2)
 		state.mousePos = upperButtonPos
 	}

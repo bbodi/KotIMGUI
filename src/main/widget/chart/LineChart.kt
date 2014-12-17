@@ -1,10 +1,10 @@
 package widget.chart
 
-import timeline.context
 import timeline.Timeline
 import timeline.ChartDrawingAreaInfo
 import timeline.TimelineData
 import timeline.AppState
+import kotlin.js.dom.html5.CanvasContext
 
 class LineChart(val data: List<Number?>, init: LineChart.() -> Unit): Chart {
 	var color = "green"
@@ -14,7 +14,7 @@ class LineChart(val data: List<Number?>, init: LineChart.() -> Unit): Chart {
 		init()
 	}
 
-	override fun draw(info: ChartDrawingAreaInfo) {
+	override fun draw(context: CanvasContext, info: ChartDrawingAreaInfo) {
 		val timeRange = info.rightRange - info.leftRange
 		val screenStepW = info.chartAreaWidth / timeRange.toFloat();
 		val valueRange = (info.topRange - info.bottomRange).toFloat()

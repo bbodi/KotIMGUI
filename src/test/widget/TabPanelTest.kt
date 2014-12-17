@@ -4,21 +4,19 @@ import kotlin.test.assertEquals
 import org.junit.Test;
 import widget.Button
 import widget.NumberField
-import timeline.IntValue
 import widget.Pos
 import timeline.AppState
 import timeline.AppSizeMetricData
 import skin.Font
 import widget.Textfield
-import timeline.strValue
-import timeline.StrValue
 import timeline.Keys
+import timeline.Ptr
 
 public class TabPanelTest {
 
 	Test
 	fun testTabPanelSizeWithoutContent() {
-		val tabIndex = IntValue(0)
+		val tabIndex = Ptr(0)
 		val metrics = AppSizeMetricData(Font(16, "Courier New"), rowHeight = 20, textMarginY = 5, charWidth = 10, charHeight = 10, panelBorder = 5)
 
 		val tabPanel = TabPanel(tabIndex, Pos(100, 100), metrics, {
@@ -37,9 +35,8 @@ public class TabPanelTest {
 
 	Test
 	fun testTabPanelWithButtonContent() {
-		val tabIndex = IntValue(0)
+		val tabIndex = Ptr(0)
 		val metrics = AppSizeMetricData(Font(16, "Courier New"), rowHeight = 20, textMarginY = 5, charWidth = 10, charHeight = 10, panelBorder = 5)
-		val state = AppState(metrics)
 
 		val tabPanel = TabPanel(tabIndex, Pos(100, 100), metrics, {
 			addTabPanelItem("1")

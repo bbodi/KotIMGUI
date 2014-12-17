@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
     $('body').keydown(function(event) {
-        //console.log("keydown: " + event.keyCode);
+        console.log("keydown: " + event.keyCode);
         Kotlin.modules.timeline.timeline.keyDown(null, event.keyCode);
         var keycode = event.keyCode;
 
@@ -14,22 +14,8 @@ $(document).ready(function() {
             (keycode > 218 && keycode < 223);   // [\]' (in order)
         return valid;
     });
-    $('body').keyup(function(event) {
-        //console.log("keyup: " + event.keyCode);
-        Kotlin.modules.timeline.timeline.keyUp(event.keyCode);
-        var keycode = event.keyCode;
-
-        var valid =
-            (keycode > 47 && keycode < 58)   || // number keys
-            keycode == 32 || keycode == 13   || // spacebar & return key(s) (if you want to allow carriage returns)
-            (keycode > 64 && keycode < 91)   || // letter keys
-            (keycode > 95 && keycode < 112)  || // numpad keys
-            (keycode > 185 && keycode < 193) || // ;=,-./` (in order)
-            (keycode > 218 && keycode < 223);   // [\]' (in order)
-        return valid;
-    });
     $('body').keypress(function(event) {
-        //console.log("keypress: " + event.keyCode);
+        console.log("keypress: " + event.keyCode);
         var ch = String.fromCharCode(event.keyCode);
         Kotlin.modules.timeline.timeline.keyDown(ch, event.keyCode);
         return false

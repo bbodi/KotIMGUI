@@ -38,7 +38,7 @@ val canvas: HTMLCanvasElement
 		return window.document.getElementsByTagName("canvas").item(0) as HTMLCanvasElement
 	}
 
-val context: CanvasContext
+private val context: CanvasContext
 	get() {
 		return canvas.getContext("2d")!!
 	}
@@ -80,34 +80,33 @@ class InputButton {
 }
 
 private var global_pressedChar: Char? = null
-private var keyDownEvents: MutableList<Int> = arrayListOf<Int>()
-private var keyUpEvents: MutableList<Int> = arrayListOf<Int>()
+private var global_keyDownEvents: MutableList<Int> = arrayListOf<Int>()
 
 fun keyDown(pressedChar: Char?, keyCode: Int) {
-	keyDownEvents.add(keyCode)
 	if (pressedChar != null) {
 		timeline.global_pressedChar = pressedChar
+	} else {
+		global_keyDownEvents.add(keyCode)
 	}
 }
 
-fun keyUp(keyCode: Int) {
-	keyUpEvents.add(keyCode)
-}
-
+var global_leftMouseDown = false;
+var global_middleMouseDown = false;
+var global_rightMouseDown = false;
 
 fun onMouseDown(which: Int) {
 	when (which ) {
-		1 -> leftMouseDown = true
-		2 -> middleMouseDown = true
-		3 -> rightMouseDown = true
+		1 -> global_leftMouseDown = true
+		2 -> global_middleMouseDown = true
+		3 -> global_rightMouseDown = true
 	}
 }
 
 fun onMouseUp(which: Int) {
 	when (which ) {
-		1 -> leftMouseDown = false
-		2 -> middleMouseDown = false
-		3 -> rightMouseDown = false
+		1 -> global_leftMouseDown = false
+		2 -> global_middleMouseDown = false
+		3 -> global_rightMouseDown = false
 	}
 }
 
@@ -132,22 +131,22 @@ public class AppSizeMetricData (
 		val panelBorder: Int
 )
 
-public enum class Keys {
-	LeftArrow
-	RightArrow
-	UpArrow
-	DownArrow
-	Backspace
-	Enter
-	Ctrl
-	Alt
-	Shift
-	Tab
-	Home
-	End
-	PageUp
-	PageDown
-	Del
+public enum class Keys(val keyCode: Int) {
+	LeftArrow: Keys(37)
+	RightArrow: Keys(39)
+	UpArrow: Keys(38)
+	DownArrow: Keys(40)
+	Backspace: Keys(8)
+	Enter: Keys(13)
+	Ctrl: Keys(17)
+	Alt: Keys(18)
+	Shift: Keys(16)
+	Tab: Keys(9)
+	Home: Keys(36)
+	End: Keys(35)
+	PageUp: Keys(33)
+	PageDown: Keys(34)
+	Del: Keys(46)
 }
 
 public class AppState(val metrics: AppSizeMetricData) {
@@ -210,45 +209,22 @@ public class AppState(val metrics: AppSizeMetricData) {
 
 	fun update() {
 		currentTick += 40
-		leftMouseButton.update(leftMouseDown)
-		rightMouseButton.update(rightMouseDown)
-		middleMouseButton.update(middleMouseDown)
+		leftMouseButton.update(global_leftMouseDown)
+		rightMouseButton.update(global_rightMouseDown)
+		middleMouseButton.update(global_middleMouseDown)
 		this.mouseScrollDelta = globalMouseScrollDelta
 	}
 
-	fun handleKeys() {
-		val asd = {(array: List<Int>, down: Boolean) ->
-			array.forEach {
-				when (it) {
-					38 -> updateKey(Keys.UpArrow, down)
-					37 -> updateKey(Keys.LeftArrow, down)
-					40 -> updateKey(Keys.DownArrow, down)
-					39 -> updateKey(Keys.RightArrow, down)
-					33 -> updateKey(Keys.PageUp, down)
-					34 -> updateKey(Keys.PageDown, down)
-					13 -> updateKey(Keys.Enter, down)
-					17 -> updateKey(Keys.Ctrl, down)
-					18 -> updateKey(Keys.Alt, down)
-					9 -> updateKey(Keys.Tab, down)
-					36 -> updateKey(Keys.Home, down)
-					35 -> updateKey(Keys.End, down)
-					8 -> updateKey(Keys.Backspace, down)
-					16 -> updateKey(Keys.Shift, down)
-					46 -> updateKey(Keys.Del, down)
-				}
-			}
+	fun setPressedKeys(pressedKeys: List<Int>, pressedChar: Char?) {
+		Keys.values().forEach { keyName ->
+			val down = pressedKeys.contains(keyName.keyCode)
+			updateKey(keyName, down)
 		}
-		asd(keyDownEvents, true)
-		asd(keyUpEvents, false)
-		keyUpEvents.clear()
-		keyDownEvents.clear()
-
-		if (global_pressedChar != null) {
-			updateChar(global_pressedChar!!, true)
+		if (pressedChar != null) {
+			updateChar(pressedChar, true)
 		}
-		disableAllKeysExcept(global_pressedChar)
-		pressedChar = global_pressedChar
-
+		disableAllKeysExcept(pressedChar)
+		this.pressedChar = pressedChar
 	}
 }
 
@@ -261,12 +237,15 @@ abstract class Application(val skin: Skin) {
 
 	fun frame() {
 		appState.update()
-		appState.handleKeys()
+
+		appState.setPressedKeys(global_keyDownEvents, global_pressedChar)
+		global_keyDownEvents.clear()
+		global_pressedChar = null
+
 		skin.clear()
 		setCursor(CursorStyle.Default);
 		doFrame()
 		showDebugPanel()
-		global_pressedChar = null
 		debugLines.clear()
 		globalMouseScrollDelta = 0
 		requestAnimationFrame({ frame() })
@@ -286,16 +265,21 @@ abstract class Application(val skin: Skin) {
 	}
 
 	fun showDebugPanel() {
+		if (appState.isJustReleased('h')) {
+			showDebugLines = !showDebugLines
+		}
 		if (showDebugLines) {
+			debugLines.add("mousePos: ${appState.mousePos}")
+
 			Panel(appState.mousePos, appState.metrics, {
 				debugLines.withIndices().forEach {
 					val pos = if (it.first == 0) downAlongLeftMargin() else downAlongLeftMargin()
 					when (it.second) {
 						is String -> +Label(it.second as String, pos, appState.metrics)
-						is IntValue -> +NumberField(it.second as IntValue, 4, pos, appState.metrics)
+						//is Ptr<*> -> +NumberField(it.second as IntValue, 4, pos, appState.metrics)
 					}
 				}
-			}).drawAndHandleEvents(appState, skin)
+			}).drawAndHandleEvents(appState, context, skin)
 		}
 	}
 }

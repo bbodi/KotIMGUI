@@ -4,6 +4,9 @@ import timeline.AppSizeMetricData
 import timeline.AppState
 import skin.Variant
 import skin.Skin
+import timeline.setCursor
+import timeline.CursorStyle
+import kotlin.js.dom.html5.CanvasContext
 
 class Button(val label: String, pos: Pos, val metrics: AppSizeMetricData, init: Button.() -> Unit = {}) : Widget(pos) {
 
@@ -22,7 +25,7 @@ class Button(val label: String, pos: Pos, val metrics: AppSizeMetricData, init: 
 	override var width = 0
 		get() = if ($width == 0) (label.length+2) * metrics.charWidth else $width
 
-	override fun draw(skin: Skin) {
+	override fun draw(context: CanvasContext, skin: Skin) {
 		skin.drawButton(this)
 	}
 
@@ -47,6 +50,13 @@ class Button(val label: String, pos: Pos, val metrics: AppSizeMetricData, init: 
 		clicked = !disabled && state.leftMouseButton.just_released && hover && was_active
 		if (clicked && onClick != null) {
 			onClick!!()
+		}
+		if (hover) {
+			if (disabled) {
+				setCursor(CursorStyle.NotAllowed);
+			} else {
+				setCursor(CursorStyle.Pointer);
+			}
 		}
 	}
 }

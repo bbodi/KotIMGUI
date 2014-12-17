@@ -1,10 +1,10 @@
 package widget
 
 import skin.Variant
-import timeline.BooleanValue
 import timeline.AppSizeMetricData
 import timeline.AppState
 import skin.Skin
+import kotlin.js.dom.html5.CanvasContext
 
 class Label(val label: String, pos: Pos, metrics: AppSizeMetricData, init: Label.() -> Unit = {}) : Widget(pos) {
 	override var height = metrics.rowHeight
@@ -17,7 +17,7 @@ class Label(val label: String, pos: Pos, metrics: AppSizeMetricData, init: Label
 	override var width = label.length * metrics.charWidth
 		private set
 
-	override fun draw(skin: Skin) {
+	override fun draw(context: CanvasContext, skin: Skin) {
 		skin.drawLabel(this)
 	}
 

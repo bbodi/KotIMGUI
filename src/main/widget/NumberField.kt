@@ -1,31 +1,18 @@
 package widget
 
 import skin.Variant
-import timeline.StrValue
-import timeline.IntValue
 import timeline.AppSizeMetricData
 import timeline.AppState
 import org.junit.Test
 import kotlin.test.assertEquals
 import skin.Skin
 import timeline.Keys
+import kotlin.js.dom.html5.CanvasContext
+import timeline.Ptr
 
-data class NumberFieldData(val text: StrValue)
-
-open class NumberField(val value: IntValue, width: Int, pos: Pos, metrics: AppSizeMetricData, init: NumberField.() -> Unit = {}) : Textfield(StrValue(value.value.toString()), width + 2, pos, metrics, {}) {
-	var max: Int? = null
-	var min: Int? = null
-	var valueLabels: Array<String> = array()
-
-	;
-	{
-		additionalIdInfo = value.hashCode().toString()
-		init()
-		if (valueLabels.size != 0) {
-			min = 0
-			max = valueLabels.size - 1
-		}
-	}
+abstract class NumberField<T : Number>(val value: Ptr<T>, width: Int, pos: Pos, val metrics: AppSizeMetricData) : Textfield(Ptr(value.value.toString()), width + 2, pos, metrics, {}) {
+	var max: T? = null
+	var min: T? = null
 
 	val upperButton = Button("▴", this.pos + Pos(this.width - (metrics.charWidth*3), 0), metrics, {
 		height = metrics.rowHeight/2
@@ -34,10 +21,15 @@ open class NumberField(val value: IntValue, width: Int, pos: Pos, metrics: AppSi
 		height = metrics.rowHeight/2
 	})
 
-	override fun draw(skin: Skin) {
-		if (valueLabels.size != 0) {
-			text.value = valueLabels[value.value]
-		}
+	override protected fun isHover(state: AppState): Boolean {
+		return state.mousePos.isInRect(pos, Pos(width - metrics.charWidth*3, height))
+	}
+
+	override protected fun isActive(state: AppState): Boolean {
+		return state.isActive(this) || upperButton.clicked || lowerButton.clicked
+	}
+
+	override fun draw(context: CanvasContext, skin: Skin) {
 		skin.drawTextfield(this)
 		skin.drawMiniButton(upperButton)
 		skin.drawMiniButton(lowerButton)
@@ -50,10 +42,13 @@ open class NumberField(val value: IntValue, width: Int, pos: Pos, metrics: AppSi
 	}
 
 	override fun handleEvents(state: AppState) {
-		super<Textfield>.handleEvents(state)
-		value.value = safeParseInt(text.value) ?: value.value
 		upperButton.handleEvents(state)
 		lowerButton.handleEvents(state)
+		super<Textfield>.handleEvents(state)
+	}
+
+	override protected fun handleInput(pressedChar: Char?, state: AppState) {
+		super<Textfield>.handleInput(pressedChar, state)
 		val beforeValue = value.value
 		if (upperButton.clicked) {
 			increaseValue()
@@ -76,22 +71,10 @@ open class NumberField(val value: IntValue, width: Int, pos: Pos, metrics: AppSi
 		}
 		val afterValue = value.value
 		if (beforeValue != afterValue) {
-			text.value = afterValue.toString()
-			if (onChange != null) {
-				onChange!!()
-			}
+			this.textPtr.value = afterValue.toString()
 		}
 	}
 
-	private fun decreaseValue() {
-		if (min == null || value.value > min!!) {
-			value.value--
-		}
-	}
-
-	private fun increaseValue() {
-		if (max == null || value.value < max!!) {
-			value.value++
-		}
-	}
+	abstract protected fun decreaseValue()
+	abstract protected fun increaseValue()
 }

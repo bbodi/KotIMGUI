@@ -1,15 +1,15 @@
 package widget
 
 import skin.Variant
-import timeline.BooleanValue
-import timeline.context
 import timeline.AppSizeMetricData
 import timeline.AppState
 import skin.Skin
+import kotlin.js.dom.html5.CanvasContext
+import timeline.Ptr
 
 class ActionItem(val label: String, pos: Pos, metrics: AppSizeMetricData, init: ActionItem.() -> Unit = {}) : Widget(pos) {
 	var disabled = false
-	var checkBoxValue: BooleanValue? = null
+	var checkBoxValue: Ptr<Boolean>? = null
 	var onClick: (() -> Unit)? = null
 	var onHover: (() -> Unit)? = null
 	var onHoverOut: (() -> Unit)? = null
@@ -33,7 +33,7 @@ class ActionItem(val label: String, pos: Pos, metrics: AppSizeMetricData, init: 
 	override var width: Int = label.length() * metrics.charWidth
 		private set
 
-	override fun draw(skin: Skin) {
+	override fun draw(context: CanvasContext, skin: Skin) {
 		skin.drawActionItem(this)
 	}
 
@@ -59,7 +59,7 @@ class ActionItem(val label: String, pos: Pos, metrics: AppSizeMetricData, init: 
 	}
 }
 
-class CheckboxItem(val checkBoxValue: BooleanValue, pos: Pos, metrics: AppSizeMetricData, init: CheckboxItem.() -> Unit) : Widget(pos) {
+class CheckboxItem(val checkBoxValue: Ptr<Boolean>, pos: Pos, metrics: AppSizeMetricData, init: CheckboxItem.() -> Unit) : Widget(pos) {
 	var label = ""
 	var disabled = false
 	var onClick: (() -> Unit)? = null
@@ -70,7 +70,7 @@ class CheckboxItem(val checkBoxValue: BooleanValue, pos: Pos, metrics: AppSizeMe
 		this.init()
 	}
 
-	override fun draw(skin: Skin) {
+	override fun draw(context: CanvasContext, skin: Skin) {
 
 	}
 
@@ -83,7 +83,7 @@ class CheckboxItem(val checkBoxValue: BooleanValue, pos: Pos, metrics: AppSizeMe
 
 open class ActionMenu(pos: Pos, metrics: AppSizeMetricData, init: ActionMenu.() -> Unit) : WidgetContainer(pos, metrics) {
 	var variant = Variant.DEFAULT
-	var visible: BooleanValue = BooleanValue(true);
+	var visible: Ptr<Boolean> = Ptr(true);
 
 	var hover = false
 
@@ -106,7 +106,7 @@ open class ActionMenu(pos: Pos, metrics: AppSizeMetricData, init: ActionMenu.() 
 		}
 	}
 
-	override fun draw(skin: Skin) {
+	override fun draw(context: CanvasContext, skin: Skin) {
 		/*if (!visible.value) {
 			return
 		}
@@ -121,6 +121,6 @@ open class ActionMenu(pos: Pos, metrics: AppSizeMetricData, init: ActionMenu.() 
 		widgets.forEach { it.draw() }
 		context.restore()*/
 		skin.drawActionMenu(this)
-		widgets.forEach { it.draw(skin) }
+		widgets.forEach { it.draw(context, skin) }
 	}
 }

@@ -1,15 +1,15 @@
 package widget
 
-import timeline.BooleanValue
 import skin.Variant
-import timeline.context
 import timeline.AppSizeMetricData
 import timeline.AppState
 import skin.Skin
+import kotlin.js.dom.html5.CanvasContext
+import timeline.Ptr
 
 open class Panel(pos: Pos, metrics: AppSizeMetricData, init: Panel.() -> Unit = {}) : WidgetContainer(pos, metrics) {
 	var variant = Variant.DEFAULT
-	var visible: BooleanValue = BooleanValue(true);
+	var visible: Ptr<Boolean> = Ptr(true);
 	{
 		init()
 		val (w, h) = calcContentSize()
@@ -22,7 +22,7 @@ open class Panel(pos: Pos, metrics: AppSizeMetricData, init: Panel.() -> Unit = 
 	}
 	var hover = false
 
-	override fun draw(skin: Skin) {
+	override fun draw(context: CanvasContext, skin: Skin) {
 		if (!visible.value) {
 			return
 		}
@@ -34,7 +34,7 @@ open class Panel(pos: Pos, metrics: AppSizeMetricData, init: Panel.() -> Unit = 
 		context.save()
 		context.rect(contentX, contentY, contentWidth, contentHeight)
 		context.clip()
-		widgets.forEach { it.draw(skin) }
+		widgets.forEach { it.draw(context, skin) }
 		context.restore()
 	}
 

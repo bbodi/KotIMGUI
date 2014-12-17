@@ -2,6 +2,7 @@ package timeline
 
 import kotlin.js
 import java.io.Serializable
+import widget.WidgetContainer
 
 enum class EventType {
 	NUMBER
@@ -12,10 +13,11 @@ enum class EventType {
 	EVENT_LINK
 }
 
-class EventTemplate(name: String, var type: EventType = EventType.NUMBER) {
-	val name = StrValue(name)
+class EventTemplate(name: String, type: EventType = EventType.NUMBER) {
+	val typePtr = Ptr(type)
+	val name = Ptr(name)
 }
 
-class Event(val date: js.Date, val comment: String): Serializable {
-	//val fields: EventType = arrayListOf<>()
+abstract class EventItem(val date: Date, val comment: String, val type: EventType) {
+	abstract fun getListingWidgets(parent: WidgetContainer, state: AppState)
 }

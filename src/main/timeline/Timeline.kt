@@ -8,11 +8,12 @@ import widget.PositionBasedId
 import skin.Variant
 import widget.chart.Chart
 import widget.Rect
+import kotlin.js.dom.html5.CanvasContext
 import skin.Skin
 
 class TimelineData {
-	var leftRange: Int = 100
-	var rightRange: Int = 200
+	var leftRange: Int = (timeline.Date().getTime() / 1000 / 60 / 60 / 24) - 15
+	var rightRange: Int = (timeline.Date().getTime() / 1000 / 60 / 60 / 24) + 15
 	var bottomRange: Int = 0
 	var topRange: Int = 120
 	var lastMousePos = Pos(0, 0)
@@ -25,24 +26,24 @@ private val monthNames: Array<String> = array("Jan", "Feb", "Mar", "Apr", "May",
 private enum class XAxisLabelGenerator(val labelWidth: Int, val rangeReducer: Int, val labelGenerator: (day: Int) -> String?) {
 
 	DayLabelGenerator : XAxisLabelGenerator(2, 1, { day ->
-		val date = Date(day * 24 * 60 * 60 * 1000)
+		val date = newDateForAbsoluteDay(day)
 		date.getDayOfMonth().toString()
 	})
 	WeekLabelGenerator : XAxisLabelGenerator(2, 7, { day ->
-		val date = Date(day * 24 * 60 * 60 * 1000)
+		val date = newDateForAbsoluteDay(day)
 		if (date.getDayOfWeek() != 0) null else date.getDayOfMonth().toString()
 	})
 	MonthLabelGenerator : XAxisLabelGenerator(3, 30, { day ->
-		val date = Date(day * 24 * 60 * 60 * 1000)
-		if (date.getDayOfMonth() != 1) null else monthNames[date.getMonth()]
+		val date = newDateForAbsoluteDay(day)
+		if (date.getDayOfMonth() != 0) null else monthNames[date.getMonth()]
 	})
 	ThreeMonthLabelGenerator : XAxisLabelGenerator(3, 90, { day ->
-		val date = Date(day * 24 * 60 * 60 * 1000)
-		if (date.getMonth() % 3 != 0 || date.getDayOfMonth() != 1) null else monthNames[date.getMonth()]
+		val date = newDateForAbsoluteDay(day)
+		if (date.getMonth() % 3 != 0 || date.getDayOfMonth() != 0) null else monthNames[date.getMonth()]
 	})
 	YearLabelGenerator : XAxisLabelGenerator(4, 365, { day ->
-		val date = Date(day * 24 * 60 * 60 * 1000)
-		if (date.getMonth() != 0 || date.getDayOfMonth() != 1) null else date.getFullYear().toString()
+		val date = newDateForAbsoluteDay(day)
+		if (date.getMonth() != 0 || date.getDayOfMonth() != 0) null else date.getYear().toString()
 	})
 }
 
@@ -123,7 +124,7 @@ class Timeline(pos: Pos, override var width: Int, override var height: Int, val 
 
 	var hover = false
 
-	override fun draw(skin: Skin) {
+	override fun draw(context: CanvasContext, skin: Skin) {
 		skin.drawPanelRect(pos.x, pos.y, width, height, Variant.DEFAULT)
 
 		val persistentData = chartDrawingAreaInfo.persistentData
@@ -135,7 +136,7 @@ class Timeline(pos: Pos, override var width: Int, override var height: Int, val 
 				context.lineTo(chartDrawingAreaInfo.chartAreaX + chartDrawingAreaInfo.chartAreaWidth, y)
 				val textX = pos.x + metrics.panelBorder
 				var textY = chartDrawingAreaInfo.bottomForLines - i * chartDrawingAreaInfo.screenStepH - metrics.charHeight / 2
-				skin.text(entry, textX, textY, "white", metrics.font)
+				skin.text(context, entry, textX, textY, "white", metrics.font)
 			}
 		}
 
@@ -150,7 +151,7 @@ class Timeline(pos: Pos, override var width: Int, override var height: Int, val 
 					}
 					val textX = chartDrawingAreaInfo.chartAreaX + i * chartDrawingAreaInfo.screenStepW - (entry.length * metrics.charWidth / 2)
 					var textY = chartDrawingAreaInfo.bottomForLabels - it.first * metrics.rowHeight
-					skin.text(entry, textX, textY, "white", metrics.font)
+					skin.text(context, entry, textX, textY, "white", metrics.font)
 				}
 			}
 		}
@@ -162,7 +163,7 @@ class Timeline(pos: Pos, override var width: Int, override var height: Int, val 
 		context.rect(chartDrawingAreaInfo.chartAreaX, chartDrawingAreaInfo.chartAreaY, chartDrawingAreaInfo.chartAreaWidth, chartDrawingAreaInfo.chartAreaHeight)
 		context.clip()
 		context.translate(chartDrawingAreaInfo.chartAreaX, chartDrawingAreaInfo.chartAreaY)
-		charts.forEach { it.draw(chartDrawingAreaInfo) }
+		charts.forEach { it.draw(context, chartDrawingAreaInfo) }
 		context.restore()
 		if (persistentData.areaSelectionRect != null) {
 			with(persistentData.areaSelectionRect!!, {context.rect(x, y, width, height)})

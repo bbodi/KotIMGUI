@@ -2,21 +2,20 @@ import kotlin.test.assertEquals
 import org.junit.Test;
 import widget.Button
 import widget.NumberField
-import timeline.IntValue
 import widget.Pos
 import timeline.AppState
 import timeline.AppSizeMetricData
 import skin.Font
 import widget.Textfield
-import timeline.strValue
-import timeline.StrValue
 import timeline.Keys
+import kotlin.test.assertTrue
+import timeline.Ptr
 
 public class TextfieldTest {
 
 	Test
 	fun testBackspace() {
-		val text = StrValue("asd")
+		val text = Ptr("asd")
 		val metrics = AppSizeMetricData(Font(16, "Courier New"), rowHeight = 20, textMarginY = 5, charWidth = 10, charHeight = 10, panelBorder = 5)
 		val state = AppState(metrics)
 
@@ -30,8 +29,24 @@ public class TextfieldTest {
 	}
 
 	Test
+	fun testFocus() {
+		val text = Ptr("asd")
+		val metrics = AppSizeMetricData(Font(16, "Courier New"), rowHeight = 20, textMarginY = 5, charWidth = 10, charHeight = 10, panelBorder = 5)
+		val state = AppState(metrics)
+
+		val textfield = Textfield(text, 10, Pos(10, 10), metrics)
+		focus(textfield, state)
+		textfield.handleEvents(state)
+		assertTrue(textfield.isActive)
+		textfield.handleEvents(state)
+		assertTrue(textfield.isActive)
+		textfield.handleEvents(state)
+		assertTrue(textfield.isActive)
+	}
+
+	Test
 	fun testCtrlBackspace() {
-		val text = StrValue("asd")
+		val text = Ptr("asd")
 		val metrics = AppSizeMetricData(Font(16, "Courier New"), rowHeight = 20, textMarginY = 5, charWidth = 10, charHeight = 10, panelBorder = 5)
 		val state = AppState(metrics)
 
@@ -50,7 +65,7 @@ public class TextfieldTest {
 		val metrics = AppSizeMetricData(Font(16, "Courier New"), rowHeight = 20, textMarginY = 5, charWidth = 10, charHeight = 10, panelBorder = 5)
 		val state = AppState(metrics)
 
-		val text = StrValue("asd")
+		val text = Ptr("asd")
 		val textfield = Textfield(text, 10, Pos(10, 10), metrics, {
 			cursorPos = 0
 		})
@@ -64,7 +79,7 @@ public class TextfieldTest {
 
 	Test
 	fun testCtrlDelete() {
-		val text = StrValue("asd")
+		val text = Ptr("asd")
 		val metrics = AppSizeMetricData(Font(16, "Courier New"), rowHeight = 20, textMarginY = 5, charWidth = 10, charHeight = 10, panelBorder = 5)
 		val state = AppState(metrics)
 

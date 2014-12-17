@@ -5,7 +5,6 @@ import widget.HScrollBar
 import widget.VScrollBar
 import widget.Panel
 import widget.Textfield
-import timeline.context
 import widget.ActionItem
 import widget.ActionMenu
 import widget.Checkbox
@@ -14,6 +13,7 @@ import widget.TabPanel
 import widget.Label
 import timeline.Application
 import timeline.AppSizeMetricData
+import kotlin.js.dom.html5.CanvasContext
 
 
 trait Skin {
@@ -44,7 +44,7 @@ trait Skin {
 	fun drawMiniButton(widget: Button)
 
 
-	public fun text(text: String, x: Number, y: Number, color: String, font: Font) {
+	public fun text(context: CanvasContext, text: String, x: Number, y: Number, color: String, font: Font) {
 		context.fillStyle = color;
 		context.font = font.toString()
 		context.textBaseline = "hanging"

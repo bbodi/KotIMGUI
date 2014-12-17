@@ -1,15 +1,16 @@
 package widget
 
-import timeline.IntValue
 import timeline.atLeast
-import timeline.at_most
+import timeline.atMost
 import timeline.limit_into
 import timeline.AppSizeMetricData
 import timeline.AppState
 import skin.Skin
+import kotlin.js.dom.html5.CanvasContext
+import timeline.Ptr
 
 
-public class HScrollBar(val value: IntValue, pos: Pos, metrics: AppSizeMetricData, init: HScrollBar.() -> Unit = {}) : Widget(pos) {
+public class HScrollBar(val value: Ptr<Int>, pos: Pos, metrics: AppSizeMetricData, init: HScrollBar.() -> Unit = {}) : Widget(pos) {
 	var disabled: Boolean = false
 	var postfix: String = ""
 	var hover = false
@@ -21,7 +22,7 @@ public class HScrollBar(val value: IntValue, pos: Pos, metrics: AppSizeMetricDat
 		this.init()
 	}
 
-	override fun draw(skin: Skin) {
+	override fun draw(context: CanvasContext, skin: Skin) {
 		//skin.drawHorizontalScrollbar(app, this)
 	}
 
@@ -54,7 +55,7 @@ public class HScrollBar(val value: IntValue, pos: Pos, metrics: AppSizeMetricDat
 				if (click_x < orange_bar_w) {
 					value.value = (value.value -1) atLeast min_value
 				} else if (click_x > orange_bar_w) {
-					value.value = (value.value +1) at_most max_value
+					value.value = (value.value +1) atMost max_value
 				}
 			} else if (active) {
 				val click_percent = click_x.toDouble() / width

@@ -1,16 +1,18 @@
 package widget
 
 import skin.Variant
-import timeline.StrValue
-import timeline.at_most
+import timeline.atMost
 import timeline.InputButton
 import timeline.AppSizeMetricData
 import timeline.AppState
 import timeline.AppSizeMetricData
 import skin.Skin
 import timeline.Keys
+import kotlin.js.dom.html5.CanvasContext
+import timeline.debugLines
+import timeline.Ptr
 
-public class TextfieldData {
+open public class TextfieldData {
 	var isCursorShown = false
 	var cursorPos = 0
 	var nextCursorToggleTick = 0
@@ -32,7 +34,7 @@ public class ButtonTimer {
 	}
 }
 
-open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, metrics: AppSizeMetricData, init: Textfield.() -> Unit = {}) : Widget(pos) {
+open class Textfield(val textPtr: Ptr<String>, widthInCharacters: Int, pos: Pos, metrics: AppSizeMetricData, init: Textfield.() -> Unit = {}) : Widget(pos) {
 
 	var disabled: Boolean = false
 	var variant = Variant.DEFAULT
@@ -46,22 +48,29 @@ open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, metri
 	override var height = metrics.rowHeight
 		private set
 
-	var cursorPos: Int = text.value.length
+	var cursorPos: Int = textPtr.value.length
 	{
-		additionalIdInfo = text.hashCode().toString()
 		init()
 	}
 
 	var isCursorShown: Boolean = false
 	var hover = false
 
-	override fun draw(skin: Skin) {
+	open protected fun isHover(state: AppState): Boolean {
+		return state.mousePos.isInRect(pos, Pos(width, height))
+	}
+
+	open protected fun isActive(state: AppState): Boolean {
+		return state.isActive(this)
+	}
+
+	override fun draw(context: CanvasContext, skin: Skin) {
 		skin.drawTextfield(this)
 	}
 
 	override fun handleEvents(state: AppState) {
 		readPersistentInfo(state)
-		hover = state.mousePos.isInRect(pos, Pos(width, height))
+		hover = isHover(state)
 		val was_hot = state.hot_widget_id == id
 		val was_active = state.active_widget_id == id
 		val justClicked = !disabled && state.leftMouseButton.down && hover && !was_active
@@ -75,16 +84,24 @@ open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, metri
 			state.hot_widget_id = null
 		}
 
-		isActive = state.isActive(this)
+		isActive = isActive(state)
 		if (!isActive) {
 			return
 		}
 		val clicked = state.leftMouseButton.down && hover
 		if (clicked) {
 			cursorPos = (state.mousePos.x - (this.pos.x + state.metrics.panelBorder)) / state.metrics.charWidth
-			cursorPos = cursorPos.at_most(text.value.length)
+			cursorPos = cursorPos.atMost(textPtr.value.length)
 		}
+
+		val beforeText = textPtr.value
 		handleInput(state.pressedChar, state)
+		val afterText = textPtr.value
+		if (beforeText != afterText) {
+			onTextChanged()
+			textPtr.value = getShownText()
+			onChange?.invoke()
+		}
 
 		val (isNew, data) = getOrCreateMyData(state)
 		if (data.nextCursorToggleTick <= state.currentTick) {
@@ -102,9 +119,8 @@ open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, metri
 		isCursorShown = data.isCursorShown
 	}
 
-	private fun handleInput(pressedChar: Char?, state: AppState) {
-		val beforeValue = text.value
-		if (state.isKeyDown(Keys.Del) && cursorPos < text.value.length && state.isPressable(Keys.Del)) {
+	open protected fun handleInput(pressedChar: Char?, state: AppState) {
+		if (state.isKeyDown(Keys.Del) && cursorPos < textPtr.value.length && state.isPressable(Keys.Del)) {
 			handleDelButton(state.isKeyDown(Keys.Ctrl))
 			state.clearKeysExcept(Keys.Del)
 			state.setPressed(Keys.Del)
@@ -116,7 +132,7 @@ open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, metri
 			cursorPos--
 			state.clearKeysExcept(Keys.LeftArrow)
 			state.setPressed(Keys.LeftArrow)
-		} else if (state.isKeyDown(Keys.RightArrow) && cursorPos < text.value.length && state.isPressable(Keys.RightArrow)) {
+		} else if (state.isKeyDown(Keys.RightArrow) && cursorPos < textPtr.value.length && state.isPressable(Keys.RightArrow)) {
 			cursorPos++
 			state.clearKeysExcept(Keys.RightArrow)
 			state.setPressed(Keys.RightArrow)
@@ -125,32 +141,31 @@ open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, metri
 			cursorPos = 0
 		} else if (state.isKeyDown(Keys.End)) {
 			state.clearKeysExcept(null)
-			cursorPos = text.value.length
+			cursorPos = textPtr.value.length
 		} else if (pressedChar != null) {
 			state.clearKeysExcept(null)
 			handlePressedChar(pressedChar)
 		}
-		val afterValue = text.value
-		if (beforeValue != afterValue && onChange != null) {
-			onChange!!()
-		}
+	}
+
+	open protected fun onTextChanged() {
 	}
 
 	private fun handleBackspace(isCtrlDown: Boolean) {
 		if (isCtrlDown) {
-			text.value = ""
+			textPtr.value = ""
 			cursorPos = 0
 		} else {
-			text.value = text.value.substring(0, cursorPos - 1) + text.value.substring(cursorPos, text.value.length());
+			textPtr.value = textPtr.value.substring(0, cursorPos - 1) + textPtr.value.substring(cursorPos, textPtr.value.length());
 			cursorPos--
 		}
 	}
 
 	private fun handleDelButton(isCtrlDown: Boolean) {
 		if (isCtrlDown) {
-			text.value = text.value.substring(0, cursorPos)
+			textPtr.value = textPtr.value.substring(0, cursorPos)
 		} else {
-			text.value = text.value.substring(0, cursorPos) + text.value.substring(cursorPos+1, text.value.length());
+			textPtr.value = textPtr.value.substring(0, cursorPos) + textPtr.value.substring(cursorPos+1, textPtr.value.length());
 		}
 	}
 
@@ -159,11 +174,11 @@ open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, metri
 	}
 
 	protected fun insertChar(pressedChar: Char) {
-		text.value = text.value.substring(0, cursorPos) + pressedChar + text.value.substring(cursorPos, text.value.length());
+		textPtr.value = textPtr.value.substring(0, cursorPos) + pressedChar + textPtr.value.substring(cursorPos, textPtr.value.length());
 		cursorPos++
 	}
 
-	protected fun getOrCreateMyData(state: AppState): Pair<Boolean, TextfieldData> {
+	open protected fun getOrCreateMyData(state: AppState): Pair<Boolean, TextfieldData> {
 		val dataPtr = state.getWidgetData("Textfield", id)
 		return if (dataPtr == null) {
 			val data = TextfieldData()
@@ -172,5 +187,9 @@ open class Textfield(val text: StrValue, widthInCharacters: Int, pos: Pos, metri
 		} else {
 			Pair(false, dataPtr as TextfieldData)
 		}
+	}
+
+	open protected fun getShownText(): String {
+		return textPtr.value
 	}
 }

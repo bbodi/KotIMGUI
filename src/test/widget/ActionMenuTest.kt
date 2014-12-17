@@ -2,7 +2,6 @@ import kotlin.test.assertEquals
 import org.junit.Test;
 import widget.Button
 import widget.NumberField
-import timeline.IntValue
 import widget.Pos
 import timeline.AppState
 import timeline.AppSizeMetricData

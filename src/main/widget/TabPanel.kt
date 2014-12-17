@@ -1,14 +1,13 @@
 package widget
 
-import timeline.BooleanValue
-import timeline.IntValue
-import timeline.context
 import timeline.AppSizeMetricData
 import timeline.AppState
+import kotlin.js.dom.html5.CanvasContext
 import skin.Skin
+import timeline.Ptr
 
-open class TabPanel(val value: IntValue, pos: Pos, metrics: AppSizeMetricData, init: TabPanel.() -> Unit) : WidgetContainer(pos, metrics) {
-	var visible: BooleanValue = BooleanValue(true);
+open class TabPanel(val value: Ptr<Int>, pos: Pos, metrics: AppSizeMetricData, init: TabPanel.() -> Unit) : WidgetContainer(pos, metrics) {
+	var visible: Ptr<Boolean> = Ptr(true);
 	val items = arrayListOf<Button>()
 	override val contentY: Int = this.pos.y + metrics.rowHeight + metrics.panelBorder
 	{
@@ -28,7 +27,7 @@ open class TabPanel(val value: IntValue, pos: Pos, metrics: AppSizeMetricData, i
 	override val contentWidth: Int = width - metrics.panelBorder * 2
 	override val contentHeight = height - metrics.rowHeight - (metrics.panelBorder*2)
 
-	override fun draw(skin: Skin) {
+	override fun draw(context: CanvasContext, skin: Skin) {
 		if (!visible.value) {
 			return
 		}
@@ -36,7 +35,7 @@ open class TabPanel(val value: IntValue, pos: Pos, metrics: AppSizeMetricData, i
 		context.save()
 		context.rect(contentX, contentY, contentWidth, contentHeight)
 		context.clip()
-		widgets.forEach { it.draw(skin) }
+		widgets.forEach { it.draw(context, skin) }
 		context.restore()
 	}
 
